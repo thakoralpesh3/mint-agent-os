@@ -13,6 +13,9 @@ const AgentSimulator = {
   proactivity: 'balanced',
   modality: 'hybrid',
   activePersona: 'jarvis',
+  isListening: false,
+  arcPulseEnergy: 1.0,
+  arcAngle: 0,
   personas: {
     jarvis: {
       id: 'jarvis',
@@ -116,6 +119,7 @@ const AgentSimulator = {
     this.setupWebUI();
     this.setupHUD();
     this.setupBrowser();
+    this.initArcReactorCanvas();
   },
 
   // ==================== BASH TERMINAL SIMULATION ====================
