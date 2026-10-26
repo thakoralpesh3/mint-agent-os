@@ -129,7 +129,11 @@ class SelfCounterCircuitBreaker:
         return {
             "circuit_tripped": self.circuit_tripped,
             "trip_reason": self.trip_reason,
+            "recent_action_count": len(self.action_history),
             "active_history_count": len(self.action_history),
+            "runaway_threshold": self.MAX_CONSECUTIVE_ACTIONS,
+            "repetition_threshold": self.MAX_LOOP_REPETITIONS,
             "available_snapshots": len(self.snapshots_index),
+            "snapshot_count": len(self.snapshots_index),
             "safety_governor": "active"
         }
