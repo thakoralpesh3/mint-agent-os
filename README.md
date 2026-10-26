@@ -152,7 +152,86 @@ python3 /home/alpesh/mint-agent-os/agent/cli.py --turbo "harden firewall"
 
 ---
 
-## 💿 8. Building the Custom Linux Mint OS ISO
+## 🔄 8. Option: Upgrade an Existing Linux Mint OS to MintPilot Agent OS
+
+If you already have a PC or laptop running **Linux Mint (21.x or 22.x Cinnamon / MATE / XFCE)**, you do not need to format your disk or reinstall from scratch. You can transform your existing system into **MintPilot Agent OS** with a single command:
+
+### 1-Line Universal Upgrade:
+```bash
+curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash
+```
+
+### What the Upgrade Automates:
+1. **Dependency Installation:** Automatically installs `brightnessctl`, `pulseaudio-utils`, `xdotool`, `wmctrl`, `maim`, `tesseract-ocr`, `speech-dispatcher`, `ufw`, and `git`.
+2. **Polkit Passwordless Control:** Installs `/etc/polkit-1/rules.d/99-mint-agent-permissions.rules` so the agent can adjust brightness, audio, battery, power, and Wi-Fi without nagging password dialogs.
+3. **Background Daemon:** Deploys and enables `mint-agent.service` systemd unit under your desktop user.
+4. **Desktop Integration:** Installs application shortcuts in the Cinnamon Start Menu (`mint-agent-webui.desktop`) and places a launcher icon on your desktop.
+5. **Global CLI Command:** Registers `/usr/local/bin/mint-agent` accessible from any terminal.
+6. **Cyber Defense Hardening:** Generates initial SHA-256 cryptographic tripwires, configures UFW firewall, and deploys canary honeypots.
+
+### Checking for In-Place Updates:
+```bash
+# Check if a new version is available upstream:
+mint-agent --check-update
+
+# Perform in-place upgrade from GitHub:
+mint-agent --update-os
+```
+
+---
+
+## 🧠 9. Customizing & Switching AI Models (Offline & Online)
+
+Users have complete freedom to choose and change the underlying AI model powering the agent, supporting both **100% offline local SLMs** and **online frontier cloud models**:
+
+### Available AI Model Ecosystem:
+
+| Provider | Model Identifier | Type | RAM / Speed | Use Case |
+| :--- | :--- | :--- | :--- | :--- |
+| **Offline SLM** | `qwen2.5-0.5b-instruct` | Local GGUF | **400MB RAM** | Default Tier 1 for low-spec (2GB-4GB) laptops |
+| **Offline SLM** | `qwen2.5-coder-1.5b` | Local GGUF | **1.1GB RAM** | High-precision coding and OS automation |
+| **Offline SLM** | `deepseek-r1-distill-1.5b` | Local GGUF | **1.2GB RAM** | Offline extended reasoning & verification |
+| **Offline SLM** | `qwen2.5-3b-instruct` | Local GGUF | **2.2GB RAM** | Tier 2 balanced multi-tasking |
+| **Offline SLM** | `qwen2.5-7b-instruct` | Local GGUF | **5.0GB RAM** | Tier 3 high-performance local AI |
+| **Offline SLM** | `local-ollama` | Local daemon | Configurable | Connects to `http://localhost:11434` |
+| **Online Cloud** | `gemini-2.5-flash` | Google Cloud | Ultra-Fast (<300ms) | Multimodal, web-aware, generous free tier |
+| **Online Cloud** | `gemini-2.5-pro` | Google Cloud | Deep Reasoning | Complex multi-turn autonomous problem solving |
+| **Online Cloud** | `gpt-4o-mini` | OpenAI Cloud | Fast | Cost-effective cloud model |
+| **Online Cloud** | `gpt-4o` | OpenAI Cloud | Standard | Flagship omni-model |
+| **Online Cloud** | `claude-3-5-haiku` | Anthropic Cloud | Very Fast | Fast tool-use precision |
+| **Online Cloud** | `claude-3-5-sonnet` | Anthropic Cloud | Deep Thinking | Industry-leading computer-use agent |
+| **Custom API** | `custom-openai-compatible` | Custom URL | Configurable | Connect to Groq, OpenRouter, LocalAI, vLLM |
+
+### How Users Can Switch AI Models:
+
+#### Method A: Via Command Line (CLI)
+```bash
+# 1. View all offline and online models:
+mint-agent --list-models
+
+# 2. Switch to an offline model:
+mint-agent --set-model qwen2.5-1.5b
+
+# 3. Configure API key and switch to Google Gemini:
+mint-agent --set-key gemini YOUR_GEMINI_API_KEY
+mint-agent --set-model gemini-2.5-flash
+
+# 4. Switch to OpenAI GPT-4o:
+mint-agent --set-key openai YOUR_OPENAI_API_KEY
+mint-agent --set-model gpt-4o
+```
+
+#### Method B: Via Open WebUI (`http://localhost:8888`)
+- Click the **`🧠 AI Model`** badge in the top header.
+- An interactive modal appears with tabs for **🟢 Offline Local SLM** and **🌐 Online Cloud LLM**.
+- Pick any model with 1 click, enter optional API keys, and click **"Activate Model"**.
+
+> [!TIP]
+> **Zero-Downtime Offline Fallback:** If an online cloud model is selected but internet connectivity drops or an API key fails, MintPilot **automatically and gracefully falls back to the local offline SLM**, ensuring your laptop control and PC security are never disrupted!
+
+---
+
+## 💿 10. Building the Custom Linux Mint OS ISO
 
 ```bash
 cd iso_builder
@@ -167,6 +246,7 @@ chmod +x *.sh
 
 ---
 
-## 🔄 9. Continuous GitHub Conversation Auto-Sync
+## 🔄 11. Continuous GitHub Conversation Auto-Sync
 
 The background daemon ([`sync/sync_daemon.py`](file:///home/alpesh/mint-agent-os/sync/sync_daemon.py)) runs persistently in the background, automatically syncing conversation turns, transcripts ([`conversation/CONVERSATION.md`](file:///home/alpesh/mint-agent-os/conversation/CONVERSATION.md)), and code changes directly to [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os).
+
