@@ -220,6 +220,30 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(block_res)
             return
 
+        # 10. Switch AI Model: POST /api/set_model
+        if path == "/api/set_model":
+            model_id = body.get("model")
+            if not model_id:
+                self._send_json({"error": "Missing model identifier"}, 400)
+                return
+            provider = body.get("provider")
+            api_key = body.get("api_key")
+            custom_url = body.get("custom_url")
+            res = self.brain.models.set_model(
+                model_id=model_id,
+                provider=provider,
+                api_key=api_key,
+                custom_url=custom_url
+            )
+            self._send_json(res)
+            return
+
+        # 11. Perform In-Place OS Update: POST /api/update_os
+        if path == "/api/update_os":
+            res = self.brain.updater.perform_update()
+            self._send_json(res)
+            return
+
         # 6. Resolve Approval: POST /api/resolve_permission
         if path == "/api/resolve_permission":
             act_id = body.get("id")

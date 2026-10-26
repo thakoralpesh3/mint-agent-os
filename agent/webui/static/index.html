@@ -143,10 +143,12 @@
 
     <!-- Live Telemetry & Security Badges -->
     <div class="telemetry-badges">
+      <div class="badge" id="aiModelBadge" style="cursor:pointer; background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; font-weight:600;" onclick="openModelModal()">🧠 AI: Loading...</div>
       <div class="badge security" id="secScoreBadge">Security: ...</div>
       <div class="badge" id="ramBadge">RAM: ...</div>
       <div class="badge" id="batBadge">BAT: ...</div>
       <button class="btn-sm" onclick="cleanMemory()">🧹 Free RAM</button>
+      <button class="btn-sm" style="background:#2d6a4f; color:#d8f3dc; border:1px solid #40916c;" onclick="openUpdateModal()">🔄 Update OS</button>
     </div>
   </header>
 
