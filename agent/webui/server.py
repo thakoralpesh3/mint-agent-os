@@ -82,6 +82,7 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
                 "mode": self.brain.permissions.mode,
                 "is_turbo": self.brain.permissions.is_turbo(),
                 "tier": self.brain.hardware_tier,
+                "active_model": self.brain.models.get_active_model(),
                 "memory": mem,
                 "hardware": hw,
                 "battery": bat,
@@ -103,7 +104,19 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(circuit)
             return
 
-        # 5. OpenAI-Compatible: GET /v1/models
+        # 5. AI Models Catalog API: GET /api/models
+        if path == "/api/models":
+            models_data = self.brain.models.list_models()
+            self._send_json(models_data)
+            return
+
+        # 6. Check OS Update API: GET /api/check_update
+        if path == "/api/check_update":
+            update_data = self.brain.updater.check_for_updates()
+            self._send_json(update_data)
+            return
+
+        # 7. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
