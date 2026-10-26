@@ -197,8 +197,11 @@
         <div>
           <h2 style="font-size:1.3rem; margin-bottom:6px;">🛡️ PC Cybersecurity Posture</h2>
           <p id="secGradeDesc" style="color:#aaa; font-size:0.9rem;">Evaluating real-time system hardening, firewall state, and port exposures...</p>
-          <div style="display:flex; gap:10px; margin-top:14px;">
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
             <button class="btn-approve" onclick="runThreatScan()">🔍 Deep Threat Scan</button>
+            <button class="btn-sm" style="background:#8e44ad; color:#fff;" onclick="counterThreats()">⚔️ Active Counter-Defense</button>
+            <button class="btn-sm" style="background:#2980b9; color:#fff;" onclick="deployDecoys()">🪤 Deploy Canary Decoys</button>
+            <button class="btn-sm" style="background:#d35400; color:#fff;" onclick="rollbackSnapshot()">⏮️ Autonomous Rollback</button>
             <button class="btn-danger" onclick="triggerLockdown()">🚨 Emergency PC Lockdown</button>
             <button class="btn-sm" onclick="quickSend('harden firewall')">🔥 Enable Firewall (UFW)</button>
           </div>
@@ -232,6 +235,27 @@
             <ul id="secRecommendations" style="font-size:0.82rem; color:#ccc; padding-left:18px;">
               <li>Run 'mint-agent --lockdown' to enforce strict inbound drop rules</li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Counter-Defense & Self-Countering Safety Circuit Breaker -->
+      <div class="grid-2" style="margin-top: 18px;">
+        <div class="panel">
+          <h2>⚔️ Active Threat Counter-Measures & Honeypots</h2>
+          <div style="background:var(--panel-bg); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem; line-height:1.6;">
+            <div><strong>Socket Disruption:</strong> <span style="color:#2ecc71;">✓ Hostile Sockets Severed (ss -K / TCP RST)</span></div>
+            <div><strong>Canary Honeytokens:</strong> <span id="decoyStatusText" style="color:#2ecc71;">Active (3 fake credentials monitored)</span></div>
+            <div><strong>Intrusion Reaction:</strong> Auto-lockdown triggered upon unauthorized decoy read</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>🛑 Safety Circuit Breaker (Agent Self-Countering)</h2>
+          <div style="background:var(--panel-bg); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem; line-height:1.6;">
+            <div><strong>Governor State:</strong> <span id="circuitStateText" style="color:#2ecc71;">✓ NORMAL (GOVERNING)</span></div>
+            <div><strong>Runaway Prevention:</strong> Auto-trips if >12 consecutive actions or 4 loop repetitions</div>
+            <div><strong>Pre-Action Snapshots:</strong> <span id="snapCountText">0 available</span> for autonomous rollback</div>
           </div>
         </div>
       </div>
