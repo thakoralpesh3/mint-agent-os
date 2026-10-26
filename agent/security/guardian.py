@@ -2,13 +2,16 @@
 """
 Master Security Guardian Coordinator for MintPilot on Linux Mint
 Combines self-defense integrity monitoring, dynamic threat detection,
-firewall remediation, and autonomous incident response.
+firewall remediation, active counter-measures (socket disruption, decoys),
+and the agent self-countering safety circuit breaker.
 """
 
 from typing import Dict, Any, List, Optional
 from agent.security.self_defense import SelfDefenseGuardian
 from agent.security.threat_detector import ThreatDetector
 from agent.security.remediation import SecurityRemediation
+from agent.security.counter_measures import ThreatCounterMeasures
+from agent.security.self_counter import SelfCounterCircuitBreaker
 from agent.core.permission_manager import PermissionManager
 
 
@@ -20,6 +23,8 @@ class SecurityGuardian:
         self.self_defense = SelfDefenseGuardian()
         self.detector = ThreatDetector()
         self.remediation = SecurityRemediation()
+        self.counter_measures = ThreatCounterMeasures()
+        self.self_counter = SelfCounterCircuitBreaker()
 
     def get_full_security_posture(self) -> Dict[str, Any]:
         """Performs a comprehensive security assessment and returns unified telemetry."""
@@ -27,6 +32,7 @@ class SecurityGuardian:
         credentials = self.self_defense.audit_credentials_and_privileges()
         threats = self.detector.scan_all_threats()
         score = self.remediation.calculate_security_score(threats, integrity)
+        circuit = self.self_counter.get_circuit_status()
 
         return {
             "security_score": score["score"],
@@ -36,54 +42,52 @@ class SecurityGuardian:
             "threat_summary": threats,
             "integrity_summary": integrity,
             "privilege_summary": credentials,
+            "circuit_breaker": circuit,
             "penalties": score["penalties"],
             "recommendations": score["recommendations"],
             "mode": self.permissions.mode
         }
 
-    def scan_and_remediate(self, auto_neutralize: Optional[bool] = None) -> Dict[str, Any]:
+    def scan_and_counter_threats(self, auto_neutralize: Optional[bool] = None) -> Dict[str, Any]:
         """
-        Scans for threats.
-        In Turbo Mode (or if auto_neutralize=True), automatically neutralizes critical threats.
-        In Safe Mode, logs threats and flags them for interactive user approval.
+        Scans for threats and executes active counter-measures.
+        In Turbo Mode: Actively counters threats immediately.
+        In Safe Mode: Flags threats for interactive approval.
         """
         threats_data = self.detector.scan_all_threats()
         active_threats = threats_data.get("threats", [])
-        remediated_actions = []
+        countered_actions = []
         pending_actions = []
 
         is_turbo = self.permissions.is_turbo() if auto_neutralize is None else auto_neutralize
 
         for t in active_threats:
             severity = t.get("severity")
-            # If critical malicious process found
-            if severity == "CRITICAL" and "pid" in t:
-                pid = t["pid"]
-                if is_turbo:
-                    res = self.remediation.terminate_process(pid)
-                    remediated_actions.append({"threat": t["title"], "action": "terminated_process", "pid": pid, "result": res})
-                else:
-                    pending_actions.append({"threat": t, "action": f"kill -9 {pid}"})
-
-            # If hostile external IP found
-            if "hostile_ip" in t:
-                ip = t["hostile_ip"]
-                if is_turbo:
-                    res = self.remediation.block_ip(ip)
-                    remediated_actions.append({"threat": t["title"], "action": "blocked_ip", "ip": ip, "result": res})
-                else:
-                    pending_actions.append({"threat": t, "action": f"ufw deny from {ip}"})
+            if is_turbo:
+                # Active counter-measure execution
+                res = self.counter_measures.counter_threat(t)
+                countered_actions.append(res)
+            else:
+                pending_actions.append({"threat": t, "recommended_counter": "neutralize_threat"})
 
         return {
             "threat_level": threats_data.get("threat_level"),
             "total_threats": len(active_threats),
-            "remediated_count": len(remediated_actions),
-            "remediated_actions": remediated_actions,
+            "countered_count": len(countered_actions),
+            "countered_actions": countered_actions,
             "pending_approvals_count": len(pending_actions),
             "pending_actions": pending_actions,
-            "mode_executed": "turbo_autonomous" if is_turbo else "safe_guarded"
+            "mode_executed": "turbo_counter_active" if is_turbo else "safe_guarded"
         }
+
+    def deploy_decoys(self) -> Dict[str, Any]:
+        """Deploys honeypot canary decoy files."""
+        return self.counter_measures.deploy_canary_decoys()
 
     def lockdown(self) -> Dict[str, Any]:
         """Enforces emergency system lockdown."""
         return self.remediation.emergency_lockdown()
+
+    def rollback_last_change(self) -> Dict[str, Any]:
+        """Counters the agent's recent actions by rolling back the last state snapshot."""
+        return self.self_counter.rollback_last_snapshot()
