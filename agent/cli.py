@@ -90,6 +90,58 @@ def main():
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
 
+    if args.interaction:
+        print_banner(brain)
+        status = brain.interaction.get_status()
+        print("🗣️  MintPilot User Interaction Settings & Preferences:")
+        print(f"  • Active Modality:       \033[1;36m{status['modality'].upper()}\033[0m (text, voice, hybrid, hud, notification, cli)")
+        print(f"  • Communication Style:   \033[1;35m{status['verbosity'].upper()}\033[0m (concise, normal, detailed, security_auditor)")
+        print(f"  • Proactivity Level:     \033[1;33m{status['proactivity'].upper()}\033[0m (reactive, balanced, proactive)")
+        print(f"  • Spoken Voice Feedback: \033[1;32m{'ENABLED' if status['voice']['enabled'] else 'DISABLED'}\033[0m (Engine: {status['voice']['engine']}, Speed: {status['voice']['speed']} wpm)")
+        print(f"  • Desktop Notifications: \033[1;32m{'ENABLED' if status['notifications']['enabled'] else 'DISABLED'}\033[0m (Urgency: {status['notifications']['urgency_threshold']})")
+        print(f"  • Floating HUD Hotkey:   \033[1;32m{status['hud']['hotkey']}\033[0m (Centered Spotlight Raycast-style)")
+        print("\nChange Interaction Options On-The-Fly:")
+        print("  mint-agent --modality <text|voice|hybrid|hud|notification>")
+        print("  mint-agent --verbosity <concise|normal|detailed|security_auditor>")
+        print("  mint-agent --proactivity <reactive|balanced|proactive>")
+        print("  mint-agent --voice-reply on/off")
+        return
+
+    if args.modality:
+        print_banner(brain)
+        res = brain.interaction.set_modality(args.modality)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;32m✓\033[0m {res['message']}")
+        return
+
+    if args.verbosity:
+        print_banner(brain)
+        res = brain.interaction.set_verbosity(args.verbosity)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;32m✓\033[0m {res['message']}")
+        return
+
+    if args.proactivity:
+        print_banner(brain)
+        res = brain.interaction.set_proactivity(args.proactivity)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;32m✓\033[0m {res['message']}")
+        return
+
+    if args.voice_reply:
+        print_banner(brain)
+        val = args.voice_reply.lower() in ["on", "true", "1", "yes"]
+        res = brain.interaction.set_voice(val)
+        state_str = "ENABLED" if val else "DISABLED"
+        print(f"\033[1;32m✓\033[0m Spoken voice replies {state_str}. (Modality: {res['modality'].upper()})")
+        return
+
     if args.smooth:
         print_banner(brain)
         print("🍃 Optimizing Linux Mint Kernel for Butter-Smooth Performance (vm.swappiness=10)...")
