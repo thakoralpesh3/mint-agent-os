@@ -161,6 +161,10 @@ const AgentSimulator = {
       this.printTermLine(`
 MintPilot OS Available Commands:
   mint-agent "<prompt>"      Run natural language laptop control or security intent
+  mint-agent --list-personas List Marvel series AI personas (Jarvis, Friday, Edith, Vision, Karen)
+  mint-agent --persona <p>   Switch active Marvel AI Agent Persona
+  mint-agent --list-protocols List Stark Emergency Defense Protocols
+  mint-agent --protocol <pr> Execute Stark Protocol (house_party, clean_slate, instant_kill, etc.)
   mint-agent --interaction   Display active user interaction settings (Voice, HUD, Persona)
   mint-agent --modality <m>  Set modality: text, voice, hybrid, hud, notification
   mint-agent --verbosity <v> Set communication style: concise, normal, detailed, security_auditor
