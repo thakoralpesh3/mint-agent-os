@@ -91,6 +91,7 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
                 "battery": bat,
                 "windows": windows,
                 "security": security,
+                "interaction": self.brain.interaction.get_status(),
                 "pending_approvals": list(self.brain.permissions.pending_approvals.values())
             })
             return
@@ -137,7 +138,12 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(posture.get("defcon", {}))
             return
 
-        # 10. OpenAI-Compatible: GET /v1/models
+        # 10. User Interaction Settings & Modalities: GET /api/interaction
+        if path == "/api/interaction":
+            self._send_json(self.brain.interaction.get_status())
+            return
+
+        # 11. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
