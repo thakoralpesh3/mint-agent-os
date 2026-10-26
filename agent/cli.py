@@ -72,10 +72,38 @@ def main():
     parser.add_argument("--set-key", nargs=2, metavar=("PROVIDER", "KEY"), help="Store API key for online provider (e.g. gemini, openai, claude)")
     parser.add_argument("--check-update", action="store_true", help="Check upstream GitHub repository for MintPilot Agent OS updates")
     parser.add_argument("--update-os", action="store_true", help="Perform in-place upgrade of MintPilot Agent OS from GitHub")
+    parser.add_argument("--smooth", action="store_true", help="Apply Linux Mint kernel swappiness and cache tuning for 60fps butter-smooth performance")
+    parser.add_argument("--benchmark-smoothness", action="store_true", help="Audit PC hardware against Linux Mint official standards and check agent footprint")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
+
+    if args.smooth:
+        print_banner(brain)
+        print("🍃 Optimizing Linux Mint Kernel for Butter-Smooth Performance (vm.swappiness=10)...")
+        res = brain.memory.tune_kernel_smoothness()
+        print(f"✓ {res['message']}")
+        settings = res['current_settings']
+        print(f"  • vm.swappiness: {settings['swappiness']} (Ideal: {settings['swappiness_ideal']})")
+        print(f"  • vm.vfs_cache_pressure: {settings['vfs_cache_pressure']} (Ideal: {settings['vfs_cache_pressure_ideal']})")
+        print(f"  • Status: \033[1;32m{settings['status'].upper()}\033[0m")
+        return
+
+    if args.benchmark_smoothness:
+        print_banner(brain)
+        print("🔍 Auditing System against Official Linux Mint PC Requirements (2GB - 4GB RAM)...")
+        compat = brain.memory.verify_mint_compatibility()
+        print(f"Smoothness Grade: \033[1;32m{compat['score']}/100 ({compat['grade']})\033[0m")
+        print("\nCompliance & Fluidity Checklist:")
+        for c in compat["checks"]:
+            color = "\033[1;32m" if c["status"] in ["OPTIMAL", "PASS"] else "\033[1;33m"
+            print(f"  {color}✓ {c['item']:<20}\033[0m : {c['detail']}")
+        fp = compat["agent_footprint"]
+        print(f"\nAgent Process Footprint: \033[1;36m{fp['agent_rss_mb']} MB RAM\033[0m ({fp['overhead_percent_of_system']}% of system RAM)")
+        print(f"Scheduling Priority: Nice = \033[1;32m+{fp['nice_priority']}\033[0m (Background priority, UI uninterrupted)")
+        print(f"\nRecommendation: \033[1;37m{compat['recommendation']}\033[0m")
+        return
 
     if args.list_models:
         print_banner(brain)
