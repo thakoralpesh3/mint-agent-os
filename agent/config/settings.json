@@ -26,7 +26,7 @@
     "voice": {
       "enabled": true,
       "engine": "spd-say",
-      "speed": 175,
+      "speed": 155,
       "pitch": 0,
       "volume": 100,
       "auto_listen_wake_word": false
@@ -42,5 +42,5 @@
       "auto_hide_sec": 3
     }
   },
-  "marvel_persona": "friday"
+  "marvel_persona": "jarvis"
 }
