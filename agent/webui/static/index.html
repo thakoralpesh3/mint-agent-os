@@ -144,6 +144,7 @@
     <!-- Live Telemetry & Security Badges -->
     <div class="telemetry-badges">
       <div class="badge" id="aiModelBadge" style="cursor:pointer; background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; font-weight:600;" onclick="openModelModal()">🧠 AI: Loading...</div>
+      <div class="badge" id="smoothnessBadge" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; font-weight:600;" onclick="openSmoothnessModal()">🍃 Smooth: ...</div>
       <div class="badge security" id="secScoreBadge">Security: ...</div>
       <div class="badge" id="ramBadge">RAM: ...</div>
       <div class="badge" id="batBadge">BAT: ...</div>
@@ -376,6 +377,23 @@
       <div class="modal-actions">
         <button class="btn-sm" style="background:#444;" onclick="closeUpdateModal()">Close</button>
         <button id="applyUpdateBtn" class="btn-approve" style="background:#2ecc71; color:#000;" onclick="performOSUpdate()">🔄 Run In-Place Upgrade</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Linux Mint Butter-Smooth Performance & Hardware Optimizer Modal -->
+  <div class="modal-overlay" id="smoothnessModal" style="display:none;">
+    <div class="modal" style="width: 580px; max-height: 85vh; display: flex; flex-direction: column;">
+      <h3 style="color:#2ecc71;">🍃 Linux Mint Butter-Smooth Performance Governor</h3>
+      <p style="font-size:0.83rem; color:#aaa; margin-bottom:12px;">Enforces 2GB-4GB hardware compliance, kernel swappiness tuning, and low-impact agent scheduling.</p>
+
+      <div id="smoothnessAuditBox" style="background:var(--panel-bg); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem; line-height:1.7; overflow-y:auto; flex:1;">
+        Auditing Linux Mint hardware metrics and kernel parameters...
+      </div>
+
+      <div class="modal-actions" style="margin-top:14px;">
+        <button class="btn-sm" style="background:#444;" onclick="closeSmoothnessModal()">Close</button>
+        <button class="btn-approve" onclick="applyKernelSmoothness()">⚡ Apply Kernel Smoothness Tuning (swappiness=10)</button>
       </div>
     </div>
   </div>
