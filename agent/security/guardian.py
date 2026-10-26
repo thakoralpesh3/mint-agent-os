@@ -99,9 +99,15 @@ class SecurityGuardian:
         pending_actions = []
 
         is_turbo = self.permissions.is_turbo() if auto_neutralize is None else auto_neutralize
+        antibodies_created = []
 
         for t in active_threats:
             severity = t.get("severity")
+            # Always fingerprint threat in Digital Immune Memory
+            fp_res = self.immune.fingerprint_threat(t)
+            if fp_res.get("synthesized_antibody"):
+                antibodies_created.append(fp_res["synthesized_antibody"])
+
             if is_turbo:
                 # Active counter-measure execution
                 res = self.counter_measures.counter_threat(t)
@@ -109,12 +115,17 @@ class SecurityGuardian:
             else:
                 pending_actions.append({"threat": t, "recommended_counter": "neutralize_threat"})
 
+        t_level = threats_data.get("threat_level", "SECURE")
+        defcon = self.DEFCON_MATRIX.get(t_level, self.DEFCON_MATRIX["SECURE"])
+
         return {
-            "threat_level": threats_data.get("threat_level"),
+            "threat_level": t_level,
+            "defcon": defcon,
             "total_threats": len(active_threats),
             "countered_count": len(countered_actions),
             "countered_actions": countered_actions,
             "remediated_count": len(countered_actions),
+            "antibodies_synthesized": len(antibodies_created),
             "pending_approvals_count": len(pending_actions),
             "pending_actions": pending_actions,
             "mode_executed": "turbo_counter_active" if is_turbo else "safe_guarded"
@@ -135,3 +146,11 @@ class SecurityGuardian:
     def rollback_last_change(self) -> Dict[str, Any]:
         """Counters the agent's recent actions by rolling back the last state snapshot."""
         return self.self_counter.rollback_last_snapshot()
+
+    def harden_for_future_attacks(self) -> Dict[str, Any]:
+        """One-click command to synthesize all antibodies, apply kernel defenses, and anticipate next attacks."""
+        return self.immune.harden_system_for_future_attacks()
+
+    def get_immune_status(self) -> Dict[str, Any]:
+        """Queries the Digital Immune System's attack memory and resilience score."""
+        return self.immune.get_immune_status()
