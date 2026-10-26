@@ -314,6 +314,26 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(self.brain.interaction.get_status())
             return
 
+        # 15. Switch Marvel Agent Persona: POST /api/marvel/persona
+        if path == "/api/marvel/persona":
+            pid = body.get("persona")
+            if not pid:
+                self._send_json({"error": "Missing persona parameter"}, 400)
+                return
+            res = self.brain.marvel.set_persona(pid)
+            self._send_json(res)
+            return
+
+        # 16. Execute Stark Protocol: POST /api/marvel/protocol
+        if path == "/api/marvel/protocol":
+            proto = body.get("protocol")
+            if not proto:
+                self._send_json({"error": "Missing protocol parameter"}, 400)
+                return
+            res = self.brain.marvel.execute_protocol(proto)
+            self._send_json(res)
+            return
+
         # 6. Resolve Approval: POST /api/resolve_permission
         if path == "/api/resolve_permission":
             act_id = body.get("id")
