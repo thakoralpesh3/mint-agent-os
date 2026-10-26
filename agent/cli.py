@@ -24,12 +24,14 @@ from agent.brain.inference import AgentBrain
 def print_banner(brain: AgentBrain):
     mode_color = "\033[1;31m[TURBO]\033[0m" if brain.permissions.is_turbo() else "\033[1;33m[SAFE]\033[0m"
     istat = brain.interaction.get_status()
+    marvel_p = brain.marvel.get_active_persona()
     voice_str = "\033[1;32mON\033[0m" if istat['voice']['enabled'] else "\033[1;30mOFF\033[0m"
     print(f"""
 \033[1;32m╔═══════════════════════════════════════════════════════════════╗
 ║          🍃 MINTPILOT CYBER DEFENSE & AI CONTROLLER           ║
 ║       Autonomous Offline Security Guardian for Linux Mint     ║
 ╚═══════════════════════════════════════════════════════════════╝\033[0m
+  Marvel Agent: \033[1;36m{marvel_p['name']}\033[0m ({marvel_p['title']})
   Mode: {mode_color} | Hardware Tier: \033[1;36m{brain.hardware_tier['tier_name']}\033[0m
   Interaction: \033[1;35m{istat['modality'].upper()}\033[0m | Style: \033[1;36m{istat['verbosity'].upper()}\033[0m | Voice: {voice_str} | Proactive: \033[1;33m{istat['proactivity'].upper()}\033[0m
 """)
@@ -61,6 +63,10 @@ def main():
     parser.add_argument("-v", "--voice", action="store_true", help="Enable spoken voice reply")
     parser.add_argument("--turbo", action="store_true", help="Execute in unrestricted Antigravity Turbo Mode (no permission prompts)")
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
+    parser.add_argument("--persona", type=str, choices=["jarvis", "friday", "edith", "vision", "karen"], help="Switch Marvel AI Agent persona (Jarvis, Friday, Edith, Vision, Karen)")
+    parser.add_argument("--protocol", type=str, help="Execute Marvel Stark Protocol (e.g. 'house party', 'clean slate', 'veronica', 'instant kill', 'barn door')")
+    parser.add_argument("--list-personas", action="store_true", help="List all Marvel Series AI Agent personas available in Linux Mint")
+    parser.add_argument("--list-protocols", action="store_true", help="List all Stark Protocols available for autonomous OS execution")
     parser.add_argument("--interaction", action="store_true", help="Display all user interaction options, modalities, and active settings")
     parser.add_argument("--modality", type=str, choices=["text", "voice", "hybrid", "hud", "notification", "cli"], help="Set user interaction modality channel")
     parser.add_argument("--verbosity", type=str, choices=["concise", "normal", "detailed", "security_auditor"], help="Set communication style and explanation depth")
