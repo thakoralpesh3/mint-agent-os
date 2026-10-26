@@ -91,6 +91,8 @@
           <div class="webui-header">
             <div style="font-weight: bold; font-size: 0.9rem; color: #2ecc71;">MintPilot v1.0 [Cyber Defense & AI]</div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <div id="simDefconBadge" onclick="AgentSimulator.sendWebUIMessage('defcon')" style="cursor:pointer; background:#2c1b1b; border:1px solid #e74c3c; color:#ff6b6b; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🚨 DEFCON 2: ELEVATED</div>
+              <div id="simImmuneBadge" onclick="AgentSimulator.openImmuneModal()" style="cursor:pointer; background:#1b2438; border:1px solid #3498db; color:#70d6ff; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🧬 Immune: 95% (A+)</div>
               <div id="simAiModelBadge" onclick="AgentSimulator.openModelModal()" style="cursor:pointer; background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🧠 AI: Qwen 0.5B [OFFLINE]</div>
               <div id="simSmoothBadge" onclick="AgentSimulator.openSmoothnessModal()" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🍃 Smooth: 100% (A+)</div>
               <button style="background:#2d6a4f; color:#d8f3dc; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; cursor:pointer;" onclick="AgentSimulator.openUpgradeModal()">🔄 Upgrade Mint OS</button>
@@ -104,21 +106,21 @@
             <div class="webui-msg agent">
               <div style="font-size:0.75rem; color:#8cd9aa; margin-bottom:4px; font-style:italic;">🧠 MintPilot Cyber Guardian initialized on Linux Mint 22.3.</div>
               Hello! I am MintPilot, your offline autonomous laptop controller and cybersecurity protector. 
-              You can customize my AI brain (switch between offline local SLMs and online Gemini/GPT-4o) or upgrade your entire Linux Mint OS with 1 click. How can I assist you?
+              I completely protect your PC, dynamically adapt defenses to threats, counter myself if anomalies occur, and maintain digital immune memory to prepare against future attacks.
             </div>
           </div>
           <div style="padding: 6px 12px; display: flex; gap: 6px; overflow-x: auto; background: #161a17;">
-            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#00b4d8; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('list models')">🧠 Change AI</button>
-            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.openSmoothnessModal()">🍃 Smoothness Audit</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#70d6ff; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('immune status')">🧬 Immune System</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#00b4d8; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('harden future')">🛡️ Harden Future</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('defcon')">🚨 DEFCON Posture</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('security status')">🛡️ Security Status</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#9b59b6; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('counter threats')">⚔️ Counter Threats</button>
-            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#3498db; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('deploy decoys')">🪤 Deploy Decoys</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e67e22; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('circuit breaker')">🛑 Circuit Breaker</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#d35400; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('rollback')">⏮️ Rollback</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#3498db; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.openModelModal()">🧠 Change AI</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.openSmoothnessModal()">🍃 Smoothness Audit</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#f39c12; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('check update')">🔄 Check Update</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Lockdown</button>
-            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('volume 60%')">🔊 Volume 60%</button>
-            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('clean memory')">🧹 Free RAM</button>
           </div>
           <div class="webui-input-bar">
             <input type="text" id="webuiInput" placeholder="Ask MintPilot to defend PC or control laptop (e.g. 'security status', 'scan threats', 'volume 50%')...">
