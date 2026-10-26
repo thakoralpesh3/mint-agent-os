@@ -198,11 +198,52 @@ def main():
         print(json.dumps(res, indent=2))
         return
 
+    if args.defcon:
+        print_banner(brain)
+        posture = brain.security.get_full_security_posture()
+        defcon = posture["defcon"]
+        print(f"🚨 Dynamic Threat Escalation Posture: \033[1;31m{defcon['status']}\033[0m")
+        print(f"Posture State: \033[1;33m{defcon['posture']}\033[0m")
+        print(f"Details: {defcon['description']}")
+        print(f"Active Threat Count: {posture['threat_summary']['total_threats']}")
+        return
+
+    if args.immune_status:
+        print_banner(brain)
+        imm = brain.security.get_immune_status()
+        print(f"🛡️  Digital Immune System Resilience: \033[1;32m{imm['resilience_score']}/100 ({imm['grade']})\033[0m")
+        print(f"Total Synthesized Antibodies: \033[1;36m{imm['total_antibodies']}\033[0m")
+        print(f"Recorded Threat Fingerprints: {imm['recorded_fingerprints_count']}")
+        print(f"Banned Hostile IPs: {len(imm['banned_hostile_ips'])}")
+        print(f"Custom Dynamic Signatures: {imm['custom_threat_signatures_count']}")
+        print(f"\nFuture Attack Readiness: \033[1;32m{imm['future_attack_readiness']}\033[0m")
+        print("\nActive Antibodies Sample:")
+        for ab in imm["active_antibodies"][:6]:
+            desc = ab.get('description') or ab.get('threat_type')
+            print(f"  ✓ [\033[1;36m{ab['antibody_id']}\033[0m] {desc}")
+        return
+
+    if args.harden_future:
+        print_banner(brain)
+        print("🛡️  Synthesizing digital antibodies & enforcing proactive kernel network defense...")
+        res = brain.security.harden_for_future_attacks()
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
+        kd = res["kernel_defense"]
+        print(f"Hardened Kernel Parameters ({kd['hardened_parameters']}):")
+        for k, v in list(kd["parameters"].items())[:5]:
+            print(f"  • {k} = {v['value']} ({v['status']})")
+        print(f"\nPredictive Next-Attack Defenses ({res['predictive_hardening']['predictive_defenses_count']}):")
+        for p in res['predictive_hardening']['preemptions']:
+            print(f"  ⚔️  Anticipation: \033[1;33m{p['anticipation']}\033[0m -> {p['proactive_defense']}")
+        return
+
     if args.security:
         print_banner(brain)
         posture = brain.security.get_full_security_posture()
-        print(f"🛡️  Security Hardening Score: \033[1;32m{posture['security_score']}/100 ({posture['grade']})\033[0m")
+        defcon = posture["defcon"]
+        print(f"🛡️  Security Hardening Score: \033[1;32m{posture['security_score']}/100 ({posture['grade']})\033[0m | {defcon['status']}")
         print(f"🔥 Firewall Active: {posture['firewall_active']}")
+        print(f"🧬 Immune Resilience: \033[1;36m{posture['immune_summary']['resilience_score']}/100 ({posture['immune_summary']['grade']})\033[0m | Antibodies: {posture['immune_summary']['total_antibodies']}")
         print(f"⚠️  Threat Level: {posture['threat_summary']['threat_level']} (Total Threats: {posture['threat_summary']['total_threats']})")
         if posture['penalties']:
             print("\nSecurity Gaps Identified:")
