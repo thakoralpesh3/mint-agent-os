@@ -114,7 +114,60 @@ class AgentBrain:
                 "result": res
             }
 
-        # 2. Cybersecurity & PC Protection
+        # 2. AI Model Customization (Offline & Online)
+        if any(w in p for w in ["list models", "show models", "available models", "what models"]):
+            models = self.models.list_models()
+            active = models["active_model"]
+            return {
+                "thought": f"Active AI: {active['name']} ({active['provider'].upper()}). Available: {models['total_models']} models (Offline & Cloud).",
+                "result": models
+            }
+
+        if any(w in p for w in ["switch model", "change ai", "change model", "set model", "use model", "use gemini", "use gpt", "use claude", "use offline"]):
+            target = None
+            for key in ["gemini-2.5-flash", "gemini-2.5-pro", "gemini", "gpt-4o-mini", "gpt-4o", "claude-3-5-haiku", "claude-3-5-sonnet", "claude", "qwen2.5-0.5b", "qwen2.5-1.5b", "qwen2.5-3b", "qwen2.5-7b", "deepseek", "ollama", "offline"]:
+                if key in p:
+                    target = key
+                    break
+            if not target:
+                m = re.search(r"(?:to|model|ai)\s+([a-zA-Z0-9_\.\-]+)", p)
+                if m:
+                    target = m.group(1)
+
+            if target:
+                alias_map = {
+                    "gemini": "gemini-2.5-flash",
+                    "claude": "claude-3-5-haiku",
+                    "qwen2.5-0.5b": "qwen2.5-0.5b-instruct",
+                    "qwen2.5-1.5b": "qwen2.5-coder-1.5b",
+                    "qwen2.5-3b": "qwen2.5-3b-instruct",
+                    "qwen2.5-7b": "qwen2.5-7b-instruct",
+                    "deepseek": "deepseek-r1-distill-1.5b",
+                    "offline": "qwen2.5-0.5b-instruct"
+                }
+                final_model = alias_map.get(target, target)
+                res = self.models.set_model(final_model)
+                return {
+                    "thought": res["message"],
+                    "result": res
+                }
+
+        # 3. In-Place OS Updates
+        if any(w in p for w in ["check update", "check for updates", "check os update"]):
+            res = self.updater.check_for_updates()
+            return {
+                "thought": res.get("message", "Checked upstream for updates"),
+                "result": res
+            }
+
+        if any(w in p for w in ["update os", "upgrade os", "upgrade agent", "update agent"]):
+            res = self.updater.perform_update()
+            return {
+                "thought": res.get("message", "OS upgrade performed"),
+                "result": res
+            }
+
+        # 4. Cybersecurity & PC Protection
         if any(w in p for w in ["scan threats", "scan for threats", "check threats", "threat scan", "audit threats"]):
             res = self.security.scan_and_counter_threats(auto_neutralize=False)
             return {
