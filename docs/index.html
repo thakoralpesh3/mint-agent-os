@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Mint AI Agent OS (MintPilot) — 24/7 Online Interactive Simulator</title>
+  <link rel="stylesheet" href="css/cinnamon.css">
+  <style>
+    /* In-window mini styles for WebUI, Nemo, Browser */
+    .webui-container { display: flex; flex-direction: column; height: 100%; background: #121513; }
+    .webui-header { background: #1c221e; border-bottom: 1px solid #2e3a33; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .webui-history { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .webui-msg { max-width: 80%; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; line-height: 1.45; }
+    .webui-msg.user { align-self: flex-end; background: #27ae60; color: #fff; border-bottom-right-radius: 2px; }
+    .webui-msg.agent { align-self: flex-start; background: #1c221e; border: 1px solid #2e3a33; border-bottom-left-radius: 2px; }
+    .webui-input-bar { display: flex; gap: 8px; background: #1c221e; padding: 10px; border-top: 1px solid #2e3a33; }
+    .webui-input-bar input { flex: 1; background: transparent; border: 1px solid #2e3a33; padding: 8px 12px; border-radius: 6px; color: #fff; outline: none; }
+    .webui-input-bar button { background: #2ecc71; color: #121513; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+    /* Nemo Browser */
+    .nemo-container { display: flex; height: 100%; background: #1a1c1e; }
+    .nemo-sidebar { width: 160px; background: #141618; border-right: 1px solid #282c30; padding: 12px 8px; font-size: 0.82rem; }
+    .nemo-item { padding: 6px 10px; border-radius: 4px; cursor: pointer; color: #ccc; margin-bottom: 2px; }
+    .nemo-item:hover, .nemo-item.active { background: rgba(135, 207, 62, 0.2); color: #87cf3e; }
+    .nemo-files { flex: 1; padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; overflow-y: auto; }
+    .file-icon { text-align: center; cursor: pointer; padding: 8px 4px; border-radius: 6px; }
+    .file-icon:hover { background: rgba(255, 255, 255, 0.1); }
+    .file-icon .ico { font-size: 2rem; margin-bottom: 4px; }
+    .file-icon .name { font-size: 0.75rem; color: #fff; word-break: break-all; }
+
+    /* Browser Window */
+    .browser-bar { background: #23272a; padding: 8px 12px; border-bottom: 1px solid #33393d; display: flex; gap: 8px; align-items: center; }
+    .browser-bar input { flex: 1; background: #181b1d; border: 1px solid #33393d; border-radius: 20px; padding: 6px 14px; color: #fff; font-size: 0.85rem; outline: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Desktop Canvas -->
+  <div id="desktop">
+
+    <!-- OS Watermark -->
+    <div class="os-watermark">
+      <h2>Linux Mint 22.3</h2>
+      <p>AI Agent Edition (MintPilot) • 24/7 Online Simulator</p>
+    </div>
+
+    <!-- Desktop Icons Grid -->
+    <div class="desktop-icons">
+      <div class="desktop-icon" data-app="webui">
+        <div class="icon-img">🍃</div>
+        <div class="icon-label">MintPilot WebUI</div>
+      </div>
+      <div class="desktop-icon" data-app="terminal">
+        <div class="icon-img">💻</div>
+        <div class="icon-label">Terminal</div>
+      </div>
+      <div class="desktop-icon" data-app="browser">
+        <div class="icon-img">🦊</div>
+        <div class="icon-label">Firefox</div>
+      </div>
+      <div class="desktop-icon" data-app="nemo">
+        <div class="icon-img">📁</div>
+        <div class="icon-label">Nemo Files</div>
+      </div>
+      <div class="desktop-icon" data-app="writer">
+        <div class="icon-img">📝</div>
+        <div class="icon-label">LibreOffice</div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 1: OPEN WEBUI ==================== -->
+    <div id="win-webui" class="window active" data-icon="🍃" style="top: 40px; left: 160px; width: 720px; height: 500px; display: flex;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🍃</span> <span>MintPilot Open WebUI</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-webui')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-webui')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-webui')">×</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="webui-container">
+          <div class="webui-header">
+            <div style="font-weight: bold; font-size: 0.9rem; color: #2ecc71;">MintPilot v1.0 [Offline SLM]</div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span id="webuiRamBadge" style="font-size: 0.75rem; color: #9aa0a6;">RAM: 58% (1605MB free)</span>
+              <div id="webuiModePill" onclick="AgentSimulator.toggleWebUIMode()" style="cursor:pointer; background: rgba(231,76,60,0.2); color:#ff6b6b; border: 1px solid #ff6b6b; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold;">
+                ⚡ TURBO MODE (Autonomous)
+              </div>
+            </div>
+          </div>
+          <div class="webui-history" id="webuiHistory">
+            <div class="webui-msg agent">
+              <div style="font-size:0.75rem; color:#8cd9aa; margin-bottom:4px; font-style:italic;">🧠 MintPilot Agent initialized on Linux Mint 22.3.</div>
+              Hello! I am MintPilot, your offline autonomous laptop controller agent. 
+              I have complete control over your laptop hardware, windows, browsers, and desktop programs. How can I assist you?
+            </div>
+          </div>
+          <div style="padding: 6px 12px; display: flex; gap: 6px; overflow-x: auto; background: #161a17;">
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('volume 60%')">🔊 Volume 60%</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('battery')">⚡ Battery</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('scan wifi')">📶 Scan Wi-Fi</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('clean memory')">🧹 Free RAM</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('open nemo')">📁 Nemo Files</button>
+          </div>
+          <div class="webui-input-bar">
+            <input type="text" id="webuiInput" placeholder="Ask MintPilot to control laptop (e.g. 'volume 50%', 'battery', 'scan wifi')...">
+            <button id="webuiSendBtn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 2: TERMINAL ==================== -->
+    <div id="win-terminal" class="window" data-icon="💻" style="top: 80px; left: 240px; width: 680px; height: 440px; display: flex;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>💻</span> <span>alpesh@mint-agent-os: ~</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-terminal')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-terminal')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-terminal')">×</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="term-body">
+          <div id="termOutput" class="term-output"></div>
+          <div class="term-prompt-line">
+            <span class="term-prompt">alpesh@mint-agent-os:~$</span>
+            <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 3: FIREFOX ==================== -->
+    <div id="win-browser" class="window" data-icon="🦊" style="top: 60px; left: 190px; width: 700px; height: 460px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🦊</span> <span>Mozilla Firefox</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-browser')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-browser')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-browser')">×</button>
+        </div>
+      </div>
+      <div class="window-body" style="display: flex; flex-direction: column;">
+        <div class="browser-bar">
+          <span style="cursor:pointer; color:#aaa;">◀</span>
+          <span style="cursor:pointer; color:#aaa;">▶</span>
+          <span style="cursor:pointer; color:#aaa;">🔄</span>
+          <input type="text" id="browserUrl" value="https://linuxmint.com">
+        </div>
+        <div id="browserViewport" style="flex:1; background:#181b1d; overflow-y:auto;">
+          <div style="padding: 40px; text-align: center; color: #fff;">
+            <h1 style="color: #87cf3e; margin-bottom: 12px;">🍃 Linux Mint 22.3 (Zena)</h1>
+            <p style="color: #ccc; max-width: 500px; margin: 0 auto 20px;">From freedom came elegance. Now supercharged with the <strong>MintPilot Autonomous AI Agent</strong>.</p>
+            <div style="display:flex; justify-content:center; gap:12px;">
+              <button style="background:#87cf3e; color:#121513; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('webui')">Launch Agent WebUI</button>
+              <button style="background:#333; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;" onclick="WindowManager.openApp('terminal')">Open Terminal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 4: NEMO FILES ==================== -->
+    <div id="win-nemo" class="window" data-icon="📁" style="top: 100px; left: 220px; width: 660px; height: 420px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>📁</span> <span>Files — /home/alpesh/mint-agent-os</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-nemo')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-nemo')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-nemo')">×</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="nemo-container">
+          <div class="nemo-sidebar">
+            <div class="nemo-item active">📁 Home</div>
+            <div class="nemo-item">📄 Documents</div>
+            <div class="nemo-item">⬇️ Downloads</div>
+            <div class="nemo-item">🎬 Videos</div>
+            <div class="nemo-item">🎵 Music</div>
+            <div class="nemo-item">🖼️ Pictures</div>
+          </div>
+          <div class="nemo-files">
+            <div class="file-icon" onclick="WindowManager.openApp('terminal')"><div class="ico">📁</div><div class="name">agent</div></div>
+            <div class="file-icon" onclick="WindowManager.openApp('webui')"><div class="ico">📁</div><div class="name">webui</div></div>
+            <div class="file-icon"><div class="ico">📁</div><div class="name">iso_builder</div></div>
+            <div class="file-icon"><div class="ico">📁</div><div class="name">conversation</div></div>
+            <div class="file-icon"><div class="ico">📁</div><div class="name">artifacts</div></div>
+            <div class="file-icon"><div class="ico">📝</div><div class="name">README.md</div></div>
+            <div class="file-icon"><div class="ico">⚡</div><div class="name">sync.sh</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FLOATING HUD OVERLAY (SUPER+SPACE) ==================== -->
+    <div id="hudOverlay">
+      <div class="hud-input-row">
+        <span style="font-size: 1.4rem;">🍃</span>
+        <input type="text" id="hudInput" placeholder="MintPilot Command (e.g. 'volume 50%', 'battery', 'nemo')...">
+        <span style="font-size: 0.75rem; color: #888;">[ESC to close]</span>
+      </div>
+      <div class="hud-response" id="hudResponse">Ready. Type your instruction and press Enter.</div>
+    </div>
+
+  </div>
+
+  <!-- ==================== START MENU POPUP ==================== -->
+  <div id="startMenu">
+    <div class="menu-search-box">
+      <input type="text" placeholder="Type to search applications...">
+    </div>
+    <div class="menu-content">
+      <div class="menu-categories">
+        <div class="cat-item active">⭐ All Applications</div>
+        <div class="cat-item">🌐 Internet</div>
+        <div class="cat-item">💼 Office</div>
+        <div class="cat-item">🎬 Multimedia</div>
+        <div class="cat-item">⚙️ Administration</div>
+      </div>
+      <div class="menu-apps">
+        <div class="app-item" onclick="WindowManager.openApp('webui'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🍃</span>
+          <div><strong>MintPilot Open WebUI</strong><br><small style="color:#888;">Autonomous Laptop Controller</small></div>
+        </div>
+        <div class="app-item" onclick="WindowManager.openApp('terminal'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">💻</span>
+          <div><strong>Terminal</strong><br><small style="color:#888;">Linux Mint Bash Shell</small></div>
+        </div>
+        <div class="app-item" onclick="WindowManager.openApp('browser'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🦊</span>
+          <div><strong>Firefox Web Browser</strong><br><small style="color:#888;">Surf the Web</small></div>
+        </div>
+        <div class="app-item" onclick="WindowManager.openApp('nemo'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">📁</span>
+          <div><strong>Nemo Files</strong><br><small style="color:#888;">Explore Folders and Files</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM CINNAMON PANEL ==================== -->
+  <footer id="panel">
+    <!-- Menu Button -->
+    <button class="menu-btn" id="startMenuBtn">
+      <div class="menu-icon">LM</div>
+      <span>Menu</span>
+    </button>
+
+    <!-- Taskbar Open Windows -->
+    <div class="panel-tasks" id="panelTasks"></div>
+
+    <!-- System Tray -->
+    <div class="system-tray">
+      <div class="tray-icon" title="MintPilot Autonomous Agent" onclick="WindowManager.toggleHUD()">
+        <span class="tray-pill">🍃 MintPilot</span>
+      </div>
+      <div class="tray-icon" title="Network: Connected (Chamunda-Fiber-5G)">📶</div>
+      <div class="tray-icon" title="Volume: 50%">🔊</div>
+      <div class="tray-icon" title="Battery: 94% Charging">⚡</div>
+      <div class="tray-clock" id="trayClock">18:30</div>
+    </div>
+  </footer>
+
+  <script src="js/desktop.js"></script>
+  <script src="js/agent_simulator.js"></script>
+</body>
+</html>
