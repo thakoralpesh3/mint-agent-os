@@ -8,6 +8,10 @@ const AgentSimulator = {
   ramTotalMb: 3815,
   securityScore: 92,
   firewallActive: true,
+  voiceEnabled: false,
+  verbosity: 'normal',
+  proactivity: 'balanced',
+  modality: 'hybrid',
   threats: [
     { severity: "HIGH", title: "Wildcard Port Exposure (0.0.0.0:8080)", details: "HTTP service exposed to local network without TLS." }
   ],
@@ -59,6 +63,81 @@ const AgentSimulator = {
     }
 
     if (c === 'help') {
+      this.printTermLine(`
+MintPilot OS Available Commands:
+  mint-agent "<prompt>"      Run natural language laptop control or security intent
+  mint-agent --interaction   Display active user interaction settings (Voice, HUD, Persona)
+  mint-agent --modality <m>  Set modality: text, voice, hybrid, hud, notification
+  mint-agent --verbosity <v> Set communication style: concise, normal, detailed, security_auditor
+  mint-agent --proactivity <p> Set proactivity: reactive, balanced, proactive
+  mint-agent --voice-reply on/off Toggle offline spoken voice replies
+  mint-agent --security      Display full cybersecurity posture score & audit
+  mint-agent --scan-threats  Scan network ports, rogue processes, and persistence
+  mint-agent --counter-threats Active countermeasures (sever sockets, neutralize threats)
+  mint-agent --deploy-decoys Deploy honeypot canary decoy credentials
+  mint-agent --self-check    Inspect self-countering safety circuit breaker status
+  mint-agent --rollback      Revert last system modifications to snapshot
+  mint-agent --lockdown      Activate emergency UFW firewall lockdown
+  mint-agent --turbo         Switch to Antigravity Autonomous Turbo Mode
+  mint-agent --safe          Switch to Guarded Safe Mode (prompts confirmation)
+  sudo ./make_bootable_usb.sh  Safe interactive bootable USB creator
+  neofetch                   Display Linux Mint OS telemetry & hardware specs
+  clear                      Clear terminal console
+`);
+      return;
+    }
+
+    if (c === 'mint-agent --interaction' || c === 'mint-agent -interaction') {
+      this.printTermLine(`
+╔═══════════════════════════════════════════════════════════════╗
+║          🍃 MINTPILOT CYBER DEFENSE & AI CONTROLLER           ║
+║       Autonomous Offline Security Guardian for Linux Mint     ║
+╚═══════════════════════════════════════════════════════════════╝
+  Mode: [TURBO] | Hardware Tier: Tier 1: Ultra-Light (0.5B - 1.5B Q4 GGUF)
+  Interaction: ${this.modality.toUpperCase()} | Style: ${this.verbosity.toUpperCase()} | Voice: ${this.voiceEnabled ? 'ON' : 'OFF'} | Proactive: ${this.proactivity.toUpperCase()}
+
+🗣️  MintPilot User Interaction Settings & Preferences:
+  • Active Modality:       ${this.modality.toUpperCase()} (text, voice, hybrid, hud, notification, cli)
+  • Communication Style:   ${this.verbosity.toUpperCase()} (concise, normal, detailed, security_auditor)
+  • Proactivity Level:     ${this.proactivity.toUpperCase()} (reactive, balanced, proactive)
+  • Spoken Voice Feedback: ${this.voiceEnabled ? 'ENABLED' : 'DISABLED'} (Engine: spd-say, Speed: 165 wpm)
+  • Desktop Notifications: ENABLED (Urgency: normal)
+  • Floating HUD Hotkey:   <Super>space (Centered Spotlight Raycast-style)
+
+Change Interaction Options On-The-Fly:
+  mint-agent --modality <text|voice|hybrid|hud|notification>
+  mint-agent --verbosity <concise|normal|detailed|security_auditor>
+  mint-agent --proactivity <reactive|balanced|proactive>
+  mint-agent --voice-reply on/off`);
+      return;
+    }
+
+    if (c.startsWith('mint-agent --verbosity') || c.startsWith('mint-agent --modality') || c.startsWith('mint-agent --proactivity') || c.startsWith('mint-agent --voice-reply')) {
+      const parts = c.split(' ');
+      const opt = parts[1];
+      const val = parts[2] || '';
+      if (opt === '--verbosity' && val) {
+        this.setStyle(val);
+        this.printTermLine(`✓ Agent communication style set to '${val}'`);
+        return;
+      }
+      if (opt === '--modality' && val) {
+        this.setModality(val);
+        this.printTermLine(`✓ Interaction modality switched to '${val}'`);
+        return;
+      }
+      if (opt === '--proactivity' && val) {
+        this.setProactivity(val);
+        this.printTermLine(`✓ Agent proactivity level set to '${val}'`);
+        return;
+      }
+      if (opt === '--voice-reply') {
+        this.voiceEnabled = (val === 'on' || val === 'true');
+        this.updateInteractionBadges();
+        this.printTermLine(`✓ Spoken voice replies ${this.voiceEnabled ? 'ENABLED' : 'DISABLED'}.`);
+        return;
+      }
+    }
       this.printTermLine(`
 MintPilot OS Available Commands:
   mint-agent "<prompt>"      Run natural language laptop control or security intent
@@ -402,6 +481,86 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
   processAgentIntent(prompt) {
     const p = prompt.toLowerCase().trim();
 
+    if (p.includes('interaction') || p.includes('how to interact') || p.includes('how do you interact')) {
+      setTimeout(() => WindowManager.openApp('interaction'), 300);
+      return {
+        thought: `User Interaction Settings: Modality='${this.modality}' | Style='${this.verbosity}' | Voice=${this.voiceEnabled ? 'ON' : 'OFF'} | Proactivity='${this.proactivity}'. Opening Control Center...`,
+        result: { modality: this.modality, verbosity: this.verbosity, voice: this.voiceEnabled, proactivity: this.proactivity },
+        latency_ms: 1.2
+      };
+    }
+
+    if (p.includes('enable voice') || p.includes('turn on voice') || p.includes('voice on') || p.includes('speak replies') || p.includes('talk to me')) {
+      this.voiceEnabled = true;
+      this.updateInteractionBadges();
+      this.speak("Spoken voice replies enabled. I am now speaking to you offline.");
+      return {
+        thought: "Voice interaction enabled. MintPilot will now speak replies aloud using offline speech synthesis.",
+        result: { voice_enabled: true, engine: "spd-say", speed: 165 },
+        latency_ms: 1.4
+      };
+    }
+
+    if (p.includes('disable voice') || p.includes('turn off voice') || p.includes('mute voice') || p.includes('voice off')) {
+      this.voiceEnabled = false;
+      this.updateInteractionBadges();
+      return {
+        thought: "Voice interaction disabled. MintPilot will interact silently via visual UI and text.",
+        result: { voice_enabled: false },
+        latency_ms: 1.1
+      };
+    }
+
+    if (p.includes('concise mode') || p.includes('be concise') || p.includes('minimalist mode')) {
+      this.verbosity = 'concise';
+      this.updateInteractionBadges();
+      return {
+        thought: "Communication style set to Concise. Terse 1-line confirmations enabled.",
+        result: { verbosity: "concise" },
+        latency_ms: 1.0
+      };
+    }
+
+    if (p.includes('detailed mode') || p.includes('be detailed') || p.includes('mentor mode') || p.includes('explain everything')) {
+      this.verbosity = 'detailed';
+      this.updateInteractionBadges();
+      return {
+        thought: "Communication style set to Detailed Mentor. Deep explanations, system rationale, and commands will be shown.",
+        result: { verbosity: "detailed" },
+        latency_ms: 1.3
+      };
+    }
+
+    if (p.includes('security style') || p.includes('auditor style') || p.includes('security mode')) {
+      this.verbosity = 'security_auditor';
+      this.updateInteractionBadges();
+      return {
+        thought: "Communication style set to Security Auditor. Telemetry will emphasize DEFCON levels and threat posture.",
+        result: { verbosity: "security_auditor" },
+        latency_ms: 1.2
+      };
+    }
+
+    if (p.includes('proactive mode') || p.includes('be proactive') || p.includes('ambient copilot')) {
+      this.proactivity = 'proactive';
+      this.updateInteractionBadges();
+      return {
+        thought: "Proactivity level set to Proactive Ambient Copilot. MintPilot will actively monitor and suggest system optimizations.",
+        result: { proactivity: "proactive" },
+        latency_ms: 1.1
+      };
+    }
+
+    if (p.includes('reactive mode') || p.includes('be reactive')) {
+      this.proactivity = 'reactive';
+      this.updateInteractionBadges();
+      return {
+        thought: "Proactivity level set to Reactive. MintPilot will speak only when explicitly commanded.",
+        result: { proactivity: "reactive" },
+        latency_ms: 1.0
+      };
+    }
+
     if (p.includes('download') || p.includes('bootable') || p.includes('make usb') || p.includes('flash usb') || p.includes('iso')) {
       setTimeout(() => WindowManager.openApp('download'), 300);
       return {
@@ -731,6 +890,143 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       const e = new KeyboardEvent('keydown', { key: 'Enter' });
       input.dispatchEvent(e);
     }
+  },
+
+  speak(text) {
+    if (!this.voiceEnabled) return;
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[*_#`]/g, '');
+        const utter = new SpeechSynthesisUtterance(clean);
+        utter.rate = 1.05;
+        utter.pitch = 1.0;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+  },
+
+  testVoiceAudio() {
+    this.voiceEnabled = true;
+    this.updateInteractionBadges();
+    this.speak("Hello! I am MintPilot on Linux Mint. Offline speech synthesis and user interaction are active and working smoothly.");
+    alert("🔊 Speaking audio via browser speech synthesizer! Voice output is now active.");
+  },
+
+  toggleVoice() {
+    this.voiceEnabled = !this.voiceEnabled;
+    this.updateInteractionBadges();
+    if (this.voiceEnabled) {
+      this.speak("Voice output enabled.");
+      this.sendWebUIMessage("enable voice");
+    } else {
+      this.sendWebUIMessage("disable voice");
+    }
+  },
+
+  cycleStyle() {
+    const styles = ['normal', 'detailed', 'security_auditor', 'concise'];
+    const next = styles[(styles.indexOf(this.verbosity) + 1) % styles.length];
+    this.setStyle(next);
+    this.sendWebUIMessage(`${next} mode`);
+  },
+
+  cycleProactivity() {
+    const levels = ['balanced', 'proactive', 'reactive'];
+    const next = levels[(levels.indexOf(this.proactivity) + 1) % levels.length];
+    this.setProactivity(next);
+    this.sendWebUIMessage(`${next} mode`);
+  },
+
+  setModality(mod, btn) {
+    this.modality = mod;
+    if (mod === 'voice' || mod === 'hybrid') this.voiceEnabled = true;
+    else if (mod === 'text') this.voiceEnabled = false;
+    this.updateInteractionBadges();
+    if (btn) {
+      document.querySelectorAll('#modalityPills .option-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const expl = document.getElementById('modalityExplain');
+    if (expl) {
+      const m = {
+        text: "Text WebUI: Visual responses only, silent mode.",
+        voice: "Offline Voice: Hands-free spoken responses and microphone listening.",
+        hybrid: "Hybrid Mode: Visual dashboard plus spoken audio feedback.",
+        hud: "Spotlight HUD: Summonable instantly via Super+Space.",
+        notification: "Desktop Toast: Subtle passive desktop banners via notify-send."
+      };
+      expl.innerHTML = `<strong>${mod.toUpperCase()}:</strong> ${m[mod] || ''}`;
+    }
+  },
+
+  setStyle(style, btn) {
+    this.verbosity = style;
+    this.updateInteractionBadges();
+    if (btn) {
+      document.querySelectorAll('#stylePills .option-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const expl = document.getElementById('styleExplain');
+    if (expl) {
+      const m = {
+        concise: "Concise Mode: Terse one-line action confirmations without lengthy boilerplate.",
+        normal: "Normal Mode: Clear conversational answers and clean execution feedback.",
+        detailed: "Detailed Mentor: Deep step-by-step explanations, underlying CLI commands, and RAM diffs.",
+        security_auditor: "Security Auditor: Strict DEFCON levels, CVE telemetry, and firewall posture."
+      };
+      expl.innerHTML = `<strong>${style.toUpperCase()}:</strong> ${m[style] || ''}`;
+    }
+  },
+
+  setProactivity(pro, btn) {
+    this.proactivity = pro;
+    this.updateInteractionBadges();
+    if (btn) {
+      document.querySelectorAll('#proactivePills .option-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const expl = document.getElementById('proactiveExplain');
+    if (expl) {
+      const m = {
+        reactive: "Reactive Mode: Speaks or acts only when explicitly commanded. Never interrupts.",
+        balanced: "Balanced Mode: Silent during normal work, alerts if battery < 15%, threats emerge, or RAM > 85%.",
+        proactive: "Proactive Ambient Copilot: Continuously monitors health and suggests power and security optimizations."
+      };
+      expl.innerHTML = `<strong>${pro.toUpperCase()}:</strong> ${m[pro] || ''}`;
+    }
+  },
+
+  updateInteractionBadges() {
+    const vb = document.getElementById('simVoiceBadge');
+    if (vb) {
+      vb.innerText = `🎙️ Voice: ${this.voiceEnabled ? 'ON' : 'OFF'}`;
+      vb.style.color = this.voiceEnabled ? '#2ecc71' : '#d6a4e8';
+      vb.style.borderColor = this.voiceEnabled ? '#2ecc71' : '#9b59b6';
+    }
+    const sb = document.getElementById('simStyleBadge');
+    if (sb) sb.innerText = `💬 Style: ${this.verbosity.charAt(0).toUpperCase() + this.verbosity.slice(1)}`;
+    const pb = document.getElementById('simProactiveBadge');
+    if (pb) pb.innerText = `🔔 Proactive: ${this.proactivity.charAt(0).toUpperCase() + this.proactivity.slice(1)}`;
+
+    const cvb = document.getElementById('cardVoiceBadge');
+    if (cvb) cvb.innerText = `Voice: ${this.voiceEnabled ? 'Enabled' : 'Disabled'}`;
+    const csb = document.getElementById('cardStyleBadge');
+    if (csb) csb.innerText = `Style: ${this.verbosity.charAt(0).toUpperCase() + this.verbosity.slice(1)}`;
+    const cpb = document.getElementById('cardProactiveBadge');
+    if (cpb) cpb.innerText = `Proactivity: ${this.proactivity.charAt(0).toUpperCase() + this.proactivity.slice(1)}`;
+    const cmb = document.getElementById('cardModalityBadge');
+    if (cmb) cmb.innerText = `Modality: ${this.modality.charAt(0).toUpperCase() + this.modality.slice(1)}`;
+
+    const toggleBtn = document.getElementById('cardVoiceToggleBtn');
+    if (toggleBtn) {
+      toggleBtn.innerText = this.voiceEnabled ? 'ON' : 'OFF';
+      toggleBtn.style.background = this.voiceEnabled ? '#27ae60' : '#222';
+    }
+  },
+
+  openInteractionModal() {
+    WindowManager.openApp('interaction');
   },
 
   openUpgradeModal() {
