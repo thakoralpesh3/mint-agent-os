@@ -183,6 +183,19 @@ LAUNCHER_EOF
 chmod +x "$GLOBAL_BIN"
 echo -e "${GREEN}✓ Global CLI command registered: ${BOLD}mint-agent${RESET}"
 
+# 6b. Configure Kernel Butter-Smoothness (swappiness=10, vfs_cache_pressure=50)
+echo -e "\n${BLUE}🍃 Step 5b/7: Optimizing Linux Mint Kernel Smoothness (Prevent swap stutter on 2GB-4GB RAM)...${RESET}"
+SYSCTL_CONF="/etc/sysctl.d/99-mint-agent-smoothness.conf"
+cat << 'SYSCTL_EOF' > "$SYSCTL_CONF"
+# MintPilot Linux Mint Butter-Smooth Performance Tuning
+# Eliminates swap thrashing on 2GB-4GB systems and preserves desktop fluidity
+vm.swappiness=10
+vm.vfs_cache_pressure=50
+SYSCTL_EOF
+chmod 644 "$SYSCTL_CONF"
+sysctl -p "$SYSCTL_CONF" 2>/dev/null || sysctl -w vm.swappiness=10 2>/dev/null || true
+echo -e "${GREEN}✓ Kernel smoothness profile active: vm.swappiness=10, vm.vfs_cache_pressure=50${RESET}"
+
 # 7. Configure Systemd Service & Desktop Launchers
 echo -e "\n${BLUE}🖥️ Step 6/7: Setting up Systemd Background Service & Desktop Shortcuts...${RESET}"
 
@@ -202,6 +215,9 @@ WorkingDirectory=${INSTALL_DIR}
 ExecStart=/usr/bin/python3 ${INSTALL_DIR}/agent/webui/server.py 8888
 Restart=always
 RestartSec=5
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
 
 [Install]
 WantedBy=multi-user.target
@@ -210,7 +226,7 @@ SERVICE_EOF
 systemctl daemon-reload
 systemctl enable mint-agent.service || true
 systemctl restart mint-agent.service || true
-echo -e "${GREEN}✓ mint-agent.service registered and started.${RESET}"
+echo -e "${GREEN}✓ mint-agent.service registered with Nice=10 background priority and started.${RESET}"
 
 # Desktop Applications Launchers
 APPLICATIONS_DIR="/usr/share/applications"
