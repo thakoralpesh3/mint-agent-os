@@ -38,19 +38,51 @@ class SelfCounterCircuitBreaker:
         """
         self.action_history.append(action_signature)
 
-        # 1. Total Action Threshold Check
+        # 1. Destructive Command Self-Quarantine Check
+        destructive_patterns = [
+            r"rm\s+-rf\s+(/|/\*|~|\$HOME)",
+            r"mkfs",
+            r"dd\s+if=.*of=/dev/(sd|nvme|hd)",
+            r":\(\)\s*\{\s*:\s*\|\s*:\s*&\s*\}\s*;\s*:",  # Fork bomb
+            r">\s*/dev/(sd|nvme|hd)",
+            r"chmod\s+-R\s+777\s+/",
+            r"chown\s+-R\s+.*:.*\s+/"
+        ]
+        import re
+        for dp in destructive_patterns:
+            if re.search(dp, action_signature, re.IGNORECASE):
+                self.circuit_tripped = True
+                self.trip_reason = f"Destructive action intercepted by Agent Self-Governor: '{action_signature}' matches forbidden destructive pattern."
+                return self._counter_itself()
+
+        # 2. Total Action Threshold Check
         if len(self.action_history) > self.MAX_CONSECUTIVE_ACTIONS:
             self.circuit_tripped = True
             self.trip_reason = f"Max consecutive autonomous actions exceeded ({len(self.action_history)} actions)."
             return self._counter_itself()
 
-        # 2. Repetitive Loop Check (e.g. same command executed 4 times in a row)
+        # 3. Repetitive Loop Check (e.g. same command executed 4 times in a row)
         if len(self.action_history) >= self.MAX_LOOP_REPETITIONS:
             recent = self.action_history[-self.MAX_LOOP_REPETITIONS:]
             if len(set(recent)) == 1:
                 self.circuit_tripped = True
                 self.trip_reason = f"Runaway repetition loop detected: '{recent[0]}' repeated {self.MAX_LOOP_REPETITIONS} times."
                 return self._counter_itself()
+
+        # 4. Agent Memory Spike Governor (Self-Overhead containment)
+        try:
+            pid = os.getpid()
+            with open(f"/proc/{pid}/status", "r") as f:
+                for line in f:
+                    if line.startswith("VmRSS:"):
+                        rss_kb = int(re.search(r"VmRSS:\s+(\d+)", line).group(1))
+                        if rss_kb > 80000:  # >80MB
+                            self.circuit_tripped = True
+                            self.trip_reason = f"Agent internal memory consumption ({round(rss_kb/1024, 1)}MB) exceeded 80MB safety ceiling."
+                            return self._counter_itself()
+                        break
+        except Exception:
+            pass
 
         return {"status": "normal", "circuit_tripped": False}
 

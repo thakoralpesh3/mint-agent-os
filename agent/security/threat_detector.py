@@ -155,6 +155,25 @@ class ThreatDetector:
                                 "remediation": f"Verify legitimacy or terminate: kill -9 {pid}"
                             })
 
+                    # 3. Check custom learned immune signatures
+                    if self.immune:
+                        try:
+                            custom_sigs = self.immune.get_custom_signatures()
+                            for cs in custom_sigs:
+                                pat = cs.get("pattern", "")
+                                if pat and re.search(pat, args, re.IGNORECASE):
+                                    threats.append({
+                                        "severity": "CRITICAL",
+                                        "category": "LEARNED_IMMUNE_THREAT",
+                                        "title": f"Immune Match: Known Attack Pattern ({cs.get('name')})",
+                                        "details": f"PID {pid} matches learned antibody pattern '{pat}': {args[:80]}",
+                                        "pid": pid,
+                                        "command": comm,
+                                        "remediation": f"Block execution & kill -9 {pid}"
+                                    })
+                        except Exception:
+                            pass
+
         except Exception as e:
             threats.append({"severity": "MEDIUM", "category": "AUDIT_ERROR", "title": f"Process scan error: {e}"})
 
@@ -185,5 +204,40 @@ class ThreatDetector:
                             })
             except Exception:
                 pass
+
+        return threats
+
+    # ==================== AUTHENTICATION & BRUTE-FORCE SENTRY ====================
+
+    def scan_auth_threats(self) -> List[Dict[str, Any]]:
+        """Scans system authentication logs for brute-force attacks and failed SSH attempts."""
+        threats = []
+        auth_log = Path("/var/log/auth.log")
+        failed_count = 0
+        attacker_ips = set()
+
+        if auth_log.exists() and os.access(str(auth_log), os.R_OK):
+            try:
+                with open(auth_log, "r", encoding="utf-8", errors="ignore") as f:
+                    lines = f.readlines()[-200:]
+                for line in lines:
+                    if "Failed password" in line or "authentication failure" in line:
+                        failed_count += 1
+                        m = re.search(r"from\s+(\d+\.\d+\.\d+\.\d+)", line)
+                        if m:
+                            attacker_ips.add(m.group(1))
+            except Exception:
+                pass
+
+        if failed_count >= 5 or len(attacker_ips) > 0:
+            for ip in attacker_ips:
+                threats.append({
+                    "severity": "HIGH",
+                    "category": "BRUTE_FORCE_AUTH",
+                    "title": f"Brute-Force Authentication Attempt Detected ({ip})",
+                    "details": f"{failed_count} failed login attempts recorded from hostile IP {ip}.",
+                    "hostile_ip": ip,
+                    "remediation": f"Ban IP permanently via UFW and sever connections."
+                })
 
         return threats
