@@ -1,5 +1,5 @@
 # Core Linux Mint & GUI Toolkits
-PyGObject>=3.42.0
+PyGObject>=3.58.1
 
 # Desktop Perception & Control
 Pillow>=9.0.0
