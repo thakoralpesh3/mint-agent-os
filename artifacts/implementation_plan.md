@@ -1,103 +1,109 @@
-# Implementation Plan: Active Counter-Defense & Agent Self-Countering Safety Circuit Breaker
+# Implementation Plan: Upgrade Existing Linux Mint OS to MintPilot Agent OS
 
-This update introduces two advanced defense systems to **MintPilot**:
-1. **Active Threat Counter-Measures (Counter-Defense)**: Active intruder disruption, TCP RST socket killing, attacker IP tarpitting, and canary decoy honeypots that trap and neutralize adversaries in real time.
-2. **Agent Self-Countering Circuit Breaker (Countering Itself)**: An autonomous safety governor and "Dead Man's Switch" that monitors MintPilot itself. If the agent enters a runaway hallucination loop, consumes excessive resources, attempts unsafe self-modification, or executes an erroneous action, it automatically **counters itself**, halts execution, and rolls back to the last known safe system snapshot.
+This plan introduces an automated, safe, and customizable upgrade path for anyone running an existing **Linux Mint OS (21.x or 22.x)** to transform their installation into **MintPilot Agent OS** without reinstalling or flashing an ISO.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Active Counter-Defense & Self-Countering Safety Architecture**:
-> - **Active Threat Counter-Measures**:
->   - **Socket Disruption**: Immediately drops and severs established connections from attacker IPs using `ss -K` / `iptables REJECT --reject-with tcp-reset`.
->   - **Canary Decoy Honeypots**: Deploys lightweight decoy credentials (`~/.config/mint-agent/canary.token`) that act as intrusion tripwires; any unauthorized process attempting to read them triggers an immediate autonomous counter-lockdown.
-> - **Self-Countering Circuit Breaker (AI Safety Governor)**:
->   - **Runaway Loop Detection**: If MintPilot's own processes exceed predefined CPU (>75% for 60s) or memory thresholds, the circuit breaker counters the agent itself by throttling and resetting the reasoning state.
->   - **Configuration Rollback Snapshots**: Automatically captures micro-snapshots of configuration and system state before making changes; if a change causes a failure, it autonomously rolls back to the previous snapshot.
+> The upgrade process will:
+> 1. Install necessary dependencies (e.g. `brightnessctl`, `pulseaudio-utils`, `xdotool`, `wmctrl`, `maim`, `tesseract-ocr`, `ufw`).
+> 2. Install the agent into `/opt/mint-agent` and configure a systemd service (`mint-agent.service`) for the current user.
+> 3. Add polkit rules to `/etc/polkit-1/rules.d/` allowing the agent to control volume, brightness, battery, power, and Wi-Fi without password prompts.
+> 4. Add desktop shortcuts and global CLI command `/usr/local/bin/mint-agent`.
+> 5. Create pre-action snapshots so users can rollback at any time.
 
 ---
 
-## Architecture Overview
+## Proposed Components & Changes
 
-```mermaid
-graph TD
-    subgraph Active Counter-Defense (Countering Threats)
-        ThreatDetector["Threat Sentry (Intruders, Scanners)"] --> CounterRouter{"Counter-Defense Router"}
-        CounterRouter --> TCPKill["Socket Disruption (TCP RST / ss -K)"]
-        CounterRouter --> Tarpit["Attacker IP Tarpit & Drop"]
-        CounterRouter --> DecoyTraps["Canary Honeypot Decoys (Tripwire Alarms)"]
-    end
+### 1. Universal Upgrade & Installation Script (`upgrade_mint_to_agent_os.sh`)
 
-    subgraph Self-Countering Circuit Breaker (Countering Itself)
-        AgentWatchdog["Independent Safety Watchdog"] --> BehavioralAudit["Agent Resource & Loop Audit"]
-        BehavioralAudit --> AnomalyDetector{"Runaway Loop / Hallucination?"}
-        AnomalyDetector -->|Yes| SelfHalt["Counter Itself: Throttle Process & Reset Loop"]
-        
-        StateSnapshot["Pre-Action Snapshot Engine"] --> Rollback["Autonomous State Rollback"]
-        AnomalyDetector -->|Corrupted State| Rollback
-    end
-
-    subgraph Integration
-        CounterRouter --> WebUI["Open WebUI: Counter-Measures Panel"]
-        SelfHalt --> WebUI
-        CounterRouter --> Simulator["24/7 Online Simulator"]
-    end
-```
+#### [NEW] [upgrade_mint_to_agent_os.sh](file:///home/alpesh/mint-agent-os/upgrade_mint_to_agent_os.sh)
+A robust, idempotent bash script that can be executed directly or piped from `curl`:
+- **Compatibility Check**: Verifies `/etc/os-release` (supports Linux Mint 21.x, 22.x, Ubuntu 22.04/24.04).
+- **Hardware Tier Detection**: Detects CPU cores and RAM size; configures optimal Tier 1 (2GB–4GB low RAM) or Tier 2/3 settings.
+- **Dependency Installation**: Installs required packages non-interactively via `apt-get`.
+- **Repository Setup**: Clones or updates code into `/opt/mint-agent`.
+- **System Integration**:
+  - Installs Polkit permissions in `/etc/polkit-1/rules.d/99-mint-agent-permissions.rules`.
+  - Configures and enables `mint-agent.service` systemd unit.
+  - Installs Desktop shortcuts in `/usr/share/applications/` and `~/Desktop/`.
+  - Symlinks `/usr/local/bin/mint-agent`.
+- **Cybersecurity & Safety Initialization**:
+  - Establishes initial SHA-256 cryptographic tripwire baseline for the system.
+  - Deploys canary honeypots and configures UFW firewall baseline.
+  - Takes a pre-install system configuration snapshot for easy rollback.
 
 ---
 
-## Proposed Changes
+### 2. In-Place OS Updater Engine (`agent/core/updater.py`)
 
-### 1. Active Threat Counter-Measures Engine
-
-#### [NEW] [agent/security/counter_measures.py](file:///home/alpesh/mint-agent-os/agent/security/counter_measures.py)
-- **Active Socket Disruption**: Uses `ss -K dst <IP>` and `iptables` to immediately sever active malicious sessions.
-- **Canary Honeypot Traps**: Deploys fake decoy files in `~/.aws/credentials.canary` or `~/.ssh/canary_key`. An inotify watcher triggers immediate counter-isolation if touched.
-- **Tarpit & Blacklisting**: Enforces persistent firewall drop rules against repeat offender IPs.
-
----
-
-### 2. Agent Self-Countering Circuit Breaker
-
-#### [NEW] [agent/security/self_counter.py](file:///home/alpesh/mint-agent-os/agent/security/self_counter.py)
-- **Dead Man's Switch & Safety Governor**:
-  - Monitors MintPilot's child processes, CPU usage, and reasoning iteration counters.
-  - If a loop exceeds 10 rapid repetitive tool calls or CPU spikes past safe limits, the governor **counters the agent itself**, pauses the agent, and outputs a diagnostic trace.
-- **Pre-Action Snapshot & Rollback**:
-  - Captures configuration state (`settings.json`, firewall rules, network profiles) before executing multi-step operations.
-  - Automatically counters and reverts unwanted state changes if an error is detected.
+#### [NEW] [agent/core/updater.py](file:///home/alpesh/mint-agent-os/agent/core/updater.py)
+A dedicated Python module handling routine updates for existing MintPilot installations:
+- `check_for_updates()`: Checks GitHub remote repository for newer commits or releases.
+- `perform_update()`: Fetches updates via git, updates dependencies if necessary, verifies cryptographic integrity, reloads systemd services, and reports changelog.
+- `get_version_info()`: Returns local commit hash, version number, and install timestamp.
 
 ---
 
-### 3. Integration with Brain, CLI, WebUI, and Simulator
-
-#### [MODIFY] [agent/brain/inference.py](file:///home/alpesh/mint-agent-os/agent/brain/inference.py)
-- Wire `CounterMeasures` and `SelfCounterCircuitBreaker` into the cognitive dispatch loop.
-- Support natural language intents: `"counter threats"`, `"deploy decoys"`, `"self-check"`, `"rollback last change"`.
+### 3. CLI In-Place Update Command
 
 #### [MODIFY] [agent/cli.py](file:///home/alpesh/mint-agent-os/agent/cli.py)
-- Add flags:
-  - `mint-agent --counter-threats`
-  - `mint-agent --deploy-decoys`
-  - `mint-agent --self-check`
-  - `mint-agent --rollback`
+- Add arguments:
+  - `--update-os`: Pulls the latest MintPilot updates from GitHub and reloads the service.
+  - `--check-update`: Checks if a newer version of MintPilot is available upstream.
+- Add fast router intent matching: "update os", "upgrade agent", "check updates".
 
-#### [MODIFY] [agent/webui/static/index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html) & [docs/](file:///home/alpesh/mint-agent-os/docs/)
-- Add **Counter-Defense & Circuit Breaker status** to the Cyber Defense tab in the WebUI and the 24/7 Online Simulator.
+---
+
+### 4. Embedded Open WebUI Update Dashboard
+
+#### [MODIFY] [agent/webui/server.py](file:///home/alpesh/mint-agent-os/agent/webui/server.py)
+- Add API endpoints:
+  - `GET /api/check_update`: Returns whether updates are available.
+  - `POST /api/update_os`: Triggers in-place update with progress telemetry.
+
+#### [MODIFY] [agent/webui/static/index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html)
+- Add "Check for Updates" / "Upgrade OS" button in the WebUI header/settings.
+- Show update dialog with version info, changelog, and one-click update trigger.
+
+---
+
+### 5. 24/7 Online Simulator & Documentation
+
+#### [MODIFY] [docs/index.html](file:///home/alpesh/mint-agent-os/docs/index.html) & [docs/js/agent_simulator.js](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
+- Add an **"Upgrade Your Linux Mint"** modal / application launcher on the online simulator, allowing visitors to copy the 1-line upgrade command or run the simulation:
+  ```bash
+  curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash
+  ```
+- Support `mint-agent --update-os` in the simulated terminal.
+
+#### [MODIFY] [README.md](file:///home/alpesh/mint-agent-os/README.md)
+- Add dedicated section: **"Upgrading an Existing Linux Mint Installation to MintPilot Agent OS"** with:
+  - 1-line automated command.
+  - Step-by-step manual instructions.
+  - Rollback and uninstaller options.
 
 ---
 
 ## Verification Plan
 
-### Automated Tests
-1. **Canary Trap Test**:
-   - Deploy canary decoy; trigger access and verify immediate counter-alarm.
-2. **Self-Countering Circuit Breaker Test**:
-   - Simulate a runaway loop (e.g. 15 repetitive iterations); verify the circuit breaker intercepts and halts execution.
-   - Test pre-action snapshot creation and successful rollback.
-3. **WebUI & Simulator Test**:
-   - Verify `/api/security` returns counter-measure and self-defense telemetry.
-4. **GitHub Auto-Sync**:
-   - Verify all modules push to `thakoralpesh3/mint-agent-os`.
+### Automated & Script Tests
+1. **Script Syntax & Dry-Run Test**:
+   ```bash
+   bash -n /home/alpesh/mint-agent-os/upgrade_mint_to_agent_os.sh
+   ```
+2. **Updater Engine Unit Test**:
+   ```bash
+   python3 -c "from agent.core.updater import OSUpdater; u = OSUpdater(); print(u.get_version_info())"
+   ```
+3. **CLI Update Flag Test**:
+   ```bash
+   python3 /home/alpesh/mint-agent-os/agent/cli.py --check-update
+   ```
+4. **WebUI Update Endpoints Test**:
+   - Query `GET /api/check_update` and verify JSON response.
+5. **Git Synchronization**:
+   - Run `/home/alpesh/mint-agent-os/sync_to_github.sh` and verify push.
