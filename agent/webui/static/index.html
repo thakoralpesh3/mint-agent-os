@@ -592,6 +592,14 @@
         if (data.security) {
           document.getElementById('secScoreBadge').innerText = `🛡️ Security: ${data.security.security_score}/100`;
         }
+        if (data.active_model) {
+          const am = data.active_model;
+          const badge = document.getElementById('aiModelBadge');
+          if (badge) {
+            badge.innerText = `🧠 AI: ${am.name.split(' ')[0]} [${am.provider.toUpperCase()}]`;
+            badge.title = `Active Model: ${am.name} (${am.provider})`;
+          }
+        }
 
         const winList = document.getElementById('windowsList');
         if (data.windows && data.windows.length > 0) {
@@ -603,6 +611,146 @@
           `).join('');
         }
       } catch(e) {}
+    }
+
+    // ==================== AI MODEL SWITCHER LOGIC ====================
+    let cachedModelsData = null;
+    let selectedModelId = null;
+
+    async function openModelModal() {
+      document.getElementById('modelModal').style.display = 'flex';
+      try {
+        const res = await fetch('/api/models');
+        cachedModelsData = await res.json();
+        renderModelsList(cachedModelsData);
+      } catch(e) {}
+    }
+
+    function closeModelModal() {
+      document.getElementById('modelModal').style.display = 'none';
+    }
+
+    function switchModelTab(tab) {
+      if (tab === 'offline') {
+        document.getElementById('offlineModelSection').style.display = 'block';
+        document.getElementById('onlineModelSection').style.display = 'none';
+        document.getElementById('tabOfflineBtn').style.background = '#0077b6';
+        document.getElementById('tabOfflineBtn').style.color = '#fff';
+        document.getElementById('tabOnlineBtn').style.background = '#222';
+        document.getElementById('tabOnlineBtn').style.color = '#aaa';
+      } else {
+        document.getElementById('offlineModelSection').style.display = 'none';
+        document.getElementById('onlineModelSection').style.display = 'block';
+        document.getElementById('tabOnlineBtn').style.background = '#0077b6';
+        document.getElementById('tabOnlineBtn').style.color = '#fff';
+        document.getElementById('tabOfflineBtn').style.background = '#222';
+        document.getElementById('tabOfflineBtn').style.color = '#aaa';
+      }
+    }
+
+    function renderModelsList(data) {
+      selectedModelId = data.active_model.id;
+
+      // Render Offline
+      const offDiv = document.getElementById('offlineModelsList');
+      offDiv.innerHTML = data.offline_models.map(m => `
+        <label style="background:var(--panel-bg); border:1px solid ${m.is_active ? 'var(--accent)' : 'var(--border)'}; padding:10px; border-radius:8px; display:flex; gap:10px; align-items:flex-start; cursor:pointer;">
+          <input type="radio" name="aiModelChoice" value="${m.id}" data-provider="offline" ${m.is_active ? 'checked' : ''} onchange="selectedModelId='${m.id}'" style="margin-top:3px;">
+          <div style="flex:1;">
+            <div style="font-weight:600; font-size:0.85rem; color:#fff;">${m.name} ${m.is_active ? '<span style="color:#2ecc71; font-size:0.75rem;">(CURRENT)</span>' : ''}</div>
+            <div style="font-size:0.75rem; color:#aaa; margin-top:2px;">${m.description} | RAM: <span style="color:#3498db;">${m.ram_required_mb}MB</span></div>
+          </div>
+        </label>
+      `).join('');
+
+      // Render Online
+      const onDiv = document.getElementById('onlineModelsList');
+      onDiv.innerHTML = data.online_models.map(m => `
+        <label style="background:var(--panel-bg); border:1px solid ${m.is_active ? 'var(--accent)' : 'var(--border)'}; padding:10px; border-radius:8px; display:flex; gap:10px; align-items:flex-start; cursor:pointer;">
+          <input type="radio" name="aiModelChoice" value="${m.id}" data-provider="${m.provider}" ${m.is_active ? 'checked' : ''} onchange="selectedModelId='${m.id}'" style="margin-top:3px;">
+          <div style="flex:1;">
+            <div style="font-weight:600; font-size:0.85rem; color:#fff;">${m.name} ${m.is_active ? '<span style="color:#2ecc71; font-size:0.75rem;">(CURRENT)</span>' : ''}</div>
+            <div style="font-size:0.75rem; color:#aaa; margin-top:2px;">${m.description} | Speed: <span style="color:#2ecc71;">${m.speed}</span></div>
+          </div>
+        </label>
+      `).join('');
+    }
+
+    async function saveModelSelection() {
+      const checked = document.querySelector('input[name="aiModelChoice"]:checked');
+      if (!checked) return closeModelModal();
+
+      const modelId = checked.value;
+      const provider = checked.getAttribute('data-provider');
+      const apiKey = document.getElementById('apiKeyInput').value.trim();
+      const customGguf = document.getElementById('customGgufInput').value.trim();
+
+      const res = await fetch('/api/set_model', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: modelId,
+          provider: provider,
+          api_key: apiKey || undefined,
+          custom_url: undefined
+        })
+      });
+      const data = await res.json();
+      alert(`✓ ${data.message || 'AI model updated successfully.'}`);
+      closeModelModal();
+      refreshStatus();
+    }
+
+    // ==================== OS UPDATER LOGIC ====================
+    async function openUpdateModal() {
+      document.getElementById('updateModal').style.display = 'flex';
+      const box = document.getElementById('updateStatusBox');
+      box.innerHTML = 'Connecting to upstream GitHub repository (thakoralpesh3/mint-agent-os)...';
+      try {
+        const res = await fetch('/api/check_update');
+        const data = await res.json();
+        if (data.update_available) {
+          box.innerHTML = `
+            <div style="color:#f39c12; font-weight:bold; font-size:0.95rem;">🚀 New Update Available!</div>
+            <p style="margin-top:6px;">${data.message}</p>
+            <div style="font-size:0.78rem; color:#aaa; margin-top:4px;">Local: ${data.local_commit} → Remote: ${data.remote_commit}</div>
+          `;
+          document.getElementById('applyUpdateBtn').style.display = 'inline-block';
+        } else {
+          box.innerHTML = `
+            <div style="color:#2ecc71; font-weight:bold; font-size:0.95rem;">✓ MintPilot Agent OS is Up to Date</div>
+            <p style="margin-top:6px;">${data.message || 'Running latest upstream commit.'}</p>
+            <div style="font-size:0.78rem; color:#aaa; margin-top:4px;">Current Commit: ${data.local_commit || 'HEAD'}</div>
+          `;
+          document.getElementById('applyUpdateBtn').style.display = 'none';
+        }
+      } catch(e) {
+        box.innerHTML = `<span style="color:#e74c3c;">Failed to check updates: ${e.message}</span>`;
+      }
+    }
+
+    function closeUpdateModal() {
+      document.getElementById('updateModal').style.display = 'none';
+    }
+
+    async function performOSUpdate() {
+      const btn = document.getElementById('applyUpdateBtn');
+      btn.innerText = 'Upgrading...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/update_os', { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'success') {
+          alert(`🎉 ${data.message}\nCommit: ${data.current_commit}`);
+          closeUpdateModal();
+        } else {
+          alert(`❌ Upgrade error: ${data.error || 'Failed'}`);
+        }
+      } catch(e) {
+        alert(`❌ Network or server error during upgrade: ${e.message}`);
+      }
+      btn.innerText = '🔄 Run In-Place Upgrade';
+      btn.disabled = false;
     }
 
     async function cleanMemory() {
