@@ -3,7 +3,8 @@
 MintPilot Offline Autonomous Brain & Tool Router
 Combines sub-millisecond fast deterministic intent routing,
 permission control (Turbo vs Safe Mode), memory safeguards (2GB-4GB RAM),
-browser automation, program control, and local SLM cognitive planning.
+cybersecurity PC self-defense & threat protection, browser automation,
+program control, and local SLM cognitive planning.
 """
 
 import os
@@ -16,6 +17,7 @@ from typing import Dict, Any, List, Optional
 
 from agent.core.permission_manager import PermissionManager
 from agent.core.memory_guard import MemoryGuard
+from agent.security.guardian import SecurityGuardian
 from agent.controllers.system_control import SystemController
 from agent.controllers.gui_control import GUIController
 from agent.controllers.terminal_control import TerminalController
@@ -26,12 +28,13 @@ from agent.controllers.program_control import ProgramController
 
 
 class AgentBrain:
-    """The central intelligence coordinating perception, planning, permissions, and execution."""
+    """The central intelligence coordinating perception, planning, permissions, security, and execution."""
 
     def __init__(self, model_path: Optional[str] = None, mode: Optional[str] = None):
         # Core Managers
         self.permissions = PermissionManager(mode=mode)
         self.memory = MemoryGuard()
+        self.security = SecurityGuardian(self.permissions)
 
         # Controllers
         self.system = SystemController()
@@ -73,16 +76,54 @@ class AgentBrain:
 
     def match_fast_intent(self, prompt: str, prompt_cli: bool = False) -> Optional[Dict[str, Any]]:
         """
-        Instantly detects and executes standard OS, browser, program, and hardware
-        control commands without waiting for LLM token generation.
+        Instantly detects and executes standard OS, cybersecurity, browser,
+        program, and hardware commands without waiting for LLM token generation.
         """
         p = prompt.strip().lower()
 
-        # 1. Permission Mode Switching
+        # 1. Cybersecurity & PC Protection
+        if any(w in p for w in ["scan threats", "scan for threats", "check threats", "threat scan", "audit threats"]):
+            res = self.security.scan_and_remediate()
+            return {
+                "thought": f"Completed deep threat scan. Threat level: {res.get('threat_level')}",
+                "result": res
+            }
+
+        if any(w in p for w in ["security score", "security status", "cyber defense", "security posture", "pc security"]):
+            res = self.security.get_full_security_posture()
+            return {
+                "thought": f"Security Posture Score: {res.get('security_score')}/100 ({res.get('grade')})",
+                "result": res
+            }
+
+        if any(w in p for w in ["lockdown", "emergency lockdown", "lockdown pc", "secure system"]):
+            res = self.security.lockdown()
+            return {
+                "thought": "Emergency PC Lockdown enforced. Strict firewall rules active.",
+                "result": res
+            }
+
+        if any(w in p for w in ["harden firewall", "enable firewall", "ufw enable"]):
+            res = self.security.remediation.enable_firewall()
+            return {
+                "thought": "UFW Firewall activated with strict default-deny incoming policy.",
+                "result": res
+            }
+
+        block_ip_m = re.search(r"block\s+ip\s+(\d+\.\d+\.\d+\.\d+)", p)
+        if block_ip_m:
+            ip = block_ip_m.group(1)
+            res = self.security.remediation.block_ip(ip)
+            return {
+                "thought": f"Blocked hostile IP address {ip} via UFW.",
+                "result": res
+            }
+
+        # 2. Permission Mode Switching
         if any(w in p for w in ["turbo mode", "enable turbo", "activate turbo", "switch to turbo"]):
             new_mode = self.permissions.set_mode("turbo")
             return {
-                "thought": "Switched to Turbo Mode (Antigravity-Style). Autonomous execution active without permission prompts.",
+                "thought": "Switched to Turbo Mode (Antigravity-Style). Autonomous execution & threat remediation active without prompts.",
                 "result": {"mode": new_mode, "status": "active"}
             }
 
@@ -99,7 +140,7 @@ class AgentBrain:
                 "result": {"mode": self.permissions.mode, "is_turbo": self.permissions.is_turbo()}
             }
 
-        # 2. Memory & Housekeeping
+        # 3. Memory & Housekeeping
         if any(w in p for w in ["clean memory", "free ram", "clean ram", "optimize memory", "drop cache"]):
             return {
                 "thought": "Cleaned memory caches and collected runtime garbage.",
@@ -112,7 +153,7 @@ class AgentBrain:
                 "result": self.memory.get_memory_stats()
             }
 
-        # 3. Audio & Volume
+        # 4. Audio & Volume
         if "mute" in p:
             if "unmute" in p:
                 return {"result": self.system.toggle_mute(state=False), "thought": "Unmuted master audio"}
@@ -126,7 +167,7 @@ class AgentBrain:
         if p in ["volume", "get volume", "what is the volume", "sound level"]:
             return {"result": self.system.get_volume(), "thought": "Retrieved volume level"}
 
-        # 4. Display Brightness
+        # 5. Display Brightness
         bright_match = re.search(r"brightness\s*(?:to\s*)?(\d+)\s*%", p) or re.search(r"set\s*brightness\s*(?:to\s*)?(\d+)", p)
         if bright_match:
             val = int(bright_match.group(1))
@@ -135,18 +176,18 @@ class AgentBrain:
         if p in ["brightness", "get brightness", "screen brightness"]:
             return {"result": self.system.get_brightness(), "thought": "Retrieved brightness level"}
 
-        # 5. Battery
+        # 6. Battery
         if any(w in p for w in ["battery", "battery percentage", "battery level", "power remaining"]):
             return {"result": self.system.get_battery_status(), "thought": "Retrieved battery telemetry"}
 
-        # 6. Wi-Fi & Networking
+        # 7. Wi-Fi & Networking
         if "scan wifi" in p or "list wifi" in p or "available wifi" in p:
             return {"result": self.system.scan_wifi(), "thought": "Scanned nearby Wi-Fi networks"}
 
         if "wifi status" in p or "network status" in p:
             return {"result": self.system.get_network_status(), "thought": "Retrieved network connection status"}
 
-        # 7. Power Actions (Sensitive)
+        # 8. Power Actions (Sensitive)
         if p in ["lock", "lock screen", "lock laptop"]:
             perm = self.permissions.check_permission("power_action", {"action": "lock"}, prompt_cli=prompt_cli)
             if not perm.get("allowed"):
@@ -159,7 +200,7 @@ class AgentBrain:
                 return {"thought": "Safe Mode: Awaiting user approval to suspend laptop.", "permission": perm}
             return {"result": self.system.execute_power_action("suspend"), "thought": "Put laptop to sleep"}
 
-        # 8. Browser Automation
+        # 9. Browser Automation
         search_m = re.search(r"(?:search|google|search web for)\s+(.+)", p)
         if search_m and not p.startswith("fetch"):
             query = search_m.group(1).strip()
@@ -187,7 +228,7 @@ class AgentBrain:
             url = fetch_m.group(1).strip()
             return {"result": self.browser.fetch_page_content(url), "thought": f"Fetched content from {url}"}
 
-        # 9. Program Control
+        # 10. Program Control
         if "nemo" in p or "file manager" in p or "open downloads" in p:
             folder = "~/Downloads" if "downloads" in p else "~"
             return {"result": self.programs.open_directory_in_nemo(folder), "thought": f"Opened Nemo file manager at {folder}"}
@@ -206,13 +247,13 @@ class AgentBrain:
                 "thought": f"Created new document in LibreOffice Writer with text: '{text[:50]}...'"
             }
 
-        # 10. General App Launch
+        # 11. General App Launch
         launch_m = re.search(r"(?:open|launch|start)\s+(chrome|firefox|terminal|calculator|vlc|libreoffice|gimp)", p)
         if launch_m:
             app = launch_m.group(1)
             return {"result": self.programs.launch_program(app), "thought": f"Launched application '{app}'"}
 
-        # 11. Window & Desktop Control
+        # 12. Window & Desktop Control
         if "show desktop" in p or "minimize all" in p:
             return {"result": self.gui.minimize_all_show_desktop(), "thought": "Minimized all windows to show desktop"}
 
@@ -234,10 +275,7 @@ class AgentBrain:
     # ==================== MAIN COGNITIVE DISPATCH ====================
 
     def process_command(self, user_prompt: str, prompt_cli: bool = False) -> Dict[str, Any]:
-        """
-        Processes command through permission checks, fast intent router,
-        and local SLM reasoning fallback.
-        """
+        """Processes command through security verification, fast router, and SLM planning."""
         start_time = time.time()
 
         # Step 1: Fast Intent
@@ -268,7 +306,7 @@ class AgentBrain:
                 "latency_ms": round((time.time() - start_time) * 1000, 2)
             }
 
-        # Step 3: Local SLM / Reasoning Loop
+        # Step 3: Local SLM Reasoning Fallback
         slm_res = self._execute_slm_reasoning(user_prompt)
         elapsed = round((time.time() - start_time) * 1000, 2)
         slm_res["latency_ms"] = elapsed
@@ -283,7 +321,7 @@ class AgentBrain:
                 import urllib.request
                 req_data = json.dumps({
                     "model": "qwen2.5-coder:1.5b",
-                    "prompt": f"You are MintPilot, an offline Linux Mint controller agent. User request: '{prompt}'. Return JSON tool call only.",
+                    "prompt": f"You are MintPilot, an offline Linux Mint cyber-guardian and laptop controller. Request: '{prompt}'. Return JSON tool call only.",
                     "stream": False
                 }).encode('utf-8')
                 req = urllib.request.Request("http://127.0.0.1:11434/api/generate", data=req_data, headers={'Content-Type': 'application/json'})
@@ -294,7 +332,7 @@ class AgentBrain:
                 pass
 
         return {
-            "thought": f"Interpreted request for laptop control: '{prompt}'",
+            "thought": f"Interpreted request for laptop defense and control: '{prompt}'",
             "memory": self.memory.get_memory_stats(),
             "status": "completed",
             "message": f"Processed: '{prompt}'. Mode: {self.permissions.mode.upper()} | Tier: {self.hardware_tier['tier_name']}"
