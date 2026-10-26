@@ -319,6 +319,61 @@ Execute with: mint-agent --protocol <name>`);
       return;
     }
 
+    if (c === 'mint-agent --house-party' || c === 'mint-agent -house-party') {
+      this.printTermLine(`
+🚀 STARK INDUSTRIES: HOUSE PARTY PROTOCOL ENGAGED
+Autonomous Multi-Agent Coordinated Deployment:
+
+  [J.A.R.V.I.S.] — Operating System Executive Governor [NOMINAL]
+    "Sir, system diagnostic sweeps confirmed. Hardware parameters nominal, swappiness locked at 10."
+
+  [F.R.I.D.A.Y.] — Tactical Combat & Socket Watcher [ENGAGED]
+    "Boss, tactical combat socket watchers armed. Zero unauthorized listeners on port grid."
+
+  [E.D.I.T.H.] — Orbital Network & Perimeter Sentry [VIGILANT]
+    "Orbital perimeter sentry locked. External IP ingress points actively filtered and traced."
+
+  [V.I.S.I.O.N.] — Digital Immune Memory Synthesizer [ALIGNED]
+    "Digital immune memory synthesized. 16 adaptive antibodies maintaining system equilibrium."
+
+  [K.A.R.E.N.] — Safety Guardrails & User Copilot [STANDBY]
+    "All safety checks passed! Your PC is protected and running butter-smooth."
+
+Sentries Active: 4 background guardians deployed.`);
+      this.speak("House Party Protocol engaged. All 5 Marvel Series AI Agents autonomously deployed across Linux Mint.", true);
+      return;
+    }
+
+    if (c === 'mint-agent --edith-scan' || c === 'mint-agent -edith-scan') {
+      this.printTermLine(`
+🕶️  E.D.I.T.H. ORBITAL TACTICAL GRID SCANNER
+  • Satellite Link:   STARK-ORBITAL-SENTRY-7 ONLINE
+  • Grid Status:      TACTICAL_SURVEILLANCE_ACTIVE
+  • Perimeter Score:  94/100
+  • Targets Scanned:  4 entities
+
+Tactical Target Assessment Matrix:
+  [TARGET-EDITH-01] ELEVATED Index: 78% | NETWORK_SOCKET   | Action: SEVER_SOCKET
+    Target: 0.0.0.0:8080 (Wildcard HTTP Service)
+    Classification: Unencrypted Local LAN Exposure
+
+  [TARGET-EDITH-02] HOSTILE  Index: 92% | REMOTE_INGRESS   | Action: NULL_ROUTE_DROP
+    Target: 185.220.101.42 (Tor Exit Node Probe)
+    Classification: Port Scan / Reconnaissance Probe
+
+  [TARGET-EDITH-03] NOMINAL  Index:  2% | DESKTOP_PROCESS  | Action: ALLOW
+    Target: PID 1240 (/usr/bin/cinnamon)
+    Classification: Verified Linux Mint Cinnamon Compositor (60fps)
+
+  [TARGET-EDITH-04] NOMINAL  Index:  0% | SECURITY_WATCHDOG | Action: PRIORITIZE
+    Target: PID 2108 (/usr/sbin/ufw-sentry)
+    Classification: Active Cyber Guardian Kernel Sentry
+
+[E.D.I.T.H.] Accessing security matrix: Orbital tactical grid sweep complete. 4 tactical entities identified. Perimeter under continuous surveillance.`);
+      this.speak("Accessing security matrix: Orbital tactical grid sweep complete. 4 tactical entities identified.", true);
+      return;
+    }
+
     if (c === 'whoami') {
       this.printTermLine('alpesh');
       return;
