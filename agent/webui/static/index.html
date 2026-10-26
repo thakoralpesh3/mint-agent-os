@@ -779,6 +779,56 @@
       btn.disabled = false;
     }
 
+    // ==================== LINUX MINT SMOOTHNESS MODAL LOGIC ====================
+    async function openSmoothnessModal() {
+      document.getElementById('smoothnessModal').style.display = 'flex';
+      const box = document.getElementById('smoothnessAuditBox');
+      box.innerHTML = 'Auditing Linux Mint hardware metrics and kernel parameters...';
+      try {
+        const res = await fetch('/api/smoothness');
+        const data = await res.json();
+        
+        let checksHtml = data.checks.map(c => `
+          <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span><strong>${c.item}:</strong> <span style="color:#aaa;">${c.detail}</span></span>
+            <span style="font-weight:bold; color:${c.status === 'OPTIMAL' || c.status === 'PASS' ? '#2ecc71' : (c.status === 'WARN' ? '#f39c12' : '#e74c3c')}">${c.status}</span>
+          </div>
+        `).join('');
+
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; background:rgba(46,204,113,0.1); border:1px solid #2ecc71; padding:10px 14px; border-radius:8px;">
+            <div>
+              <div style="font-size:1.1rem; font-weight:bold; color:#2ecc71;">Rating: ${data.grade}</div>
+              <div style="font-size:0.78rem; color:#aaa;">Compatibility & Fluidity Score: ${data.score}/100</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.82rem; color:#fff;">Agent Overhead: <strong style="color:#2ecc71;">${data.agent_footprint.agent_rss_mb} MB</strong></div>
+              <div style="font-size:0.75rem; color:#888;">${data.agent_footprint.overhead_percent_of_system}% of System RAM</div>
+            </div>
+          </div>
+          <div style="font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:6px;">Official Linux Mint Benchmark Metrics</div>
+          ${checksHtml}
+          <div style="margin-top:12px; font-size:0.8rem; color:#aaa; font-style:italic;">
+            💡 ${data.recommendation}
+          </div>
+        `;
+      } catch(e) {
+        box.innerHTML = `<span style="color:#e74c3c;">Failed to load smoothness metrics: ${e.message}</span>`;
+      }
+    }
+
+    function closeSmoothnessModal() {
+      document.getElementById('smoothnessModal').style.display = 'none';
+    }
+
+    async function applyKernelSmoothness() {
+      const res = await fetch('/api/optimize_smoothness', { method: 'POST' });
+      const data = await res.json();
+      alert(`⚡ ${data.message || 'Kernel tuned successfully'}\nSwappiness: ${data.swappiness}\nCache Pressure: ${data.vfs_cache_pressure}`);
+      openSmoothnessModal();
+      refreshStatus();
+    }
+
     async function cleanMemory() {
       const res = await fetch('/api/clean_memory', { method: 'POST' });
       const data = await res.json();
