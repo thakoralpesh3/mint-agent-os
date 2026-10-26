@@ -23,12 +23,15 @@ from agent.brain.inference import AgentBrain
 
 def print_banner(brain: AgentBrain):
     mode_color = "\033[1;31m[TURBO]\033[0m" if brain.permissions.is_turbo() else "\033[1;33m[SAFE]\033[0m"
+    istat = brain.interaction.get_status()
+    voice_str = "\033[1;32mON\033[0m" if istat['voice']['enabled'] else "\033[1;30mOFF\033[0m"
     print(f"""
 \033[1;32m╔═══════════════════════════════════════════════════════════════╗
 ║          🍃 MINTPILOT CYBER DEFENSE & AI CONTROLLER           ║
 ║       Autonomous Offline Security Guardian for Linux Mint     ║
 ╚═══════════════════════════════════════════════════════════════╝\033[0m
   Mode: {mode_color} | Hardware Tier: \033[1;36m{brain.hardware_tier['tier_name']}\033[0m
+  Interaction: \033[1;35m{istat['modality'].upper()}\033[0m | Style: \033[1;36m{istat['verbosity'].upper()}\033[0m | Voice: {voice_str} | Proactive: \033[1;33m{istat['proactivity'].upper()}\033[0m
 """)
 
 
@@ -47,7 +50,7 @@ def run_single(brain: AgentBrain, prompt: str, voice: bool = False, prompt_cli: 
 
     print(f"\033[1;30m(Mode: {res.get('permission_mode', brain.permissions.mode).upper()} | Latency: {latency}ms)\033[0m")
 
-    if voice:
+    if voice or brain.interaction.voice_settings.get("enabled"):
         brain.voice.speak(res.get("thought", "Command completed"))
 
 
@@ -58,6 +61,11 @@ def main():
     parser.add_argument("-v", "--voice", action="store_true", help="Enable spoken voice reply")
     parser.add_argument("--turbo", action="store_true", help="Execute in unrestricted Antigravity Turbo Mode (no permission prompts)")
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
+    parser.add_argument("--interaction", action="store_true", help="Display all user interaction options, modalities, and active settings")
+    parser.add_argument("--modality", type=str, choices=["text", "voice", "hybrid", "hud", "notification", "cli"], help="Set user interaction modality channel")
+    parser.add_argument("--verbosity", type=str, choices=["concise", "normal", "detailed", "security_auditor"], help="Set communication style and explanation depth")
+    parser.add_argument("--proactivity", type=str, choices=["reactive", "balanced", "proactive"], help="Set proactive ambient system monitoring style")
+    parser.add_argument("--voice-reply", type=str, choices=["on", "off"], help="Toggle spoken voice replies (on/off)")
     parser.add_argument("--security", action="store_true", help="Display full cybersecurity posture score and threat audit")
     parser.add_argument("--scan-threats", action="store_true", help="Scan for network exposures, rogue processes, and persistence")
     parser.add_argument("--lockdown", action="store_true", help="Enforce strict autonomous emergency firewall lockdown")
