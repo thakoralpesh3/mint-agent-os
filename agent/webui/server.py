@@ -156,6 +156,17 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             })
             return
 
+        if path == "/api/marvel/edith-scan":
+            self._send_json(self.brain.marvel.edith_tactical_scan())
+            return
+
+        if path == "/api/marvel/cross-talk":
+            self._send_json({
+                "cross_talk": self.brain.marvel.get_multi_agent_cross_talk(),
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+            })
+            return
+
         # 11. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({

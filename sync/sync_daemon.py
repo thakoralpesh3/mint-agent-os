@@ -123,8 +123,12 @@ def sync_cycle() -> bool:
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     commit_msg = f"🤖 Auto-Sync: Antigravity Conversation & Mint Agent OS [{now_str}]"
     
-    subprocess.run(["git", "commit", "-m", commit_msg], cwd=REPO_DIR, capture_output=True)
-    push_res = subprocess.run(["git", "push", "origin", "main"], cwd=REPO_DIR, capture_output=True, text=True)
+    env = os.environ.copy()
+    env["PATH"] = f"/home/alpesh/.local/bin:{env.get('PATH', '')}"
+    env["GIT_TERMINAL_PROMPT"] = "0"
+
+    subprocess.run(["git", "commit", "-m", commit_msg], cwd=REPO_DIR, capture_output=True, env=env)
+    push_res = subprocess.run(["git", "push", "origin", "main"], cwd=REPO_DIR, capture_output=True, text=True, env=env)
 
     if push_res.returncode == 0:
         print(f"[{now_str}] Successfully synced and pushed to GitHub main!")
