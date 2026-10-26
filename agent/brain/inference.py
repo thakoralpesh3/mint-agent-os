@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 MintPilot Offline Autonomous Brain & Tool Router
-Combines instant zero-latency deterministic intent matching with
-hardware-adaptive local Small Language Model (SLM) reasoning.
+Combines sub-millisecond fast deterministic intent routing,
+permission control (Turbo vs Safe Mode), memory safeguards (2GB-4GB RAM),
+browser automation, program control, and local SLM cognitive planning.
 """
 
 import os
@@ -13,30 +14,41 @@ import shutil
 import subprocess
 from typing import Dict, Any, List, Optional
 
+from agent.core.permission_manager import PermissionManager
+from agent.core.memory_guard import MemoryGuard
 from agent.controllers.system_control import SystemController
 from agent.controllers.gui_control import GUIController
 from agent.controllers.terminal_control import TerminalController
 from agent.controllers.screen_vision import ScreenVisionController
 from agent.controllers.voice_engine import VoiceEngine
+from agent.controllers.browser_control import BrowserController
+from agent.controllers.program_control import ProgramController
 
 
 class AgentBrain:
-    """The central intelligence coordinating perception, planning, and control."""
+    """The central intelligence coordinating perception, planning, permissions, and execution."""
 
-    def __init__(self, model_path: Optional[str] = None):
+    def __init__(self, model_path: Optional[str] = None, mode: Optional[str] = None):
+        # Core Managers
+        self.permissions = PermissionManager(mode=mode)
+        self.memory = MemoryGuard()
+
+        # Controllers
         self.system = SystemController()
         self.gui = GUIController()
         self.terminal = TerminalController()
         self.vision = ScreenVisionController()
         self.voice = VoiceEngine()
+        self.browser = BrowserController(self.gui)
+        self.programs = ProgramController(self.gui)
 
         self.model_path = model_path
         self.hardware_tier = self._detect_hardware_tier()
 
     def _detect_hardware_tier(self) -> Dict[str, Any]:
         """Detects hardware capabilities and selects the optimal offline SLM tier."""
-        telemetry = self.system.get_hardware_telemetry()
-        ram_mb = telemetry.get("ram_total_mb", 4000)
+        mem_stats = self.memory.get_memory_stats()
+        ram_mb = mem_stats.get("total_mb", 4000)
         has_gpu = shutil.which("nvidia-smi") is not None
 
         if ram_mb <= 4500:
@@ -53,19 +65,54 @@ class AgentBrain:
             "ram_total_mb": ram_mb,
             "has_gpu": has_gpu,
             "tier_name": tier,
-            "recommended_model": recommended_model
+            "recommended_model": recommended_model,
+            "is_low_ram": mem_stats.get("is_low_ram_system", True)
         }
 
     # ==================== FAST INTENT ROUTER (<2ms) ====================
 
-    def match_fast_intent(self, prompt: str) -> Optional[Dict[str, Any]]:
+    def match_fast_intent(self, prompt: str, prompt_cli: bool = False) -> Optional[Dict[str, Any]]:
         """
-        Instantly detects and executes standard OS & hardware control commands
-        without waiting for LLM token generation.
+        Instantly detects and executes standard OS, browser, program, and hardware
+        control commands without waiting for LLM token generation.
         """
         p = prompt.strip().lower()
 
-        # 1. Volume
+        # 1. Permission Mode Switching
+        if any(w in p for w in ["turbo mode", "enable turbo", "activate turbo", "switch to turbo"]):
+            new_mode = self.permissions.set_mode("turbo")
+            return {
+                "thought": "Switched to Turbo Mode (Antigravity-Style). Autonomous execution active without permission prompts.",
+                "result": {"mode": new_mode, "status": "active"}
+            }
+
+        if any(w in p for w in ["safe mode", "enable safe mode", "activate safe mode", "switch to safe"]):
+            new_mode = self.permissions.set_mode("safe")
+            return {
+                "thought": "Switched to Safe Mode. Explicit user permission will be requested before modifying system, files, or browser.",
+                "result": {"mode": new_mode, "status": "active"}
+            }
+
+        if p in ["mode", "get mode", "what mode", "current mode"]:
+            return {
+                "thought": f"Current permission mode: {self.permissions.mode.upper()}",
+                "result": {"mode": self.permissions.mode, "is_turbo": self.permissions.is_turbo()}
+            }
+
+        # 2. Memory & Housekeeping
+        if any(w in p for w in ["clean memory", "free ram", "clean ram", "optimize memory", "drop cache"]):
+            return {
+                "thought": "Cleaned memory caches and collected runtime garbage.",
+                "result": self.memory.clean_memory()
+            }
+
+        if any(w in p for w in ["memory stats", "ram stats", "ram usage", "memory usage"]):
+            return {
+                "thought": "Retrieved system memory statistics.",
+                "result": self.memory.get_memory_stats()
+            }
+
+        # 3. Audio & Volume
         if "mute" in p:
             if "unmute" in p:
                 return {"result": self.system.toggle_mute(state=False), "thought": "Unmuted master audio"}
@@ -79,7 +126,7 @@ class AgentBrain:
         if p in ["volume", "get volume", "what is the volume", "sound level"]:
             return {"result": self.system.get_volume(), "thought": "Retrieved volume level"}
 
-        # 2. Brightness
+        # 4. Display Brightness
         bright_match = re.search(r"brightness\s*(?:to\s*)?(\d+)\s*%", p) or re.search(r"set\s*brightness\s*(?:to\s*)?(\d+)", p)
         if bright_match:
             val = int(bright_match.group(1))
@@ -88,93 +135,149 @@ class AgentBrain:
         if p in ["brightness", "get brightness", "screen brightness"]:
             return {"result": self.system.get_brightness(), "thought": "Retrieved brightness level"}
 
-        # 3. Battery
+        # 5. Battery
         if any(w in p for w in ["battery", "battery percentage", "battery level", "power remaining"]):
             return {"result": self.system.get_battery_status(), "thought": "Retrieved battery telemetry"}
 
-        # 4. Wi-Fi
+        # 6. Wi-Fi & Networking
         if "scan wifi" in p or "list wifi" in p or "available wifi" in p:
             return {"result": self.system.scan_wifi(), "thought": "Scanned nearby Wi-Fi networks"}
 
         if "wifi status" in p or "network status" in p:
             return {"result": self.system.get_network_status(), "thought": "Retrieved network connection status"}
 
-        # 5. Power States
+        # 7. Power Actions (Sensitive)
         if p in ["lock", "lock screen", "lock laptop"]:
+            perm = self.permissions.check_permission("power_action", {"action": "lock"}, prompt_cli=prompt_cli)
+            if not perm.get("allowed"):
+                return {"thought": "Safe Mode: Awaiting user approval to lock screen.", "permission": perm}
             return {"result": self.system.execute_power_action("lock"), "thought": "Locked workstation"}
+
         if p in ["sleep", "suspend", "sleep laptop"]:
+            perm = self.permissions.check_permission("power_action", {"action": "suspend"}, prompt_cli=prompt_cli)
+            if not perm.get("allowed"):
+                return {"thought": "Safe Mode: Awaiting user approval to suspend laptop.", "permission": perm}
             return {"result": self.system.execute_power_action("suspend"), "thought": "Put laptop to sleep"}
 
-        # 6. Windows & Desktop
+        # 8. Browser Automation
+        search_m = re.search(r"(?:search|google|search web for)\s+(.+)", p)
+        if search_m and not p.startswith("fetch"):
+            query = search_m.group(1).strip()
+            return {"result": self.browser.search_web(query), "thought": f"Searched web for '{query}' in desktop browser"}
+
+        open_url_m = re.search(r"(?:open url|open website|browse to|go to)\s+(https?://\S+|\S+\.\S+)", p)
+        if open_url_m:
+            url = open_url_m.group(1).strip()
+            return {"result": self.browser.open_url_in_browser(url), "thought": f"Opened {url} in browser"}
+
+        if p in ["new tab", "open tab"]:
+            return {"result": self.browser.new_tab(), "thought": "Opened new browser tab"}
+
+        if p in ["close tab", "close current tab"]:
+            return {"result": self.browser.close_current_tab(), "thought": "Closed current browser tab"}
+
+        if any(w in p for w in ["scroll down", "scroll page down"]):
+            return {"result": self.browser.scroll_page("down"), "thought": "Scrolled webpage down"}
+
+        if any(w in p for w in ["scroll up", "scroll page up"]):
+            return {"result": self.browser.scroll_page("up"), "thought": "Scrolled webpage up"}
+
+        fetch_m = re.search(r"(?:fetch|read page|get content of)\s+(https?://\S+|\S+\.\S+)", p)
+        if fetch_m:
+            url = fetch_m.group(1).strip()
+            return {"result": self.browser.fetch_page_content(url), "thought": f"Fetched content from {url}"}
+
+        # 9. Program Control
+        if "nemo" in p or "file manager" in p or "open downloads" in p:
+            folder = "~/Downloads" if "downloads" in p else "~"
+            return {"result": self.programs.open_directory_in_nemo(folder), "thought": f"Opened Nemo file manager at {folder}"}
+
+        if "vlc" in p:
+            if any(w in p for w in ["pause", "play", "toggle"]):
+                return {"result": self.programs.control_vlc("play"), "thought": "Toggled VLC playback"}
+            if "fullscreen" in p:
+                return {"result": self.programs.control_vlc("fullscreen"), "thought": "Toggled VLC fullscreen"}
+
+        writer_m = re.search(r"(?:write document|open writer and type|libreoffice writer)\s+(?:saying\s+|with\s+)?(.+)", p)
+        if writer_m:
+            text = writer_m.group(1).strip()
+            return {
+                "result": self.programs.control_libreoffice_writer(text),
+                "thought": f"Created new document in LibreOffice Writer with text: '{text[:50]}...'"
+            }
+
+        # 10. General App Launch
+        launch_m = re.search(r"(?:open|launch|start)\s+(chrome|firefox|terminal|calculator|vlc|libreoffice|gimp)", p)
+        if launch_m:
+            app = launch_m.group(1)
+            return {"result": self.programs.launch_program(app), "thought": f"Launched application '{app}'"}
+
+        # 11. Window & Desktop Control
         if "show desktop" in p or "minimize all" in p:
             return {"result": self.gui.minimize_all_show_desktop(), "thought": "Minimized all windows to show desktop"}
 
-        if p in ["list windows", "open windows", "active windows", "show windows"]:
+        if p in ["list windows", "open windows", "active windows", "show windows", "running programs"]:
             return {"result": self.gui.list_windows(), "thought": "Listed open desktop windows"}
 
-        focus_match = re.search(r"(?:switch to|focus|bring up)\s+(?:window\s+)?(.+)", p)
-        if focus_match:
-            win_name = focus_match.group(1).strip()
-            return {"result": self.gui.focus_window(win_name), "thought": f"Focused window '{win_name}'"}
+        focus_m = re.search(r"(?:switch to|focus|bring up)\s+(?:window\s+)?(.+)", p)
+        if focus_m:
+            win = focus_m.group(1).strip()
+            return {"result": self.gui.focus_window(win), "thought": f"Focused window '{win}'"}
 
-        close_match = re.search(r"(?:close window|close app)\s+(.+)", p)
-        if close_match:
-            win_name = close_match.group(1).strip()
-            return {"result": self.gui.close_window(win_name), "thought": f"Closed window '{win_name}'"}
-
-        # 7. Launch Apps
-        launch_match = re.search(r"(?:open|launch|start)\s+(chrome|firefox|terminal|nemo|files|calculator|vlc|libreoffice)", p)
-        if launch_match:
-            app = launch_match.group(1)
-            app_map = {
-                "chrome": "google-chrome",
-                "firefox": "firefox",
-                "terminal": "x-terminal-emulator",
-                "files": "nemo",
-                "nemo": "nemo",
-                "calculator": "gnome-calculator",
-                "vlc": "vlc",
-                "libreoffice": "libreoffice"
-            }
-            exec_name = app_map.get(app, app)
-            return {"result": self.system.launch_app(exec_name), "thought": f"Launched application {app}"}
-
-        # 8. Hardware Telemetry
-        if any(w in p for w in ["system stats", "ram usage", "cpu usage", "hardware telemetry", "system info"]):
-            return {"result": self.system.get_hardware_telemetry(), "thought": "Gathered hardware metrics"}
+        close_m = re.search(r"(?:close window|close app)\s+(.+)", p)
+        if close_m:
+            win = close_m.group(1).strip()
+            return {"result": self.gui.close_window(win), "thought": f"Closed window '{win}'"}
 
         return None
 
-    # ==================== DISPATCH & EXECUTION ====================
+    # ==================== MAIN COGNITIVE DISPATCH ====================
 
-    def process_command(self, user_prompt: str) -> Dict[str, Any]:
+    def process_command(self, user_prompt: str, prompt_cli: bool = False) -> Dict[str, Any]:
         """
-        Main cognitive dispatch:
-        First checks zero-latency fast intent.
-        If complex, invokes local SLM / tool calling.
+        Processes command through permission checks, fast intent router,
+        and local SLM reasoning fallback.
         """
         start_time = time.time()
 
         # Step 1: Fast Intent
-        fast_res = self.match_fast_intent(user_prompt)
+        fast_res = self.match_fast_intent(user_prompt, prompt_cli=prompt_cli)
         if fast_res:
             elapsed = round((time.time() - start_time) * 1000, 2)
             fast_res["latency_ms"] = elapsed
             fast_res["execution_mode"] = "deterministic_sub_millisecond"
+            fast_res["permission_mode"] = self.permissions.mode
             return fast_res
 
-        # Step 2: Local SLM Reasoning for Multi-Step or Unstructured Queries
+        # Step 2: Direct Shell Command Check ($ or !)
+        if user_prompt.startswith("!") or user_prompt.startswith("$"):
+            cmd = user_prompt[1:].strip()
+            perm = self.permissions.check_permission("terminal_execute", {"command": cmd}, prompt_cli=prompt_cli)
+            if not perm.get("allowed"):
+                return {
+                    "thought": f"Safe Mode: Awaiting approval to execute bash command: '{cmd}'",
+                    "permission": perm,
+                    "execution_mode": "permission_blocked",
+                    "latency_ms": round((time.time() - start_time) * 1000, 2)
+                }
+            return {
+                "thought": f"Direct shell execution: {cmd}",
+                "result": self.terminal.execute(cmd),
+                "execution_mode": "terminal_direct",
+                "permission_mode": self.permissions.mode,
+                "latency_ms": round((time.time() - start_time) * 1000, 2)
+            }
+
+        # Step 3: Local SLM / Reasoning Loop
         slm_res = self._execute_slm_reasoning(user_prompt)
         elapsed = round((time.time() - start_time) * 1000, 2)
         slm_res["latency_ms"] = elapsed
         slm_res["execution_mode"] = "slm_autonomous_planner"
+        slm_res["permission_mode"] = self.permissions.mode
         return slm_res
 
     def _execute_slm_reasoning(self, prompt: str) -> Dict[str, Any]:
-        """
-        Executes reasoning using local offline model runtime (llama-cli / ollama / python-llama).
-        """
-        # If Ollama is running locally:
+        """Executes reasoning using local model backend or safe fallback."""
         if shutil.which("ollama"):
             try:
                 import urllib.request
@@ -190,15 +293,9 @@ class AgentBrain:
             except Exception:
                 pass
 
-        # Fallback to direct Terminal execution if user gave a shell-like command
-        if prompt.startswith("!") or prompt.startswith("$"):
-            cmd = prompt[1:].strip()
-            return {"thought": f"Direct shell execution: {cmd}", "result": self.terminal.execute(cmd)}
-
-        # General intelligent interpretation
         return {
             "thought": f"Interpreted request for laptop control: '{prompt}'",
-            "telemetry": self.system.get_hardware_telemetry(),
+            "memory": self.memory.get_memory_stats(),
             "status": "completed",
-            "message": f"Processed command: '{prompt}'. Hardware tier: {self.hardware_tier['tier_name']}"
+            "message": f"Processed: '{prompt}'. Mode: {self.permissions.mode.upper()} | Tier: {self.hardware_tier['tier_name']}"
         }

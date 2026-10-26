@@ -1,0 +1,240 @@
+#!/usr/bin/env python3
+"""
+MintPilot Embedded Offline Open WebUI Server
+Lightweight (<25MB RAM), fully offline HTTP server providing:
+- WebUI Dashboard on http://localhost:8888
+- OpenAI-compatible API (/v1/models, /v1/chat/completions)
+- Real-time Turbo/Safe mode switching
+- Browser, Program, and System control endpoints
+"""
+
+import os
+import sys
+import json
+import time
+from pathlib import Path
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import urlparse
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT_DIR))
+
+from agent.brain.inference import AgentBrain
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+CONFIG_PATH = ROOT_DIR / "agent" / "config" / "settings.json"
+
+
+class WebUIRequestHandler(BaseHTTPRequestHandler):
+    brain: AgentBrain = None
+
+    def log_message(self, format, *args):
+        pass
+
+    def _send_json(self, data: dict, status: int = 200):
+        body = json.dumps(data).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.end_headers()
+
+    def do_GET(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        # 1. WebUI HTML Dashboard
+        if path in ["/", "/index.html"]:
+            html_path = STATIC_DIR / "index.html"
+            if html_path.exists():
+                content = html_path.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            else:
+                self._send_json({"error": "index.html not found"}, 404)
+                return
+
+        # 2. System Status & Telemetry API
+        if path == "/api/status":
+            mem = self.brain.memory.get_memory_stats()
+            hw = self.brain.system.get_hardware_telemetry()
+            bat = self.brain.system.get_battery_status()
+            windows = self.brain.gui.list_windows().get("windows", [])
+
+            self._send_json({
+                "status": "online",
+                "mode": self.brain.permissions.mode,
+                "is_turbo": self.brain.permissions.is_turbo(),
+                "tier": self.brain.hardware_tier,
+                "memory": mem,
+                "hardware": hw,
+                "battery": bat,
+                "windows": windows,
+                "pending_approvals": list(self.brain.permissions.pending_approvals.values())
+            })
+            return
+
+        # 3. OpenAI-Compatible: GET /v1/models
+        if path == "/v1/models":
+            self._send_json({
+                "object": "list",
+                "data": [
+                    {
+                        "id": "mintpilot-slm",
+                        "object": "model",
+                        "created": int(time.time()),
+                        "owned_by": "mintpilot"
+                    },
+                    {
+                        "id": self.brain.hardware_tier.get("recommended_model", "qwen2.5-coder:1.5b"),
+                        "object": "model",
+                        "created": int(time.time()),
+                        "owned_by": "mintpilot"
+                    }
+                ]
+            })
+            return
+
+        self._send_json({"error": "Endpoint not found"}, 404)
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        content_length = int(self.headers.get("Content-Length", 0))
+        post_data = self.rfile.read(content_length)
+        body = {}
+        if post_data:
+            try:
+                body = json.loads(post_data.decode("utf-8"))
+            except Exception:
+                pass
+
+        # 1. Chat Execution API: POST /api/chat
+        if path == "/api/chat":
+            prompt = body.get("prompt", "")
+            if not prompt:
+                self._send_json({"error": "Missing prompt"}, 400)
+                return
+
+            res = self.brain.process_command(prompt)
+            self._send_json(res)
+            return
+
+        # 2. Permission Mode Toggle: POST /api/mode
+        if path == "/api/mode":
+            mode = body.get("mode", "turbo")
+            new_mode = self.brain.permissions.set_mode(mode)
+            self._send_json({"status": "success", "mode": new_mode, "is_turbo": self.brain.permissions.is_turbo()})
+            return
+
+        # 3. Resolve Approval: POST /api/resolve_permission
+        if path == "/api/resolve_permission":
+            act_id = body.get("id")
+            approved = body.get("approved", False)
+            success = self.brain.permissions.resolve_pending(act_id, approved)
+            self._send_json({"status": "resolved" if success else "not_found", "action_id": act_id, "approved": approved})
+            return
+
+        # 4. Clean Memory: POST /api/clean_memory
+        if path == "/api/clean_memory":
+            cleaned = self.brain.memory.clean_memory()
+            self._send_json(cleaned)
+            return
+
+        # 5. OpenAI-Compatible: POST /v1/chat/completions
+        if path == "/v1/chat/completions":
+            messages = body.get("messages", [])
+            last_prompt = messages[-1].get("content", "") if messages else "Hello"
+
+            res = self.brain.process_command(last_prompt)
+            reply = res.get("thought", "")
+            if "result" in res:
+                reply += "\n\nResult:\n```json\n" + json.dumps(res["result"], indent=2) + "\n```"
+
+            self._send_json({
+                "id": f"chatcmpl-{int(time.time())}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": "mintpilot-slm",
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": reply
+                        },
+                        "finish_reason": "stop"
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": len(last_prompt.split()),
+                    "completion_tokens": len(reply.split()),
+                    "total_tokens": len(last_prompt.split()) + len(reply.split())
+                }
+            })
+            return
+
+        self._send_json({"error": "Endpoint not found"}, 404)
+
+
+def get_configured_port() -> int:
+    if CONFIG_PATH.exists():
+        try:
+            with open(CONFIG_PATH, "r") as f:
+                d = json.load(f)
+                return d.get("webui", {}).get("port", 8888)
+        except Exception:
+            pass
+    return 8888
+
+
+def run_webui_server(port: int = None, host: str = "0.0.0.0"):
+    WebUIRequestHandler.brain = AgentBrain()
+    target_port = port or get_configured_port()
+
+    # Automatic port fallback if port is in use
+    httpd = None
+    for attempt_port in range(target_port, target_port + 10):
+        try:
+            server_address = (host, attempt_port)
+            httpd = HTTPServer(server_address, WebUIRequestHandler)
+            target_port = attempt_port
+            break
+        except OSError:
+            continue
+
+    if not httpd:
+        print(f"❌ Error: Unable to bind WebUI server to ports {target_port}-{target_port+10}")
+        return
+
+    print(f"============================================================")
+    print(f"🍃 MintPilot Open WebUI active on: http://127.0.0.1:{target_port}")
+    print(f"Mode: {WebUIRequestHandler.brain.permissions.mode.upper()} | OpenAI API: http://127.0.0.1:{target_port}/v1")
+    print(f"============================================================")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nShutting down WebUI server...")
+        httpd.server_close()
+
+
+if __name__ == "__main__":
+    p = None
+    if len(sys.argv) > 1 and sys.argv[1].isdigit():
+        p = int(sys.argv[1])
+    run_webui_server(port=p)

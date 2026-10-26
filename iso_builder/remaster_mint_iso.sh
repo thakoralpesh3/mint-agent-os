@@ -79,6 +79,7 @@ echo "Installing systemd service and desktop autostart..."
 sudo cp "$SCRIPT_DIR/configs/mint-agent.service" "$WORK_DIR/custom_root/etc/systemd/system/"
 sudo cp "$SCRIPT_DIR/configs/mint-agent-hud.desktop" "$WORK_DIR/custom_root/etc/xdg/autostart/"
 sudo cp "$SCRIPT_DIR/configs/mint-agent-hud.desktop" "$WORK_DIR/custom_root/usr/share/applications/"
+sudo cp "$SCRIPT_DIR/configs/mint-agent-webui.desktop" "$WORK_DIR/custom_root/usr/share/applications/"
 sudo cp "$SCRIPT_DIR/configs/99-mint-agent-permissions.rules" "$WORK_DIR/custom_root/etc/polkit-1/rules.d/"
 
 # Enable agent systemd service inside chroot

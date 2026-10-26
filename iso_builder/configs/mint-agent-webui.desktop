@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=MintPilot Open WebUI
+Comment=Embedded Offline Open WebUI for Laptop Control
+Exec=/usr/bin/xdg-open http://127.0.0.1:8888
+Icon=web-browser
+Terminal=false
+Categories=Network;Utility;System;
+StartupNotify=false

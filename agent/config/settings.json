@@ -1,0 +1,22 @@
+{
+  "mode": "turbo",
+  "webui": {
+    "host": "0.0.0.0",
+    "port": 8888,
+    "enabled": true
+  },
+  "hardware": {
+    "target_ram_mb": 4096,
+    "memory_guard_threshold_percent": 85,
+    "auto_clean_cache": true
+  },
+  "browser": {
+    "default_browser": "firefox",
+    "prefer_cdp": true,
+    "enable_gui_fallback": true
+  },
+  "hotkeys": {
+    "hud_summon": "<Super>space",
+    "turbo_toggle": "<Super><Alt>t"
+  }
+}

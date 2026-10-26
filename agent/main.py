@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
 MintPilot Master Agent Daemon
-Runs in the background, hosts the system tray icon, listens for global hotkey triggers,
-and provides a Unix domain socket server for instant CLI communication.
+Runs in the background on Linux Mint:
+- Hosts the System Tray Applet
+- Launches the embedded Open WebUI on http://127.0.0.1:8888 (with OpenAI API)
+- Listens on Unix domain socket for CLI commands
+- Enforces hardware memory safeguards and permission modes
 """
 
 import os
@@ -21,6 +24,7 @@ from gi.repository import Gtk, GLib
 
 from agent.brain.inference import AgentBrain
 from agent.ui.tray_applet import MintTrayApplet
+from agent.webui.server import run_webui_server
 
 SOCKET_PATH = "/tmp/mint_agent.sock"
 
@@ -29,6 +33,11 @@ class AgentDaemon:
     def __init__(self):
         self.brain = AgentBrain()
         self.tray = MintTrayApplet()
+
+    def start_webui(self):
+        """Starts embedded Open WebUI server in a background thread."""
+        t = threading.Thread(target=run_webui_server, daemon=True)
+        t.start()
 
     def start_socket_server(self):
         """Starts Unix domain socket listener for instant CLI requests."""
@@ -51,7 +60,7 @@ class AgentDaemon:
                         res = self.brain.process_command(prompt)
                         conn.sendall(json.dumps(res).encode('utf-8'))
                     conn.close()
-                except Exception as e:
+                except Exception:
                     pass
 
         t = threading.Thread(target=listen_loop, daemon=True)
@@ -60,8 +69,14 @@ class AgentDaemon:
 
 def main():
     daemon = AgentDaemon()
+    daemon.start_webui()
     daemon.start_socket_server()
-    print("🍃 MintPilot Master Agent Daemon active on Linux Mint.")
+    print("============================================================")
+    print("🍃 MintPilot Master Agent Daemon Active on Linux Mint")
+    print("WebUI:    http://127.0.0.1:8888")
+    print("OpenAI:   http://127.0.0.1:8888/v1")
+    print(f"Mode:     {daemon.brain.permissions.mode.upper()}")
+    print("============================================================")
     Gtk.main()
 
 
