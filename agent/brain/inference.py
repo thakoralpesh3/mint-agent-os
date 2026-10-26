@@ -17,6 +17,7 @@ from typing import Dict, Any, List, Optional
 
 from agent.core.permission_manager import PermissionManager
 from agent.core.interaction_manager import InteractionManager
+from agent.core.marvel_agents import MarvelAgentManager
 from agent.core.memory_guard import MemoryGuard
 from agent.security.guardian import SecurityGuardian
 from agent.brain.model_manager import ModelManager
@@ -37,6 +38,7 @@ class AgentBrain:
         # Core Managers
         self.permissions = PermissionManager(mode=mode)
         self.interaction = InteractionManager()
+        self.marvel = MarvelAgentManager(self)
         self.memory = MemoryGuard()
         self.security = SecurityGuardian(self.permissions)
         self.models = ModelManager()
