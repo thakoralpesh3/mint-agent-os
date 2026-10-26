@@ -237,27 +237,81 @@ Change Interaction Options On-The-Fly:
         return;
       }
     }
+    if (c === 'mint-agent --list-personas' || c === 'mint-agent -list-personas') {
+      const p = this.personas[this.activePersona] || this.personas.jarvis;
       this.printTermLine(`
-MintPilot OS Available Commands:
-  mint-agent "<prompt>"      Run natural language laptop control or security intent
-  mint-agent --security      Display full cybersecurity posture score & audit
-  mint-agent --scan-threats  Scan network ports, rogue processes, and persistence
-  mint-agent --counter-threats Active countermeasures (sever sockets, neutralize threats)
-  mint-agent --deploy-decoys Deploy honeypot canary decoy credentials
-  mint-agent --self-check    Inspect self-countering safety circuit breaker status
-  mint-agent --rollback      Revert last system modifications to snapshot
-  mint-agent --lockdown      Activate emergency UFW firewall lockdown
-  mint-agent --turbo         Switch to Antigravity Autonomous Turbo Mode
-  mint-agent --safe          Switch to Guarded Safe Mode (prompts confirmation)
-  mint-agent --tier          Display hardware detection and model recommendations
-  mint-agent --clean-ram     Execute memory cache cleanup
-  sudo ./make_bootable_usb.sh  Safe interactive bootable USB creator
-  neofetch                   Display Linux Mint OS telemetry & hardware specs
-  free -h                    Display RAM and swap statistics
-  ls -la                     List current directory contents
-  whoami                     Display active username
-  clear                      Clear terminal console
-`);
+╔═══════════════════════════════════════════════════════════════╗
+║         ⚡ STARK INDUSTRIES MARVEL AI AGENT MATRIX            ║
+║       Integrated Personas & Protocols for Linux Mint OS       ║
+╚═══════════════════════════════════════════════════════════════╝
+Active Agent: ${p.name} (${p.title})
+
+Available Marvel Agents:
+  ${this.activePersona === 'jarvis' ? '★' : ' '} jarvis   | J.A.R.V.I.S. | en-GB | Suave British butler, system diagnostics & governor
+  ${this.activePersona === 'friday' ? '★' : ' '} friday   | F.R.I.D.A.Y. | en-IE | Irish combat copilot, rapid threat neutralization
+  ${this.activePersona === 'edith' ? '★' : ' '} edith    | E.D.I.T.H.   | en-US | Orbital network surveillance, perimeter sentry
+  ${this.activePersona === 'vision' ? '★' : ' '} vision   | V.I.S.I.O.N. | en-GB | Synthezoid digital immune memory, equilibrium
+  ${this.activePersona === 'karen' ? '★' : ' '} karen    | K.A.R.E.N.   | en-US | Friendly neighborhood mentor, tutorial & safe mode
+
+Switch Persona: mint-agent --persona <name>
+Execute Protocol: mint-agent --protocol <name>`);
+      return;
+    }
+
+    if (c === 'mint-agent --list-protocols' || c === 'mint-agent -list-protocols') {
+      this.printTermLine(`
+╔═══════════════════════════════════════════════════════════════╗
+║                ⚡ STARK DEFENSE PROTOCOLS                     ║
+║         Autonomous Emergency Contingency Subsystems           ║
+╚═══════════════════════════════════════════════════════════════╝
+Active Contingencies:
+  1. house_party  | Multi-agent background watchdogs & autonomous sentries
+  2. clean_slate  | Memory cache purge, swap sync, forensic trace scrub
+  3. instant_kill | Active TCP RST disruptor & hostile socket severing
+  4. veronica     | Hulkbuster kernel memory optimization (swappiness=10, 60fps)
+  5. barn_door    | Emergency perimeter lockdown with default-deny UFW
+  6. baby_monitor | Guarded Safe Mode with mandatory interactive approval
+
+Execute with: mint-agent --protocol <name>`);
+      return;
+    }
+
+    if (c.startsWith('mint-agent --persona ') || c.startsWith('mint-agent -persona ')) {
+      const parts = c.split(' ');
+      const pId = (parts[2] || '').toLowerCase().trim();
+      if (this.personas[pId]) {
+        this.switchPersona(pId);
+        const p = this.personas[pId];
+        this.printTermLine(`✓ Switched Marvel Agent Persona to: ${p.name} (${p.title})\n"${p.greeting}"`);
+      } else {
+        this.printTermLine(`Unknown persona '${pId}'. Available: jarvis, friday, edith, vision, karen`);
+      }
+      return;
+    }
+
+    if (c.startsWith('mint-agent --protocol ') || c.startsWith('mint-agent -protocol ')) {
+      const parts = c.split(' ');
+      const proto = (parts[2] || '').toLowerCase().trim();
+      const p = this.personas[this.activePersona] || this.personas.jarvis;
+      if (this.protocols[proto]) {
+        const item = this.protocols[proto];
+        this.printTermLine(`⚡ Executing Stark Protocol: [${item.name.toUpperCase()}]...`);
+        this.printTermLine(`${p.name}: "${p.prefix} ${item.summary}"`);
+        this.speak(`${p.prefix} ${item.summary}`, true);
+        if (proto === 'clean_slate') {
+          this.ramUsedMb = Math.max(1600, this.ramUsedMb - 400);
+          this.updateTelemetryUI();
+        } else if (proto === 'instant_kill') {
+          this.securityScore = 96;
+        } else if (proto === 'barn_door') {
+          this.firewallActive = true;
+          this.securityScore = 98;
+        } else if (proto === 'baby_monitor') {
+          this.setMode('safe');
+        }
+      } else {
+        this.printTermLine(`Unknown protocol '${proto}'. Available: house_party, clean_slate, instant_kill, veronica, barn_door, baby_monitor`);
+      }
       return;
     }
 
