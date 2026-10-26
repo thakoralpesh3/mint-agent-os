@@ -323,6 +323,63 @@
     </div>
   </div>
 
+  <!-- AI Model Switcher Modal (Offline & Online) -->
+  <div class="modal-overlay" id="modelModal" style="display:none;">
+    <div class="modal" style="width: 580px; max-height: 85vh; display: flex; flex-direction: column;">
+      <h3 style="color:#00b4d8;">🧠 Customize & Switch AI Model</h3>
+      <p style="font-size:0.83rem; color:#aaa; margin-bottom:12px;">Choose between offline local SLMs (zero internet, private) or online frontier cloud models.</p>
+      
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button id="tabOfflineBtn" class="btn-sm" style="background:#0077b6; color:#fff;" onclick="switchModelTab('offline')">🟢 Offline Local SLM</button>
+        <button id="tabOnlineBtn" class="btn-sm" style="background:#222; color:#aaa;" onclick="switchModelTab('online')">🌐 Online Cloud LLM</button>
+      </div>
+
+      <!-- Offline List -->
+      <div id="offlineModelSection" style="flex:1; overflow-y:auto; max-height: 280px; margin-bottom:12px;">
+        <div id="offlineModelsList" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Dynamically populated -->
+        </div>
+        <div style="margin-top:10px; font-size:0.8rem; color:#888;">
+          <label>Custom Local GGUF Path:</label>
+          <input type="text" id="customGgufInput" placeholder="/home/alpesh/models/my-model.gguf" style="width:100%; background:var(--panel-bg); border:1px solid var(--border); color:#fff; padding:6px; border-radius:6px; margin-top:4px;">
+        </div>
+      </div>
+
+      <!-- Online List -->
+      <div id="onlineModelSection" style="display:none; flex:1; overflow-y:auto; max-height: 280px; margin-bottom:12px;">
+        <div id="onlineModelsList" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Dynamically populated -->
+        </div>
+        <div style="margin-top:10px; font-size:0.8rem; color:#888;">
+          <label id="apiKeyLabel">API Key:</label>
+          <input type="password" id="apiKeyInput" placeholder="Enter API key for selected provider..." style="width:100%; background:var(--panel-bg); border:1px solid var(--border); color:#fff; padding:6px; border-radius:6px; margin-top:4px;">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-sm" style="background:#444;" onclick="closeModelModal()">Cancel</button>
+        <button class="btn-approve" onclick="saveModelSelection()">✓ Activate Model</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OS Upgrade & Updater Modal -->
+  <div class="modal-overlay" id="updateModal" style="display:none;">
+    <div class="modal" style="width: 520px;">
+      <h3 style="color:#2ecc71;">🔄 MintPilot Agent OS Updater</h3>
+      <p style="font-size:0.85rem; color:#aaa; margin-bottom:12px;">Check and apply upstream improvements from GitHub to your Linux Mint installation.</p>
+      
+      <div id="updateStatusBox" style="background:var(--panel-bg); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem; line-height:1.6; margin-bottom:14px;">
+        Checking for updates...
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-sm" style="background:#444;" onclick="closeUpdateModal()">Close</button>
+        <button id="applyUpdateBtn" class="btn-approve" style="background:#2ecc71; color:#000;" onclick="performOSUpdate()">🔄 Run In-Place Upgrade</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentMode = "turbo";
     let activePendingActionId = null;
