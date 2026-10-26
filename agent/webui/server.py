@@ -3,6 +3,7 @@
 MintPilot Embedded Offline Open WebUI Server
 Lightweight (<25MB RAM), fully offline HTTP server providing:
 - WebUI Dashboard on http://localhost:8888
+- Cyber Defense & Threat Radar API (/api/security, /api/lockdown, /api/scan_threats)
 - OpenAI-compatible API (/v1/models, /v1/chat/completions)
 - Real-time Turbo/Safe mode switching
 - Browser, Program, and System control endpoints
@@ -74,6 +75,7 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             hw = self.brain.system.get_hardware_telemetry()
             bat = self.brain.system.get_battery_status()
             windows = self.brain.gui.list_windows().get("windows", [])
+            security = self.brain.security.get_full_security_posture()
 
             self._send_json({
                 "status": "online",
@@ -84,11 +86,18 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
                 "hardware": hw,
                 "battery": bat,
                 "windows": windows,
+                "security": security,
                 "pending_approvals": list(self.brain.permissions.pending_approvals.values())
             })
             return
 
-        # 3. OpenAI-Compatible: GET /v1/models
+        # 3. Dedicated Security Posture API: GET /api/security
+        if path == "/api/security":
+            posture = self.brain.security.get_full_security_posture()
+            self._send_json(posture)
+            return
+
+        # 4. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
@@ -142,7 +151,29 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json({"status": "success", "mode": new_mode, "is_turbo": self.brain.permissions.is_turbo()})
             return
 
-        # 3. Resolve Approval: POST /api/resolve_permission
+        # 3. Security Lockdown: POST /api/lockdown
+        if path == "/api/lockdown":
+            lockdown_res = self.brain.security.lockdown()
+            self._send_json(lockdown_res)
+            return
+
+        # 4. Threat Scan & Remediate: POST /api/scan_threats
+        if path == "/api/scan_threats":
+            scan_res = self.brain.security.scan_and_remediate()
+            self._send_json(scan_res)
+            return
+
+        # 5. Block Hostile IP: POST /api/block_ip
+        if path == "/api/block_ip":
+            ip = body.get("ip")
+            if not ip:
+                self._send_json({"error": "Missing IP address"}, 400)
+                return
+            block_res = self.brain.security.remediation.block_ip(ip)
+            self._send_json(block_res)
+            return
+
+        # 6. Resolve Approval: POST /api/resolve_permission
         if path == "/api/resolve_permission":
             act_id = body.get("id")
             approved = body.get("approved", False)
@@ -150,13 +181,13 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json({"status": "resolved" if success else "not_found", "action_id": act_id, "approved": approved})
             return
 
-        # 4. Clean Memory: POST /api/clean_memory
+        # 7. Clean Memory: POST /api/clean_memory
         if path == "/api/clean_memory":
             cleaned = self.brain.memory.clean_memory()
             self._send_json(cleaned)
             return
 
-        # 5. OpenAI-Compatible: POST /v1/chat/completions
+        # 8. OpenAI-Compatible: POST /v1/chat/completions
         if path == "/v1/chat/completions":
             messages = body.get("messages", [])
             last_prompt = messages[-1].get("content", "") if messages else "Hello"
@@ -224,7 +255,8 @@ def run_webui_server(port: int = None, host: str = "0.0.0.0"):
 
     print(f"============================================================")
     print(f"🍃 MintPilot Open WebUI active on: http://127.0.0.1:{target_port}")
-    print(f"Mode: {WebUIRequestHandler.brain.permissions.mode.upper()} | OpenAI API: http://127.0.0.1:{target_port}/v1")
+    print(f"Mode: {WebUIRequestHandler.brain.permissions.mode.upper()} | Security Guardian: ACTIVE")
+    print(f"OpenAI API: http://127.0.0.1:{target_port}/v1")
     print(f"============================================================")
     try:
         httpd.serve_forever()
