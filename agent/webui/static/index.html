@@ -586,6 +586,21 @@
           const snapEl = document.getElementById('snapCountText');
           if (snapEl) snapEl.innerText = `${cb.available_snapshots || 0} available`;
         }
+
+        // Digital Immune System Telemetry
+        if (data.immune_summary) {
+          const imm = data.immune_summary;
+          const imSc = document.getElementById('immuneScoreText');
+          if (imSc) imSc.innerText = `${imm.resilience_score}/100 (${imm.grade})`;
+          const abCt = document.getElementById('antibodyCountText');
+          if (abCt) abCt.innerText = `${imm.total_antibodies} synthesized`;
+          const fpCt = document.getElementById('fingerprintCountText');
+          if (fpCt) fpCt.innerText = `${imm.recorded_fingerprints_count} indexed`;
+          const bpCt = document.getElementById('bannedIpsText');
+          if (bpCt) bpCt.innerText = `${imm.banned_hostile_ips?.length || 0} null-routed`;
+          const dsCt = document.getElementById('dynSigCountText');
+          if (dsCt) dsCt.innerText = `${imm.custom_threat_signatures_count || 0} active`;
+        }
       } catch(e) {}
     }
 
@@ -599,8 +614,9 @@
     async function counterThreats() {
       const res = await fetch('/api/counter_threats', { method: 'POST' });
       const data = await res.json();
-      alert(`⚔️ Active Counter-Defense Executed!\nThreats Countered: ${data.countered_count}\nMode: ${data.mode_executed}`);
+      alert(`⚔️ Active Counter-Defense Executed!\nThreats Countered: ${data.countered_count}\nAntibodies Synthesized: ${data.antibodies_synthesized || 0}\nMode: ${data.mode_executed}`);
       loadSecurityData();
+      refreshStatus();
     }
 
     async function deployDecoys() {
@@ -626,6 +642,14 @@
       loadSecurityData();
     }
 
+    async function hardenForFutureAttacks() {
+      const res = await fetch('/api/harden_future', { method: 'POST' });
+      const data = await res.json();
+      alert(`🛡️ Future Attack Hardening Complete!\n\n${data.message}\n• Hardened Parameters: ${data.kernel_defense.hardened_parameters}\n• Total Synthesized Antibodies: ${data.immune_status.total_antibodies}\n• Resilience Grade: ${data.immune_status.grade}`);
+      loadSecurityData();
+      refreshStatus();
+    }
+
     // Refresh Telemetry & Status
     async function refreshStatus() {
       try {
@@ -641,6 +665,25 @@
         }
         if (data.security) {
           document.getElementById('secScoreBadge').innerText = `🛡️ Security: ${data.security.security_score}/100`;
+
+          if (data.security.defcon) {
+            const d = data.security.defcon;
+            const defEl = document.getElementById('defconBadge');
+            if (defEl) {
+              defEl.innerText = `🚨 ${d.status.split(' ')[0]} ${d.status.split(' ')[1]}`;
+              defEl.title = `${d.status}: ${d.description}`;
+              defEl.style.borderColor = d.color;
+              defEl.style.color = d.color;
+            }
+          }
+          if (data.security.immune_summary) {
+            const imm = data.security.immune_summary;
+            const immEl = document.getElementById('immuneBadge');
+            if (immEl) {
+              immEl.innerText = `🧬 Immune: ${imm.resilience_score}% (${imm.total_antibodies} Ab)`;
+              immEl.title = `Digital Immune Resilience: ${imm.grade} | ${imm.total_antibodies} active antibodies synthesized`;
+            }
+          }
         }
         if (data.smoothness) {
           const s = data.smoothness;
