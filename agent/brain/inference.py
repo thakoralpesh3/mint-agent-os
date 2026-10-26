@@ -154,6 +154,13 @@ class AgentBrain:
                 "result": protos
             }
 
+        if any(w in p for w in ["edith scan", "tactical scan", "target scan", "orbital scan", "scan targets"]):
+            scan_res = self.marvel.edith_tactical_scan()
+            return {
+                "thought": scan_res["thought"],
+                "result": scan_res
+            }
+
         # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
             res = self.security.scan_and_counter_threats()
