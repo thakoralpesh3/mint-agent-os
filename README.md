@@ -1,28 +1,42 @@
 # 🍃 Linux Mint AI Agent Edition (MintPilot OS)
 
 [![GitHub](https://img.shields.io/badge/GitHub-thakoralpesh3%2Fmint--agent--os-181717?logo=github)](https://github.com/thakoralpesh3/mint-agent-os)
-[![OS](https://img.shields.io/badge/Base_OS-Linux_Mint_22.3-87cf3e?logo=linuxmint)](https://linuxmint.com/)
+[![24/7 Online OS Simulator](https://img.shields.io/badge/24%2F7_Online_Simulator-Live_Demo-87cf3e?logo=linuxmint)](https://thakoralpesh3.github.io/mint-agent-os/)
+[![Base OS](https://img.shields.io/badge/Base_OS-Linux_Mint_22.3-87cf3e?logo=linuxmint)](https://linuxmint.com/)
 [![WebUI](https://img.shields.io/badge/WebUI-Open_WebUI_Offline-2ecc71)](http://localhost:8888)
 [![Turbo Mode](https://img.shields.io/badge/Execution-Turbo_Autonomous-ff4757)](https://github.com/thakoralpesh3/mint-agent-os)
 [![RAM Target](https://img.shields.io/badge/RAM_Target-2GB--4GB_Compatible-blue)](https://linuxmint.com/)
 
-An autonomous, customized **Linux Mint Operating System** featuring:
-1. **Inbuilt Offline Open WebUI Dashboard** (`http://127.0.0.1:8888`) with native OpenAI API endpoints (`/v1/chat/completions`).
-2. **Dual Operational Execution Policies**:
-   - ⚡ **Turbo Mode (Antigravity-Style)**: Unrestricted, end-to-end autonomous execution with zero permission prompts and automatic self-healing loops.
-   - 🛡️ **Safe Mode**: Intercepts sensitive operations (shell commands, file modifications, browser actions, power states) and requests interactive user confirmation.
-3. **Total Laptop & PC Control**: Controls hardware (volume, brightness, battery, Wi-Fi), manages desktop windows, moves mouse, types text, and inspects UI trees via AT-SPI.
-4. **Deep Program Automation**: Controls desktop applications (LibreOffice Writer/Calc, VLC Media Player, Nemo File Manager, Text Editors, Terminal).
-5. **Browser Control**: Works inside Firefox, Chrome, and Chromium (opens URLs, switches tabs, scrolls pages, extracts web text and links).
-6. **Strict Linux Mint 2GB-4GB RAM Compatibility**: Features an ultra-lean memory footprint (<35MB RAM for WebUI + Agent) and quantized GGUF small language models.
-7. **Continuous GitHub Conversation Sync**: Real-time background sync daemon that mirrors conversation transcripts and planning artifacts directly to GitHub.
+An autonomous, customized **Linux Mint Operating System** with an **inbuilt offline AI agent (MintPilot)**, embedded **Open WebUI**, deep **browser and program automation**, and a **24/7 online interactive desktop simulator** hosted live on GitHub!
 
 ---
 
-## 🌟 System Architecture
+## 🌐 1. Try the 24/7 Online OS Simulator Now!
+
+You can test and experience the full Linux Mint AI Agent OS directly in your browser without installing or downloading anything:
+
+👉 **[Launch Online 24/7 Linux Mint OS Simulator](https://thakoralpesh3.github.io/mint-agent-os/)**
+
+### Features of the Online Simulator:
+- **Authentic Linux Mint Cinnamon Desktop**: Move, resize, minimize, and maximize windows with authentic Cinnamon styling.
+- **Interactive MintPilot Open WebUI**: Chat with the agent, toggle **⚡ Turbo Mode vs 🛡️ Safe Mode**, and monitor live RAM/CPU gauges.
+- **Functional Bash Terminal**: Type commands (`mint-agent "volume 50%"`, `mint-agent --turbo`, `neofetch`, `free -h`, `ls -la`).
+- **Simulated Firefox Browser & Nemo Files**: Explore web content and the Linux Mint file tree.
+- **Floating HUD Overlay**: Press `Super + Space` anywhere on the screen to summon the command bar!
+
+---
+
+## 🌟 2. System Architecture
 
 ```mermaid
 graph TD
+    subgraph Online 24/7 Cloud Simulator
+        Pages["GitHub Pages (https://thakoralpesh3.github.io/mint-agent-os/)"] --> WebSim["Interactive Linux Mint Cinnamon Simulator"]
+        WebSim --> SimWebUI["Simulated Open WebUI"]
+        WebSim --> SimTerm["Simulated Bash Terminal (mint-agent)"]
+        WebSim --> SimHUD["Simulated Floating HUD (Super+Space)"]
+    end
+
     subgraph User Control Interfaces
         WebUI["Inbuilt Offline Open WebUI (http://localhost:8888)"]
         HUD["Desktop HUD Overlay (Super+Space)"]
@@ -68,11 +82,11 @@ graph TD
 
 ---
 
-## ⚡ 1. Turbo Mode vs Safe Mode (Antigravity-Style)
+## ⚡ 3. Turbo Mode vs Safe Mode (Antigravity-Style)
 
 MintPilot features two distinct execution policies:
 
-| Feature | ⚡ Turbo Mode (Autonomous) | 🛡️ Safe Mode (Permission Required) |
+| Feature | ⚡ Turbo Mode (Autonomous) | 🛡️ Safe Mode (Guarded) |
 | :--- | :--- | :--- |
 | **Philosophy** | Antigravity-style autonomous multi-step execution | Guarded execution with human-in-the-loop oversight |
 | **Permission Prompts** | **None**. Executes commands and plans immediately | Prompts for approval before running modifying actions |
@@ -82,7 +96,7 @@ MintPilot features two distinct execution policies:
 
 ---
 
-## 🌐 2. Inbuilt Offline Open WebUI Dashboard
+## 🌐 4. Inbuilt Offline Open WebUI Dashboard
 
 The embedded WebUI runs locally on **`http://127.0.0.1:8888`** and consumes less than **25MB RAM**:
 
@@ -101,12 +115,11 @@ The embedded WebUI runs locally on **`http://127.0.0.1:8888`** and consumes less
   - Live active desktop windows panel with "Focus Window" buttons.
 - **OpenAI-Compatible API:**
   - `GET /v1/models`
-  - `POST /v1/chat/completions`  
-  *(Allows external Open WebUI or third-party LLM clients to point directly to `http://localhost:8888/v1`)*
+  - `POST /v1/chat/completions`
 
 ---
 
-## 💻 3. Laptop, Program & Browser Capabilities
+## 💻 5. Laptop, Program & Browser Capabilities
 
 | Subsystem | Capabilities | Underlying Tooling |
 | :--- | :--- | :--- |
@@ -126,7 +139,7 @@ The embedded WebUI runs locally on **`http://127.0.0.1:8888`** and consumes less
 
 ---
 
-## 🧠 4. Strict Linux Mint PC Compatibility (2GB-4GB RAM)
+## 🧠 6. Strict Linux Mint PC Compatibility (2GB-4GB RAM)
 
 MintPilot is tuned to meet and respect official Linux Mint system requirements:
 
@@ -139,7 +152,7 @@ MintPilot is tuned to meet and respect official Linux Mint system requirements:
 
 ---
 
-## 🚀 5. Quick Start: Testing on Your System
+## 🚀 7. Quick Start: Testing Locally
 
 ### 1. Launch the Inbuilt Open WebUI Dashboard:
 ```bash
@@ -159,20 +172,11 @@ python3 agent/cli.py --safe "$ echo 'Testing Safe Mode'"
 
 # Free RAM / Clean Caches
 python3 agent/cli.py --clean-ram
-
-# Display Hardware Tier & Memory Stats
-python3 agent/cli.py --tier
-```
-
-### 3. Launch Floating HUD Overlay:
-```bash
-python3 agent/ui/hud_overlay.py
-# (Summonable via Super + Space)
 ```
 
 ---
 
-## 💿 6. Building the Custom Linux Mint OS ISO
+## 💿 8. Building the Custom Linux Mint OS ISO
 
 To build the bootable Linux Mint OS ISO with MintPilot and Open WebUI pre-installed:
 
@@ -192,6 +196,6 @@ sudo dd if=LinuxMint-AI-Agent-Edition.iso of=/dev/sdX bs=4M status=progress conv
 
 ---
 
-## 🔄 7. Continuous GitHub Conversation Auto-Sync
+## 🔄 9. Continuous GitHub Conversation Auto-Sync
 
 The background daemon ([`sync/sync_daemon.py`](file:///home/alpesh/mint-agent-os/sync/sync_daemon.py)) runs persistently in the background. Every conversation turn, plan, and code change is automatically formatted into [`conversation/CONVERSATION.md`](file:///home/alpesh/mint-agent-os/conversation/CONVERSATION.md) and pushed to [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os).
