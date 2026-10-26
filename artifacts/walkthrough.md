@@ -322,7 +322,29 @@ mint-agent "Edith, status"
 ### 4. 24/7 Simulator Integration (Window 8: `#win-marvel`)
 - **Desktop Icon**: `🤖 Stark Agents` opens the Stark Industries Headquarters window.
 - **Start Menu**: Integrated launcher under "Marvel Series AI Agents".
-- **Header Badges**: Quick 1-click status badge `🤖 JARVIS [STARK]` and `⚡ Stark Protocols`.
+- **Header Badges**: Quick 1-click status badge `🤖 JARVIS [STARK]` and `🎙️ Voice Wake`.
 - **Live Voice Speech Synthesis**: Personas speak with their authentic regional accents (`en-GB`, `en-IE`, `en-US`), rates, and pitches using the browser's Web Speech API.
+- **Hands-Free Microphone Voice Wake**: Click `🎙️ Voice Wake` to speak directly ("Hey Jarvis", "Friday, scan threats", "Edith scan") via browser microphone with real-time intent processing.
+- **Holographic Arc-Reactor Visualizer**: Dual HTML5 canvas rendering (mini 48x48 icon & large 220x220 telemetry canvas) with rotating gear rings, energy coils, and audio-reactive pulse animation.
+- **E.D.I.T.H. Orbital Tactical AR Grid Scanner**: Real-time tactical scan classifying network sockets, remote ingress IPs, and desktop processes with interactive `Sever Socket` and `Null-Route IP` triggers.
+- **House Party Multi-Agent Defense Deck**: Coordinated deployment of all 5 Marvel agents simultaneously with individual and team vocal reports.
 - Live URL: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
 
+### 5. New CLI & Terminal Matrix Commands
+
+```bash
+# Simultaneous coordinated deployment of all 5 Marvel Agents
+mint-agent --house-party
+
+# Orbital tactical AR grid scan
+mint-agent --edith-scan
+
+# List all available Marvel Agents & accents
+mint-agent --list-personas
+
+# Switch active persona
+mint-agent --persona friday
+
+# Execute Stark Emergency Contingency
+mint-agent --protocol instant_kill
+```
