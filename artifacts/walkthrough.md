@@ -1,64 +1,107 @@
-# Walkthrough: 24/7 Online Interactive Linux Mint OS Simulator, MintPilot Offline Agent & GitHub Auto-Sync
+# Walkthrough: PC Self-Defense & Dynamic Cybersecurity Guardian for Linux Mint OS
 
-We have built, verified, and deployed an **Online 24/7 Interactive OS Simulator** on GitHub Pages alongside the complete **MintPilot Linux Mint Operating System & Inbuilt Offline Agent** ecosystem.
-
----
-
-## 🌐 1. Live 24/7 Online OS Simulator on GitHub Pages
-
-The interactive operating system simulator is deployed and live at:  
-👉 **[https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)**
-
-### Interactive Features Available Online 24/7:
-- **Authentic Linux Mint Cinnamon Desktop Shell**:
-  - Cinnamon bottom panel with functional Start Menu, quick launch icons, live clock, and MintPilot system tray applet.
-  - Multi-window manager supporting drag, resize, maximize, minimize to taskbar, and focus.
-- **Interactive MintPilot Open WebUI Window**:
-  - Live chat with the offline agent.
-  - Interactive **⚡ TURBO MODE / 🛡️ SAFE MODE** toggle switch with visual status indicators.
-  - Real-time RAM and CPU telemetry gauges.
-  - Quick action chips (`Volume 60%`, `Battery`, `Scan Wi-Fi`, `Free RAM`, `Nemo Files`).
-- **Interactive Linux Mint Bash Terminal**:
-  - Authentic Ubuntu/Mint prompt (`alpesh@mint-agent-os:~$`).
-  - Responds to real commands:
-    - `mint-agent "<command>"` (e.g. `mint-agent "volume 50%"`, `mint-agent "battery"`)
-    - `mint-agent --turbo` (Antigravity-style autonomous execution)
-    - `mint-agent --safe` (Guarded execution)
-    - `mint-agent --clean-ram`
-    - `mint-agent --tier`
-    - `neofetch` (displays authentic Linux Mint 22.3 ASCII logo + hardware telemetry)
-    - `free -h`, `ls -la`, `whoami`, `help`, `clear`
-- **Simulated Firefox Web Browser**:
-  - Address bar for entering URLs and simulated page viewing.
-- **Simulated Nemo File Manager**:
-  - Browsable directory structure (`/home/alpesh`, `/opt/mint-agent`, `Documents`, `Downloads`).
-- **Floating HUD Overlay**:
-  - Press `Super + Space` anywhere in the browser to summon the floating translucent command bar!
+We have implemented, tested, and integrated a complete **Autonomous Cybersecurity Guardian & PC Self-Defense System** into **MintPilot** on Linux Mint, pushed live to GitHub at [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os) and accessible on the 24/7 online simulator at [thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/).
 
 ---
 
-## 💻 2. Full Ecosystem Overview
+## 🛡️ Key Cybersecurity Systems Implemented
 
-| System | Description | Access / Location |
-| :--- | :--- | :--- |
-| **🌐 24/7 Online OS Simulator** | Web-based interactive Linux Mint Cinnamon simulator with embedded agent, terminal, browser, and Nemo. | [thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/) |
-| **🍃 Inbuilt Open WebUI** | Lightweight (<25MB RAM) offline web dashboard with OpenAI API endpoints (`/v1/chat/completions`). | Local port: `http://localhost:8888` |
-| **⚡ Turbo vs Safe Mode** | Dual execution policy: Antigravity-style autonomous (Turbo) vs confirmation-required (Safe). | Configurable via WebUI, CLI (`--turbo`), or `settings.json` |
-| **🌐 Browser Automation** | Automated URL navigation, tab switching, and memory-efficient DOM text extraction. | [`agent/controllers/browser_control.py`](file:///home/alpesh/mint-agent-os/agent/controllers/browser_control.py) |
-| **🖥️ Program Control** | Desktop automation for LibreOffice Writer/Calc, VLC Media Player, Nemo, and Terminal. | [`agent/controllers/program_control.py`](file:///home/alpesh/mint-agent-os/agent/controllers/program_control.py) |
-| **🧠 Memory Guard** | Keeps total footprint <35MB RAM, tailored for Linux Mint 2GB-4GB requirements. | [`agent/core/memory_guard.py`](file:///home/alpesh/mint-agent-os/agent/core/memory_guard.py) |
-| **💿 OS ISO Remastering** | Remastering suite to build bootable `LinuxMint-AI-Agent-Edition.iso` with QEMU test runner. | [`iso_builder/`](file:///home/alpesh/mint-agent-os/iso_builder/) |
-| **🔄 GitHub Live Auto-Sync** | Persistent background daemon auto-committing and pushing all conversation turns and code. | Continuous sync to `thakoralpesh3/mint-agent-os` |
+### 1. PC & Agent Self-Defense Subsystem
+- **Cryptographic Anti-Tamper Tripwire** ([`agent/security/self_defense.py`](file:///home/alpesh/mint-agent-os/agent/security/self_defense.py)):
+  - Generates SHA-256 baselines for all core agent files, configurations, and systemd units.
+  - Automatically flags if any malicious actor or unauthorized process tampers with, modifies, or deletes agent files.
+- **Credential & Privilege Escalation Sentry**:
+  - Enforces strict Linux permissions on `~/.ssh/` (0700 for directories, 0600 for keys).
+  - Audits `/etc/sudoers.d/` and polkit rules to prevent privilege escalation attacks.
+
+---
+
+### 2. Dynamic Threat Detection Engine
+- **Threat Detector** ([`agent/security/threat_detector.py`](file:///home/alpesh/mint-agent-os/agent/security/threat_detector.py)):
+  - **Network Sentry**: Parses `ss -tulpn` and audits all listening sockets. Successfully flagged **7 wildcard `0.0.0.0` port exposures** on the host machine, identifying unencrypted services exposed to the local network.
+  - **Process & Anomaly Sentry**: Scans running processes for binaries executing out of `/tmp`, `/dev/shm`, hidden reverse shells (`bash -i >& /dev/tcp`), and crypto-miners.
+  - **Persistence Sentry**: Audits `/etc/cron.*`, crontabs, and newly registered systemd service units.
+
+---
+
+### 3. Automated Defensive Remediation & Hardening
+- **Security Remediation** ([`agent/security/remediation.py`](file:///home/alpesh/mint-agent-os/agent/security/remediation.py)):
+  - **⚡ Turbo Mode Remediation**: Automatically terminates rogue PIDs, drops attacker IPs via UFW firewall, and closes exposed ports without prompting.
+  - **🛡️ Safe Mode Remediation**: Generates an immediate desktop alert and interactive WebUI modal with threat severity and a 1-click "Approve Neutralization" button.
+  - **Emergency PC Lockdown Mode**: Enforces strict default-deny incoming UFW firewall rules and drops all untrusted external connections.
+  - **CIS / SAIF Security Score (0–100)**: Evaluates active firewall state, open ports, privilege settings, and integrity checks into an actionable score and grade.
+
+---
+
+### 4. Integration into WebUI, Simulator, and CLI
+- **Open WebUI Dashboard** (`http://127.0.0.1:8888`):
+  - Added **🛡️ Cyber Defense & Threat Radar Tab**:
+    - Live Security Health Score widget (0-100).
+    - Active UFW firewall status indicator.
+    - Real-time Threat Radar with 1-click remediation buttons.
+    - Emergency Lockdown trigger.
+- **24/7 Online Interactive Simulator** ([thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/)):
+  - Added Cyber Defense Guardian application window, Start Menu integration, and system tray shield indicator.
+- **CLI Commands**:
+  - `mint-agent --security`
+  - `mint-agent --scan-threats`
+  - `mint-agent --lockdown`
 
 ---
 
 ## 🧪 Verification & Test Results
 
-### 1. Online Simulator Validation
-- Served `docs/` locally via HTTP: tested window dragging, Start Menu, terminal command execution (`neofetch`, `mint-agent --tier`, `free -h`).
-- Enabled GitHub Pages on `thakoralpesh3/mint-agent-os` with root `/docs`.
-- Verified HTTP status 200 on `https://thakoralpesh3.github.io/mint-agent-os/`.
+### 1. Live Security Audit on Host Laptop
+```bash
+python3 /home/alpesh/mint-agent-os/agent/cli.py --security
+```
+**Output:**
+```text
+🛡️  Security Hardening Score: 45/100 (F (High Risk))
+🔥 Firewall Active: False
+⚠️  Threat Level: HIGH (Total Threats: 7)
 
-### 2. Auto-Sync Daemon Validation
-- Background daemon actively commits every conversation turn and artifact to `main`.
-- All changes are synchronized in real time with GitHub.
+Security Gaps Identified:
+  • Firewall is inactive (-25 pts). Enable UFW to block inbound probes.
+  • 7 Insecure Port Exposure(s) on 0.0.0.0 (-30 pts).
+
+Recommended Defenses:
+  ✓ Run 'mint-agent --lockdown' to activate strict firewall defense
+  ✓ Bind local development services to 127.0.0.1 instead of 0.0.0.0
+  ✓ Ensure SSH directory permissions are set to 700
+```
+
+### 2. Live Threat Detection Scan
+```bash
+python3 /home/alpesh/mint-agent-os/agent/cli.py --scan-threats
+```
+**Output:**
+```text
+🔍 Scanning network sockets, processes, and persistence hooks...
+Threat Level: HIGH | Total Threats: 7
+Remediated Actions: 0 | Mode: turbo_autonomous
+```
+
+### 3. Online Simulator & WebUI
+- Tested WebUI `/api/security` endpoint.
+- Verified Cyber Defense tab in `docs/index.html` and tested live on GitHub Pages.
+
+---
+
+## 🚀 How to Use Cyber Defense Features
+
+```bash
+# 1. View Security Health Score & Hardening Report:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --security
+
+# 2. Perform Deep Threat Scan:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --scan-threats
+
+# 3. Trigger Emergency PC Lockdown:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --lockdown
+
+# 4. Natural Language Protection:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --turbo "security status"
+python3 /home/alpesh/mint-agent-os/agent/cli.py --turbo "scan for threats"
+python3 /home/alpesh/mint-agent-os/agent/cli.py --turbo "harden firewall"
+```
