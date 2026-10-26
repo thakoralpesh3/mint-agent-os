@@ -89,6 +89,71 @@ class AgentBrain:
         """
         p = prompt.strip().lower()
 
+        # Step A: Name-based Marvel Agent Invocation (e.g. "Jarvis, scan threats", "Friday, lockdown")
+        marvel_prefix_match = re.match(r"^(jarvis|friday|edith|vision|karen)[,\s]+(.+)$", p)
+        if marvel_prefix_match:
+            invoked_persona = marvel_prefix_match.group(1)
+            self.marvel.set_persona(invoked_persona)
+            p = marvel_prefix_match.group(2).strip()
+
+        # Step B: Marvel Persona Identification & Switching
+        if any(w in p for w in ["who are you", "what is your name", "what are you", "identify yourself"]):
+            persona = self.marvel.get_active_persona()
+            return {
+                "thought": f"I am {persona['name']} ({persona['title']}). {persona['greeting']}",
+                "result": {
+                    "active_agent": persona["name"],
+                    "title": persona["title"],
+                    "specialty": persona["specialty"],
+                    "available_agents": [a["name"] for a in self.marvel.list_personas()]
+                }
+            }
+
+        if any(w in p for w in ["switch to jarvis", "activate jarvis", "use jarvis", "load jarvis"]):
+            res = self.marvel.set_persona("jarvis")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
+        if any(w in p for w in ["switch to friday", "activate friday", "use friday", "load friday"]):
+            res = self.marvel.set_persona("friday")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
+        if any(w in p for w in ["switch to edith", "activate edith", "use edith", "load edith"]):
+            res = self.marvel.set_persona("edith")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
+        if any(w in p for w in ["switch to vision", "activate vision", "use vision", "load vision"]):
+            res = self.marvel.set_persona("vision")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
+        if any(w in p for w in ["switch to karen", "activate karen", "use karen", "load karen"]):
+            res = self.marvel.set_persona("karen")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
+        if any(w in p for w in ["list personas", "show personas", "marvel agents", "stark agents", "available agents"]):
+            personas = self.marvel.list_personas()
+            active = self.marvel.get_active_persona()
+            return {
+                "thought": f"Active Agent: {active['name']}. Available Marvel series agents: J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., and K.A.R.E.N.",
+                "result": {"active_agent": active["name"], "personas": personas}
+            }
+
+        # Step C: Marvel Stark Protocol Execution
+        if "protocol" in p or any(w in p for w in ["instant kill mode", "clean slate", "house party", "veronica", "barn door", "baby monitor"]):
+            for proto_key in self.marvel.PROTOCOLS:
+                if proto_key in p:
+                    proto_res = self.marvel.execute_protocol(proto_key)
+                    return {
+                        "thought": proto_res["thought"],
+                        "result": proto_res
+                    }
+
+        if any(w in p for w in ["list protocols", "available protocols", "stark protocols", "show protocols"]):
+            protos = self.marvel.list_protocols()
+            return {
+                "thought": "Available Stark Protocols: House Party, Clean Slate, Barn Door (Lockdown), Veronica (Hulkbuster Armor), Instant Kill Mode, and Baby Monitor (Safe Mode).",
+                "result": protos
+            }
+
         # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
             res = self.security.scan_and_counter_threats()
