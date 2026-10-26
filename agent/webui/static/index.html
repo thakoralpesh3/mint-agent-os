@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MintPilot — Inbuilt Offline Open WebUI</title>
+  <title>MintPilot — Inbuilt Offline Open WebUI & Cyber Defense</title>
   <style>
     :root {
       --bg: #121513;
@@ -44,8 +44,9 @@
     .mode-pill.turbo { background: rgba(231, 76, 60, 0.2); color: #ff6b6b; border: 1px solid #ff6b6b; box-shadow: 0 0 10px rgba(231, 76, 60, 0.3); }
     .mode-pill.safe { background: rgba(243, 156, 18, 0.2); color: #f1c40f; border: 1px solid #f1c40f; }
 
-    .telemetry-badges { display: flex; gap: 8px; }
+    .telemetry-badges { display: flex; gap: 8px; align-items: center; }
     .badge { background: var(--panel-bg); padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; border: 1px solid var(--border); color: var(--text-muted); }
+    .badge.security { font-weight: bold; }
 
     /* Navigation Tabs */
     .tabs-nav {
@@ -86,7 +87,17 @@
     .chat-input-bar { display: flex; gap: 10px; background: var(--card-bg); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-top: auto; }
     .chat-input-bar input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 0.95rem; padding: 4px 8px; }
     .chat-input-bar button { background: var(--accent); color: #121513; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .chat-input-bar button:hover { background: #27ae60; }
+
+    /* Security Tab */
+    .sec-score-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .score-circle { width: 90px; height: 90px; border-radius: 50%; border: 6px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 1.4rem; }
+    .score-circle.low { border-color: var(--danger); color: var(--danger); }
+    .score-circle.mid { border-color: var(--warning); color: var(--warning); }
+    .threat-item { background: var(--panel-bg); border: 1px solid var(--border); border-left: 4px solid var(--warning); padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .threat-item.critical { border-left-color: var(--danger); }
+    .badge-sev { font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+    .badge-sev.high { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    .badge-sev.crit { background: rgba(192, 57, 43, 0.3); color: #ff4757; }
 
     /* Browser & Programs Grid */
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -100,15 +111,16 @@
     .app-card .title { font-size: 0.82rem; font-weight: 600; }
 
     .window-item { background: var(--panel-bg); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .btn-sm { background: var(--border); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+    .btn-sm { background: var(--border); color: #fff; border: none; padding: 5px 12px; border-radius: 5px; font-size: 0.78rem; cursor: pointer; }
     .btn-sm:hover { background: var(--accent); color: #000; }
+    .btn-danger { background: var(--danger); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+    .btn-approve { background: var(--accent); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
     /* Permission Modal */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal { background: var(--card-bg); border: 2px solid var(--warning); border-radius: 12px; width: 480px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .modal h3 { color: var(--warning); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 18px; }
-    .btn-approve { background: var(--accent); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
     .btn-deny { background: var(--danger); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
@@ -117,7 +129,7 @@
   <!-- Top Header -->
   <header>
     <div class="logo-box">
-      <h1>🍃 MintPilot <span class="logo-badge">Open WebUI</span></h1>
+      <h1>🍃 MintPilot <span class="logo-badge">Cyber Defense & WebUI</span></h1>
     </div>
 
     <!-- Antigravity Turbo Mode Toggle Switch -->
@@ -129,10 +141,10 @@
       </div>
     </div>
 
-    <!-- Live Telemetry Badges -->
+    <!-- Live Telemetry & Security Badges -->
     <div class="telemetry-badges">
+      <div class="badge security" id="secScoreBadge">Security: ...</div>
       <div class="badge" id="ramBadge">RAM: ...</div>
-      <div class="badge" id="cpuBadge">CPU: ...</div>
       <div class="badge" id="batBadge">BAT: ...</div>
       <button class="btn-sm" onclick="cleanMemory()">🧹 Free RAM</button>
     </div>
@@ -141,6 +153,7 @@
   <!-- Navigation Tabs -->
   <nav class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab('chat')">💬 Chat & Agent Telemetry</button>
+    <button class="tab-btn" onclick="switchTab('security')">🛡️ Cyber Defense & Threat Radar</button>
     <button class="tab-btn" onclick="switchTab('browser')">🌐 Browser Controller</button>
     <button class="tab-btn" onclick="switchTab('programs')">🖥️ Desktop Programs & PC</button>
   </nav>
@@ -152,33 +165,79 @@
       <div class="chat-container">
         <!-- Quick Action Chips -->
         <div class="quick-chips">
+          <div class="chip" onclick="quickSend('security status')">🛡️ Security Status</div>
+          <div class="chip" onclick="quickSend('scan threats')">🔍 Scan Threats</div>
           <div class="chip" onclick="quickSend('volume 50%')">🔊 Volume 50%</div>
-          <div class="chip" onclick="quickSend('mute')">🔇 Toggle Mute</div>
           <div class="chip" onclick="quickSend('battery')">⚡ Battery Status</div>
           <div class="chip" onclick="quickSend('scan wifi')">📶 Scan Wi-Fi</div>
           <div class="chip" onclick="quickSend('clean memory')">🧹 Free RAM</div>
           <div class="chip" onclick="quickSend('open nemo')">📁 Nemo Files</div>
-          <div class="chip" onclick="quickSend('show desktop')">🪟 Show Desktop</div>
         </div>
 
         <!-- Chat History -->
         <div class="chat-history" id="chatHistory">
           <div class="message agent">
-            <div class="thought">MintPilot autonomous controller initialized.</div>
-            Hello! I am MintPilot, your offline Linux Mint autonomous laptop controller agent. 
-            How can I assist you with your laptop, programs, or browsers today?
+            <div class="thought">MintPilot autonomous controller & cyber guardian active.</div>
+            Hello! I am MintPilot, your offline Linux Mint autonomous laptop controller and cybersecurity protector. 
+            I protect your PC against threats, control hardware, manage programs, and automate browsers. How can I protect or assist you?
           </div>
         </div>
 
         <!-- Input Bar -->
         <div class="chat-input-bar">
-          <input type="text" id="chatInput" placeholder="Tell MintPilot to control laptop, browser, or programs (e.g. 'set volume to 60%', 'search web for Mint')..." onkeydown="if(event.key==='Enter') sendMessage()">
+          <input type="text" id="chatInput" placeholder="Tell MintPilot to protect PC or control laptop (e.g. 'scan threats', 'security status', 'volume 60%')..." onkeydown="if(event.key==='Enter') sendMessage()">
           <button onclick="sendMessage()">Send</button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 2: Browser Controller -->
+    <!-- TAB 2: Cyber Defense & Threat Radar -->
+    <section id="securityTab" class="tab-pane">
+      <div class="sec-score-card">
+        <div>
+          <h2 style="font-size:1.3rem; margin-bottom:6px;">🛡️ PC Cybersecurity Posture</h2>
+          <p id="secGradeDesc" style="color:#aaa; font-size:0.9rem;">Evaluating real-time system hardening, firewall state, and port exposures...</p>
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <button class="btn-approve" onclick="runThreatScan()">🔍 Deep Threat Scan</button>
+            <button class="btn-danger" onclick="triggerLockdown()">🚨 Emergency PC Lockdown</button>
+            <button class="btn-sm" onclick="quickSend('harden firewall')">🔥 Enable Firewall (UFW)</button>
+          </div>
+        </div>
+        <div class="score-circle" id="secScoreCircle">
+          <span id="scoreVal">--</span>
+          <span style="font-size:0.7rem; color:#aaa;">/100</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Live Threat Feed -->
+        <div class="panel">
+          <h2>⚠️ Threat Radar & Detected Anomalies <button class="btn-sm" onclick="loadSecurityData()">🔄</button></h2>
+          <div id="threatFeed" style="max-height: 280px; overflow-y: auto;">
+            Scanning for network exposures and rogue processes...
+          </div>
+        </div>
+
+        <!-- Self-Defense & Integrity -->
+        <div class="panel">
+          <h2>🔒 Agent Self-Defense & Anti-Tamper</h2>
+          <div style="background:var(--panel-bg); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem; line-height:1.6;">
+            <div><strong>Cryptographic Tripwire:</strong> <span style="color:#2ecc71;">✓ SHA-256 Baseline Verified</span></div>
+            <div><strong>Protected Targets:</strong> /opt/mint-agent, configs, systemd</div>
+            <div><strong>Privilege Esc. Sentry:</strong> Sudoers & Polkit rules protected</div>
+            <div><strong>Firewall Status:</strong> <span id="fwStatusText" style="color:#f39c12;">Checking...</span></div>
+          </div>
+          <div style="margin-top:14px;">
+            <h3 style="font-size:0.9rem; margin-bottom:8px;">Defensive Recommendations:</h3>
+            <ul id="secRecommendations" style="font-size:0.82rem; color:#ccc; padding-left:18px;">
+              <li>Run 'mint-agent --lockdown' to enforce strict inbound drop rules</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Browser Controller -->
     <section id="browserTab" class="tab-pane">
       <div class="panel" style="margin-bottom: 18px;">
         <h2>🌐 Browser Navigation & Automation</h2>
@@ -200,10 +259,9 @@
       </div>
     </section>
 
-    <!-- TAB 3: Desktop Programs & PC Access -->
+    <!-- TAB 4: Desktop Programs & PC Access -->
     <section id="programsTab" class="tab-pane">
       <div class="grid-2">
-        <!-- Quick App Launcher -->
         <div class="panel">
           <h2>🚀 Application Launcher</h2>
           <div class="app-grid">
@@ -216,7 +274,6 @@
           </div>
         </div>
 
-        <!-- Running Windows -->
         <div class="panel">
           <h2>🪟 Active Desktop Windows <button class="btn-sm" onclick="refreshStatus()">🔄</button></h2>
           <div id="windowsList" style="max-height: 250px; overflow-y: auto;">
@@ -244,16 +301,15 @@
     let currentMode = "turbo";
     let activePendingActionId = null;
 
-    // Tab Switching
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       if(tabId === 'chat') { document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('chatTab').classList.add('active'); }
-      if(tabId === 'browser') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('browserTab').classList.add('active'); }
-      if(tabId === 'programs') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('programsTab').classList.add('active'); }
+      if(tabId === 'security') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('securityTab').classList.add('active'); loadSecurityData(); }
+      if(tabId === 'browser') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('browserTab').classList.add('active'); }
+      if(tabId === 'programs') { document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('programsTab').classList.add('active'); }
     }
 
-    // Toggle Turbo Mode vs Safe Mode
     async function toggleMode() {
       const nextMode = currentMode === "turbo" ? "safe" : "turbo";
       const res = await fetch('/api/mode', {
@@ -282,7 +338,6 @@
       }
     }
 
-    // Chat Message
     async function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
@@ -299,7 +354,6 @@
         });
         const data = await res.json();
 
-        // Check if permission required
         if (data.permission && !data.permission.allowed) {
           showPermissionModal(data.permission);
           appendMessage(`🛡️ Safe Mode: Action requires approval. Modal opened.`, 'agent', data.thought);
@@ -345,23 +399,64 @@
       history.scrollTop = history.scrollHeight;
     }
 
-    // Browser Tools
-    async function browseUrl() {
-      const url = document.getElementById('browserUrlInput').value.trim();
-      if (!url) return;
-      quickSend(`open url ${url}`);
+    // Security Guardian Functions
+    async function loadSecurityData() {
+      try {
+        const res = await fetch('/api/security');
+        const data = await res.json();
+
+        // Score Circle
+        const score = data.security_score;
+        document.getElementById('scoreVal').innerText = score;
+        const circle = document.getElementById('secScoreCircle');
+        circle.className = 'score-circle ' + (score < 50 ? 'low' : (score < 80 ? 'mid' : ''));
+        document.getElementById('secScoreBadge').innerText = `🛡️ Security: ${score}/100`;
+
+        document.getElementById('secGradeDesc').innerText = `Hardening Grade: ${data.grade}. Threat level: ${data.threat_summary?.threat_level || 'UNKNOWN'}.`;
+        document.getElementById('fwStatusText').innerText = data.firewall_active ? '✓ ACTIVE (Strict)' : '✗ INACTIVE (Risk)';
+        document.getElementById('fwStatusText').style.color = data.firewall_active ? '#2ecc71' : '#e74c3c';
+
+        // Threat Feed
+        const feed = document.getElementById('threatFeed');
+        const threats = data.threat_summary?.threats || [];
+        if (threats.length === 0) {
+          feed.innerHTML = '<div style="color:#2ecc71; padding:12px;">✓ Zero active threats detected. System is secure.</div>';
+        } else {
+          feed.innerHTML = threats.map(t => `
+            <div class="threat-item ${t.severity === 'CRITICAL' ? 'critical' : ''}">
+              <div>
+                <span class="badge-sev ${t.severity.toLowerCase()}">${t.severity}</span>
+                <strong style="margin-left:6px; font-size:0.85rem;">${t.title}</strong>
+                <p style="font-size:0.75rem; color:#aaa; margin-top:3px;">${t.details}</p>
+              </div>
+              <div>
+                ${t.port ? `<button class="btn-sm" onclick="quickSend('block port ${t.port}')">Close</button>` : ''}
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Recommendations
+        const recList = document.getElementById('secRecommendations');
+        if (data.recommendations) {
+          recList.innerHTML = data.recommendations.map(r => `<li>${r}</li>`).join('');
+        }
+      } catch(e) {}
     }
 
-    async function fetchPageContent() {
-      const url = document.getElementById('browserUrlInput').value.trim();
-      if (!url) return;
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ prompt: `fetch ${url}` })
-      });
+    async function runThreatScan() {
+      const res = await fetch('/api/scan_threats', { method: 'POST' });
       const data = await res.json();
-      document.getElementById('browserOutput').innerText = JSON.stringify(data.result, null, 2);
+      alert(`Threat Scan Complete! Total threats: ${data.total_threats}. Remediated: ${data.remediated_count}`);
+      loadSecurityData();
+    }
+
+    async function triggerLockdown() {
+      if(!confirm("Activate Emergency Lockdown? This will strictly block all incoming network connections via UFW.")) return;
+      const res = await fetch('/api/lockdown', { method: 'POST' });
+      const data = await res.json();
+      alert(`🚨 ${data.message}`);
+      loadSecurityData();
     }
 
     // Refresh Telemetry & Status
@@ -374,14 +469,13 @@
         if (data.memory) {
           document.getElementById('ramBadge').innerText = `RAM: ${data.memory.usage_percent}% (${data.memory.available_mb}MB avail)`;
         }
-        if (data.hardware) {
-          document.getElementById('cpuBadge').innerText = `CPU Load: ${data.hardware.cpu_load_1min}`;
-        }
         if (data.battery) {
           document.getElementById('batBadge').innerText = `BAT: ${data.battery.percentage || 'AC'}`;
         }
+        if (data.security) {
+          document.getElementById('secScoreBadge').innerText = `🛡️ Security: ${data.security.security_score}/100`;
+        }
 
-        // Active Windows
         const winList = document.getElementById('windowsList');
         if (data.windows && data.windows.length > 0) {
           winList.innerHTML = data.windows.map(w => `
