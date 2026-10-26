@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-MintPilot CLI - Direct Command-Line Interface for Laptop Control
+MintPilot CLI - Direct Command-Line Interface for Laptop Control & Cyber Defense
 Usage:
   mint-agent "set volume to 50%"
-  mint-agent "search web for Linux Mint"
-  mint-agent "write document in libreoffice saying Hello World"
+  mint-agent --security
+  mint-agent --scan-threats
+  mint-agent --lockdown
   mint-agent --turbo "open nemo"
-  mint-agent --safe "$ rm test.txt"
   mint-agent -i
 """
 
@@ -25,8 +25,8 @@ def print_banner(brain: AgentBrain):
     mode_color = "\033[1;31m[TURBO]\033[0m" if brain.permissions.is_turbo() else "\033[1;33m[SAFE]\033[0m"
     print(f"""
 \033[1;32m╔═══════════════════════════════════════════════════════════════╗
-║                   🍃 MINTPILOT AI AGENT                       ║
-║       Autonomous Offline Laptop Controller for Linux Mint     ║
+║          🍃 MINTPILOT CYBER DEFENSE & AI CONTROLLER           ║
+║       Autonomous Offline Security Guardian for Linux Mint     ║
 ╚═══════════════════════════════════════════════════════════════╝\033[0m
   Mode: {mode_color} | Hardware Tier: \033[1;36m{brain.hardware_tier['tier_name']}\033[0m
 """)
@@ -52,18 +52,53 @@ def run_single(brain: AgentBrain, prompt: str, voice: bool = False, prompt_cli: 
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MintPilot Offline Laptop Controller")
+    parser = argparse.ArgumentParser(description="MintPilot Offline Laptop Controller & Security Guardian")
     parser.add_argument("prompt", nargs="*", help="Natural language command")
     parser.add_argument("-i", "--interactive", action="store_true", help="Launch interactive REPL session")
     parser.add_argument("-v", "--voice", action="store_true", help="Enable spoken voice reply")
     parser.add_argument("--turbo", action="store_true", help="Execute in unrestricted Antigravity Turbo Mode (no permission prompts)")
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
+    parser.add_argument("--security", action="store_true", help="Display full cybersecurity posture score and threat audit")
+    parser.add_argument("--scan-threats", action="store_true", help="Scan for network exposures, rogue processes, and persistence")
+    parser.add_argument("--lockdown", action="store_true", help="Enforce strict autonomous emergency firewall lockdown")
     parser.add_argument("--tier", action="store_true", help="Display detected hardware tier and recommendations")
     parser.add_argument("--clean-ram", action="store_true", help="Clean cache and free RAM")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
+
+    if args.security:
+        print_banner(brain)
+        posture = brain.security.get_full_security_posture()
+        print(f"🛡️  Security Hardening Score: \033[1;32m{posture['security_score']}/100 ({posture['grade']})\033[0m")
+        print(f"🔥 Firewall Active: {posture['firewall_active']}")
+        print(f"⚠️  Threat Level: {posture['threat_summary']['threat_level']} (Total Threats: {posture['threat_summary']['total_threats']})")
+        if posture['penalties']:
+            print("\nSecurity Gaps Identified:")
+            for p in posture['penalties']:
+                print(f"  • \033[1;33m{p}\033[0m")
+        if posture['recommendations']:
+            print("\nRecommended Defenses:")
+            for r in posture['recommendations']:
+                print(f"  ✓ {r}")
+        return
+
+    if args.scan_threats:
+        print_banner(brain)
+        print("🔍 Scanning network sockets, processes, and persistence hooks...")
+        res = brain.security.scan_and_remediate()
+        print(f"Threat Level: \033[1;31m{res['threat_level']}\033[0m | Total Threats: {res['total_threats']}")
+        print(f"Remediated Actions: {res['remediated_count']} | Mode: {res['mode_executed']}")
+        print(json.dumps(res, indent=2))
+        return
+
+    if args.lockdown:
+        print_banner(brain)
+        res = brain.security.lockdown()
+        print(f"🚨 \033[1;31m{res['message']}\033[0m")
+        print(json.dumps(res, indent=2))
+        return
 
     if args.clean_ram:
         res = brain.memory.clean_memory()
@@ -86,7 +121,7 @@ def main():
 
     # Interactive Mode
     print_banner(brain)
-    print("Commands: 'turbo mode', 'safe mode', 'clean ram', 'exit'\n")
+    print("Commands: 'security', 'scan threats', 'lockdown', 'turbo mode', 'safe mode', 'exit'\n")
 
     while True:
         try:

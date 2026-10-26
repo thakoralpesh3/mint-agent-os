@@ -1,0 +1,8 @@
+{
+  "/home/alpesh/mint-agent-os/agent/main.py": "99057b81ebfada8d9b2e6fdeaac67f4e539face2bf40941cf4d9c9eb0c30f0fa",
+  "/home/alpesh/mint-agent-os/agent/cli.py": "4e1b23a21b91ee6911453f0676246b86b86d6e559c8ad129f6aec787312fbe96",
+  "/home/alpesh/mint-agent-os/agent/brain/inference.py": "22201bf45535ea4fa8de50c6db5553d5012c0107f0168a0240cc16d52589dc4f",
+  "/home/alpesh/mint-agent-os/agent/core/permission_manager.py": "99e001b6ab2f027e7e622784d7b4752b93845d76220e28dc121db64d4de20e95",
+  "/home/alpesh/mint-agent-os/agent/config/settings.json": "7e51f86cdabaf298c2f55d35f29a1f37c8ebea4d762acd50e32ac0f6a5fe5402",
+  "/home/alpesh/mint-agent-os/iso_builder/configs/mint-agent.service": "f55900d78d8f575b7536de81a7a424f9f0e13263f0323dfb4f6f6bdc8512389d"
+}
