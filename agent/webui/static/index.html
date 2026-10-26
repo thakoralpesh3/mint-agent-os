@@ -610,6 +610,14 @@
         if (data.security) {
           document.getElementById('secScoreBadge').innerText = `🛡️ Security: ${data.security.security_score}/100`;
         }
+        if (data.smoothness) {
+          const s = data.smoothness;
+          const badge = document.getElementById('smoothnessBadge');
+          if (badge) {
+            badge.innerText = `🍃 Smooth: ${s.score}% (${s.grade.split(' ')[0]})`;
+            badge.title = `Linux Mint Smoothness: ${s.grade} | Agent RAM: ${s.agent_footprint?.agent_rss_mb}MB`;
+          }
+        }
         if (data.active_model) {
           const am = data.active_model;
           const badge = document.getElementById('aiModelBadge');
