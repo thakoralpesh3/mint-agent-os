@@ -65,6 +65,8 @@ def main():
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
     parser.add_argument("--persona", type=str, choices=["jarvis", "friday", "edith", "vision", "karen"], help="Switch Marvel AI Agent persona (Jarvis, Friday, Edith, Vision, Karen)")
     parser.add_argument("--protocol", type=str, help="Execute Marvel Stark Protocol (e.g. 'house party', 'clean slate', 'veronica', 'instant kill', 'barn door')")
+    parser.add_argument("--house-party", action="store_true", help="Execute House Party Protocol: Multi-agent 5-guardian coordinated cross-talk sweep")
+    parser.add_argument("--edith-scan", action="store_true", help="Execute E.D.I.T.H. Orbital Tactical Grid Scan across ports and processes")
     parser.add_argument("--list-personas", action="store_true", help="List all Marvel Series AI Agent personas available in Linux Mint")
     parser.add_argument("--list-protocols", action="store_true", help="List all Stark Protocols available for autonomous OS execution")
     parser.add_argument("--interaction", action="store_true", help="Display all user interaction options, modalities, and active settings")
