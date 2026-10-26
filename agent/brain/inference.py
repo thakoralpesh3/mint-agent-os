@@ -486,40 +486,55 @@ class AgentBrain:
             }
 
         # Step 1: Fast Intent
+        res = None
         fast_res = self.match_fast_intent(user_prompt, prompt_cli=prompt_cli)
         if fast_res:
             elapsed = round((time.time() - start_time) * 1000, 2)
             fast_res["latency_ms"] = elapsed
             fast_res["execution_mode"] = "deterministic_sub_millisecond"
             fast_res["permission_mode"] = self.permissions.mode
-            return fast_res
+            res = fast_res
 
         # Step 2: Direct Shell Command Check ($ or !)
-        if user_prompt.startswith("!") or user_prompt.startswith("$"):
+        elif user_prompt.startswith("!") or user_prompt.startswith("$"):
             cmd = user_prompt[1:].strip()
             perm = self.permissions.check_permission("terminal_execute", {"command": cmd}, prompt_cli=prompt_cli)
             if not perm.get("allowed"):
-                return {
+                res = {
                     "thought": f"Safe Mode: Awaiting approval to execute bash command: '{cmd}'",
                     "permission": perm,
                     "execution_mode": "permission_blocked",
                     "latency_ms": round((time.time() - start_time) * 1000, 2)
                 }
-            return {
-                "thought": f"Direct shell execution: {cmd}",
-                "result": self.terminal.execute(cmd),
-                "execution_mode": "terminal_direct",
-                "permission_mode": self.permissions.mode,
-                "latency_ms": round((time.time() - start_time) * 1000, 2)
-            }
+            else:
+                res = {
+                    "thought": f"Direct shell execution: {cmd}",
+                    "result": self.terminal.execute(cmd),
+                    "execution_mode": "terminal_direct",
+                    "permission_mode": self.permissions.mode,
+                    "latency_ms": round((time.time() - start_time) * 1000, 2)
+                }
 
         # Step 3: Local SLM Reasoning Fallback
-        slm_res = self._execute_slm_reasoning(user_prompt)
-        elapsed = round((time.time() - start_time) * 1000, 2)
-        slm_res["latency_ms"] = elapsed
-        slm_res["execution_mode"] = "slm_autonomous_planner"
-        slm_res["permission_mode"] = self.permissions.mode
-        return slm_res
+        else:
+            slm_res = self._execute_slm_reasoning(user_prompt)
+            elapsed = round((time.time() - start_time) * 1000, 2)
+            slm_res["latency_ms"] = elapsed
+            slm_res["execution_mode"] = "slm_autonomous_planner"
+            slm_res["permission_mode"] = self.permissions.mode
+            res = slm_res
+
+        # Interaction Feedback: Offline Voice Synthesis & Desktop Notification
+        if res and "thought" in res:
+            p_low = user_prompt.lower()
+            if self.interaction.voice_settings.get("enabled"):
+                if not any(w in p_low for w in ["mute", "disable voice", "silent voice", "voice off"]):
+                    self.voice.speak(res["thought"])
+
+            if self.interaction.modality == "notification":
+                self.interaction.send_desktop_notification("MintPilot", res["thought"])
+
+        return res
 
     def _execute_slm_reasoning(self, prompt: str) -> Dict[str, Any]:
         """Executes reasoning using local model backend or safe fallback."""
