@@ -12,16 +12,49 @@ from agent.security.threat_detector import ThreatDetector
 from agent.security.remediation import SecurityRemediation
 from agent.security.counter_measures import ThreatCounterMeasures
 from agent.security.self_counter import SelfCounterCircuitBreaker
+from agent.security.immune_system import ImmuneSystem
 from agent.core.permission_manager import PermissionManager
 
 
 class SecurityGuardian:
     """The chief cybersecurity protector for the PC and MintPilot."""
 
+    DEFCON_MATRIX = {
+        "CRITICAL": {
+            "level": 1,
+            "status": "DEFCON 1 (CRITICAL ATTACK)",
+            "color": "#e74c3c",
+            "posture": "AUTONOMOUS_LOCKDOWN",
+            "description": "Active intrusion detected. Hostile sockets severed, rogue PIDs terminated, emergency lockdown armed."
+        },
+        "HIGH": {
+            "level": 2,
+            "status": "DEFCON 2 (ELEVATED THREAT)",
+            "color": "#e67e22",
+            "posture": "ACTIVE_COUNTER_DEFENSE",
+            "description": "Hostile probes or suspicious execution detected. TCP RST disruptor and canary honeytokens active."
+        },
+        "MEDIUM": {
+            "level": 3,
+            "status": "DEFCON 3 (ADVISORY RISK)",
+            "color": "#f39c12",
+            "posture": "ELEVATED_SENTRY",
+            "description": "Insecure wildcard exposure detected. Proactive watchdogs accelerated to 5-second polling."
+        },
+        "SECURE": {
+            "level": 4,
+            "status": "DEFCON 4 (PEACETIME HARDENED)",
+            "color": "#2ecc71",
+            "posture": "STEALTH_MONITORING",
+            "description": "Zero active threats. Kernel stack hardened, tripwires intact, swappiness butter-smooth."
+        }
+    }
+
     def __init__(self, permission_manager: Optional[PermissionManager] = None):
         self.permissions = permission_manager or PermissionManager()
+        self.immune = ImmuneSystem()
         self.self_defense = SelfDefenseGuardian()
-        self.detector = ThreatDetector()
+        self.detector = ThreatDetector(immune_system=self.immune)
         self.remediation = SecurityRemediation()
         self.counter_measures = ThreatCounterMeasures()
         self.self_counter = SelfCounterCircuitBreaker()
@@ -33,16 +66,22 @@ class SecurityGuardian:
         threats = self.detector.scan_all_threats()
         score = self.remediation.calculate_security_score(threats, integrity)
         circuit = self.self_counter.get_circuit_status()
+        immune_status = self.immune.get_immune_status()
+
+        t_level = threats.get("threat_level", "SECURE")
+        defcon = self.DEFCON_MATRIX.get(t_level, self.DEFCON_MATRIX["SECURE"])
 
         return {
             "security_score": score["score"],
             "grade": score["grade"],
             "badge_color": score["badge_color"],
+            "defcon": defcon,
             "firewall_active": score["firewall_active"],
             "threat_summary": threats,
             "integrity_summary": integrity,
             "privilege_summary": credentials,
             "circuit_breaker": circuit,
+            "immune_summary": immune_status,
             "penalties": score["penalties"],
             "recommendations": score["recommendations"],
             "mode": self.permissions.mode
