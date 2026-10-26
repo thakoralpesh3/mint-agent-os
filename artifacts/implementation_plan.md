@@ -1,19 +1,21 @@
-# Implementation Plan: Autonomous PC Self-Defense & Dynamic Threat Protection Guardian for Linux Mint OS
+# Implementation Plan: Active Counter-Defense & Agent Self-Countering Safety Circuit Breaker
 
-This plan details the implementation of an autonomous **Cybersecurity Guardian & PC Defense System** embedded directly into **MintPilot** on Linux Mint, enabling the agent to protect the computer, defend itself against tampering, detect cyber threats dynamically, and execute defensive mitigations autonomously.
+This update introduces two advanced defense systems to **MintPilot**:
+1. **Active Threat Counter-Measures (Counter-Defense)**: Active intruder disruption, TCP RST socket killing, attacker IP tarpitting, and canary decoy honeypots that trap and neutralize adversaries in real time.
+2. **Agent Self-Countering Circuit Breaker (Countering Itself)**: An autonomous safety governor and "Dead Man's Switch" that monitors MintPilot itself. If the agent enters a runaway hallucination loop, consumes excessive resources, attempts unsafe self-modification, or executes an erroneous action, it automatically **counters itself**, halts execution, and rolls back to the last known safe system snapshot.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Dynamic Threat Remediation in Turbo Mode vs Safe Mode**:
-> - **⚡ Turbo Mode (Autonomous Cyber Defense)**:
->   - When a critical threat is detected (e.g., suspicious reverse shell, rogue miner in `/tmp`, unauthorized inbound connection, or port scan), MintPilot **neutralizes the threat immediately** (terminates malicious process, blocks IP via UFW firewall, isolates port) and logs the action without interrupting the user.
-> - **🛡️ Safe Mode (Guarded Alerting)**:
->   - MintPilot generates an immediate desktop alert and Open WebUI modal showing Threat Severity, attack vector, and a 1-click **"Approve Neutralization"** button before taking defensive action.
-> - **Self-Defense Architecture**:
->   - MintPilot protects its own systemd services, binaries, GGUF models, and configuration files using cryptographic SHA-256 tripwires and inotify watchdog monitoring.
+> **Active Counter-Defense & Self-Countering Safety Architecture**:
+> - **Active Threat Counter-Measures**:
+>   - **Socket Disruption**: Immediately drops and severs established connections from attacker IPs using `ss -K` / `iptables REJECT --reject-with tcp-reset`.
+>   - **Canary Decoy Honeypots**: Deploys lightweight decoy credentials (`~/.config/mint-agent/canary.token`) that act as intrusion tripwires; any unauthorized process attempting to read them triggers an immediate autonomous counter-lockdown.
+> - **Self-Countering Circuit Breaker (AI Safety Governor)**:
+>   - **Runaway Loop Detection**: If MintPilot's own processes exceed predefined CPU (>75% for 60s) or memory thresholds, the circuit breaker counters the agent itself by throttling and resetting the reasoning state.
+>   - **Configuration Rollback Snapshots**: Automatically captures micro-snapshots of configuration and system state before making changes; if a change causes a failure, it autonomously rolls back to the previous snapshot.
 
 ---
 
@@ -21,109 +23,81 @@ This plan details the implementation of an autonomous **Cybersecurity Guardian &
 
 ```mermaid
 graph TD
-    subgraph PC Self-Defense & Tamper Resistance
-        Tripwire["SHA-256 Integrity Tripwire (/opt/mint-agent, configs)"] --> SelfWatchdog["Watchdog & Process Respawn"]
-        CredShield["Credential & SSH Key Protection (~/.ssh, /etc/sudoers)"] --> SelfWatchdog
+    subgraph Active Counter-Defense (Countering Threats)
+        ThreatDetector["Threat Sentry (Intruders, Scanners)"] --> CounterRouter{"Counter-Defense Router"}
+        CounterRouter --> TCPKill["Socket Disruption (TCP RST / ss -K)"]
+        CounterRouter --> Tarpit["Attacker IP Tarpit & Drop"]
+        CounterRouter --> DecoyTraps["Canary Honeypot Decoys (Tripwire Alarms)"]
     end
 
-    subgraph Dynamic Threat Detection Engine
-        NetAudit["Network Sentry (Port Scanning, Insecure 0.0.0.0 Bindings, Rogue Sockets)"]
-        ProcAudit["Process Sentry (Reverse Shells, High-CPU Crypto-miners, /tmp Binaries)"]
-        PersistAudit["Persistence Sentry (Rogue Cron Jobs, Systemd Units, SUID Binaries)"]
+    subgraph Self-Countering Circuit Breaker (Countering Itself)
+        AgentWatchdog["Independent Safety Watchdog"] --> BehavioralAudit["Agent Resource & Loop Audit"]
+        BehavioralAudit --> AnomalyDetector{"Runaway Loop / Hallucination?"}
+        AnomalyDetector -->|Yes| SelfHalt["Counter Itself: Throttle Process & Reset Loop"]
         
-        NetAudit --> ThreatClassifier{"Threat Severity Engine (CRITICAL / HIGH / MEDIUM)"}
-        ProcAudit --> ThreatClassifier
-        PersistAudit --> ThreatClassifier
+        StateSnapshot["Pre-Action Snapshot Engine"] --> Rollback["Autonomous State Rollback"]
+        AnomalyDetector -->|Corrupted State| Rollback
     end
 
-    subgraph Defense & Remediation Policy
-        ThreatClassifier --> ModeCheck{"Mode Check"}
-        ModeCheck -->|⚡ Turbo Mode| AutoNeutralize["Autonomous Remediation (Kill PID, UFW Deny IP, Close Port)"]
-        ModeCheck -->|🛡️ Safe Mode| UserAlert["Interactive Alert Modal (Approve Mitigation)"]
-        
-        LockdownMode["Emergency Lockdown Mode (Strict Firewall, Terminate Rogue Conns)"]
+    subgraph Integration
+        CounterRouter --> WebUI["Open WebUI: Counter-Measures Panel"]
+        SelfHalt --> WebUI
+        CounterRouter --> Simulator["24/7 Online Simulator"]
     end
-
-    subgraph Interfaces
-        WebUI["Open WebUI: Cyber Defense Tab (Security Score /100)"]
-        Simulator["24/7 Online Simulator Security Dashboard"]
-        CLI["CLI: mint-agent --scan-threats / --lockdown"]
-    end
-
-    AutoNeutralize --> WebUI
-    UserAlert --> WebUI
-    AutoNeutralize --> CLI
 ```
 
 ---
 
 ## Proposed Changes
 
-### 1. Security Guardian & PC Self-Defense Engine
+### 1. Active Threat Counter-Measures Engine
 
-#### [NEW] [agent/security/self_defense.py](file:///home/alpesh/mint-agent-os/agent/security/self_defense.py)
-- Protects MintPilot itself:
-  - Generates and verifies SHA-256 checksums of core binaries, config files, and systemd services.
-  - Monitors and verifies `/etc/sudoers.d/`, polkit rules, and SSH authorized keys against tampering.
-  - Automatic self-healing: restores corrupted or tampered configs from internal verified backups.
-
-#### [NEW] [agent/security/threat_detector.py](file:///home/alpesh/mint-agent-os/agent/security/threat_detector.py)
-- Real-time threat detection:
-  - **Insecure Bindings**: Scans `ss -tulpn` for unauthenticated services listening on `0.0.0.0` instead of `127.0.0.1`.
-  - **Rogue Processes**: Flags processes executing from `/tmp`, `/dev/shm`, hidden reverse shells (`nc -e`, `bash -i >& /dev/tcp`), and abnormal CPU spikes.
-  - **Unauthorized Persistence**: Scans cron directories (`/etc/cron.*`, `/var/spool/cron/crontabs`), new systemd units, and rogue SUID binaries (`find / -perm -4000`).
-  - **Brute-Force & Network Intrusions**: Detects connection floods and unauthorized external SSH/RDP/HTTP attempts.
-
-#### [NEW] [agent/security/remediation.py](file:///home/alpesh/mint-agent-os/agent/security/remediation.py)
-- Autonomous defensive remediation:
-  - `block_ip(ip_address)`: Configures UFW/iptables to immediately drop traffic from hostile IP.
-  - `terminate_threat(pid)`: Force-kills malicious process and removes malicious file executable bit.
-  - `lockdown_system()`: Enables strict UFW firewall (`default deny incoming`, `default allow outgoing`), closes exposed test ports, and restricts sensitive directory permissions.
-  - `calculate_security_score()`: Computes an overall Cyber Hardening Score (0-100) based on CIS benchmarks and active posture.
+#### [NEW] [agent/security/counter_measures.py](file:///home/alpesh/mint-agent-os/agent/security/counter_measures.py)
+- **Active Socket Disruption**: Uses `ss -K dst <IP>` and `iptables` to immediately sever active malicious sessions.
+- **Canary Honeypot Traps**: Deploys fake decoy files in `~/.aws/credentials.canary` or `~/.ssh/canary_key`. An inotify watcher triggers immediate counter-isolation if touched.
+- **Tarpit & Blacklisting**: Enforces persistent firewall drop rules against repeat offender IPs.
 
 ---
 
-### 2. Integration with Agent Brain & Controllers
+### 2. Agent Self-Countering Circuit Breaker
+
+#### [NEW] [agent/security/self_counter.py](file:///home/alpesh/mint-agent-os/agent/security/self_counter.py)
+- **Dead Man's Switch & Safety Governor**:
+  - Monitors MintPilot's child processes, CPU usage, and reasoning iteration counters.
+  - If a loop exceeds 10 rapid repetitive tool calls or CPU spikes past safe limits, the governor **counters the agent itself**, pauses the agent, and outputs a diagnostic trace.
+- **Pre-Action Snapshot & Rollback**:
+  - Captures configuration state (`settings.json`, firewall rules, network profiles) before executing multi-step operations.
+  - Automatically counters and reverts unwanted state changes if an error is detected.
+
+---
+
+### 3. Integration with Brain, CLI, WebUI, and Simulator
 
 #### [MODIFY] [agent/brain/inference.py](file:///home/alpesh/mint-agent-os/agent/brain/inference.py)
-- Integrate `SecurityGuardian`:
-  - Natural language commands: `"scan for threats"`, `"security status"`, `"lockdown pc"`, `"block ip <ip>"`, `"harden firewall"`.
-  - Background periodic security heartbeat monitoring.
+- Wire `CounterMeasures` and `SelfCounterCircuitBreaker` into the cognitive dispatch loop.
+- Support natural language intents: `"counter threats"`, `"deploy decoys"`, `"self-check"`, `"rollback last change"`.
 
 #### [MODIFY] [agent/cli.py](file:///home/alpesh/mint-agent-os/agent/cli.py)
-- Add security CLI flags:
-  - `mint-agent --security` (Displays security posture score, open ports, and threats)
-  - `mint-agent --scan-threats` (Performs deep system and network threat audit)
-  - `mint-agent --lockdown` (Activates strict autonomous lockdown)
+- Add flags:
+  - `mint-agent --counter-threats`
+  - `mint-agent --deploy-decoys`
+  - `mint-agent --self-check`
+  - `mint-agent --rollback`
 
----
-
-### 3. Open WebUI & Online 24/7 Simulator Integration
-
-#### [MODIFY] [agent/webui/static/index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html)
-- Add new **🛡️ Cyber Defense Tab**:
-  - Live Security Health Score widget (e.g. `96/100 Hardened`).
-  - Active Firewall Status & Network Exposure map.
-  - Threat detection feed with 1-click "Neutralize" / "Block IP" buttons.
-  - "Lockdown PC" emergency defense switch.
-
-#### [MODIFY] [docs/index.html](file:///home/alpesh/mint-agent-os/docs/index.html) & [docs/js/agent_simulator.js](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
-- Update 24/7 online simulator with the Cyber Defense Guardian app and terminal security commands.
+#### [MODIFY] [agent/webui/static/index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html) & [docs/](file:///home/alpesh/mint-agent-os/docs/)
+- Add **Counter-Defense & Circuit Breaker status** to the Cyber Defense tab in the WebUI and the 24/7 Online Simulator.
 
 ---
 
 ## Verification Plan
 
 ### Automated Tests
-1. **Threat Scanner Test**:
-   - Run threat detection scan; verify detection of listening ports on `0.0.0.0` vs `127.0.0.1`.
-   - Verify calculation of Security Health Score (0-100).
-2. **Remediation & Self-Defense Test**:
-   - Test self-defense SHA-256 verification of `/opt/mint-agent`.
-   - Test UFW status query and firewall rule verification.
-   - Verify Turbo Mode auto-neutralization vs Safe Mode confirmation prompting.
+1. **Canary Trap Test**:
+   - Deploy canary decoy; trigger access and verify immediate counter-alarm.
+2. **Self-Countering Circuit Breaker Test**:
+   - Simulate a runaway loop (e.g. 15 repetitive iterations); verify the circuit breaker intercepts and halts execution.
+   - Test pre-action snapshot creation and successful rollback.
 3. **WebUI & Simulator Test**:
-   - Test `/api/security` endpoint response.
-   - Verify Cyber Defense tab rendering in local WebUI and 24/7 online simulator.
+   - Verify `/api/security` returns counter-measure and self-defense telemetry.
 4. **GitHub Auto-Sync**:
-   - Verify automatic push of all security modules to `thakoralpesh3/mint-agent-os`.
+   - Verify all modules push to `thakoralpesh3/mint-agent-os`.
