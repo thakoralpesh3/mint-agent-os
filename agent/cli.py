@@ -63,10 +63,53 @@ def main():
     parser.add_argument("--lockdown", action="store_true", help="Enforce strict autonomous emergency firewall lockdown")
     parser.add_argument("--tier", action="store_true", help="Display detected hardware tier and recommendations")
     parser.add_argument("--clean-ram", action="store_true", help="Clean cache and free RAM")
+    parser.add_argument("--counter-threats", action="store_true", help="Execute active defensive countermeasures (sever sockets, disrupt threats)")
+    parser.add_argument("--deploy-decoys", action="store_true", help="Deploy honeypot canary decoy credentials and files")
+    parser.add_argument("--self-check", action="store_true", help="Check agent self-countering circuit breaker and dead-man switch status")
+    parser.add_argument("--rollback", action="store_true", help="Roll back the agent's last changes to previous snapshot")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
+
+    if args.counter_threats:
+        print_banner(brain)
+        print("⚔️ Executing Active Counter-Measures (Socket Severs & Decoy Traps)...")
+        res = brain.security.scan_and_counter_threats()
+        print(f"Threat Level: \033[1;31m{res['threat_level']}\033[0m | Total Threats: {res['total_threats']}")
+        print(f"Countered Threats: \033[1;32m{res['countered_count']}\033[0m | Execution Mode: {res['mode_executed']}")
+        print(json.dumps(res, indent=2))
+        return
+
+    if args.deploy_decoys:
+        print_banner(brain)
+        print("🪤 Deploying Honeypot Canary Decoys...")
+        res = brain.security.deploy_decoys()
+        print(f"✓ {res.get('message', 'Decoys deployed')}")
+        print(json.dumps(res, indent=2))
+        return
+
+    if args.self_check:
+        print_banner(brain)
+        print("🛑 Agent Self-Countering Safety Circuit Breaker Status:")
+        circuit = brain.security.self_counter.get_circuit_status()
+        state_color = "\033[1;31mTRIPPED\033[0m" if circuit['circuit_tripped'] else "\033[1;32mNORMAL / GOVERNING\033[0m"
+        print(f"Status: {state_color}")
+        print(f"Recent Action Velocity: {circuit['recent_action_count']} actions in 60s (Threshold: {circuit['runaway_threshold']})")
+        print(f"Available Snapshots for Rollback: {circuit['snapshot_count']}")
+        print(json.dumps(circuit, indent=2))
+        return
+
+    if args.rollback:
+        print_banner(brain)
+        print("⏮️ Self-Countering Rollback: Reverting to pre-action snapshot...")
+        res = brain.security.rollback_last_change()
+        if res.get("status") == "success":
+            print(f"\033[1;32m✓ {res.get('message')}\033[0m")
+        else:
+            print(f"\033[1;33m⚠️ {res.get('message', 'Rollback failed')}\033[0m")
+        print(json.dumps(res, indent=2))
+        return
 
     if args.security:
         print_banner(brain)

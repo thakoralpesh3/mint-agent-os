@@ -75,10 +75,15 @@ class SecurityGuardian:
             "total_threats": len(active_threats),
             "countered_count": len(countered_actions),
             "countered_actions": countered_actions,
+            "remediated_count": len(countered_actions),
             "pending_approvals_count": len(pending_actions),
             "pending_actions": pending_actions,
             "mode_executed": "turbo_counter_active" if is_turbo else "safe_guarded"
         }
+
+    def scan_and_remediate(self, auto_neutralize: Optional[bool] = None) -> Dict[str, Any]:
+        """Scans for threats and executes defensive remediation & countermeasures."""
+        return self.scan_and_counter_threats(auto_neutralize=auto_neutralize)
 
     def deploy_decoys(self) -> Dict[str, Any]:
         """Deploys honeypot canary decoy files."""
