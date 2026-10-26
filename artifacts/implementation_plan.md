@@ -1,109 +1,103 @@
-# Implementation Plan: Upgrade Existing Linux Mint OS to MintPilot Agent OS
+# Implementation Plan: In-Place Linux Mint OS Updater & Offline/Online AI Model Switcher
 
-This plan introduces an automated, safe, and customizable upgrade path for anyone running an existing **Linux Mint OS (21.x or 22.x)** to transform their installation into **MintPilot Agent OS** without reinstalling or flashing an ISO.
-
----
-
-## User Review Required
-
-> [!IMPORTANT]
-> The upgrade process will:
-> 1. Install necessary dependencies (e.g. `brightnessctl`, `pulseaudio-utils`, `xdotool`, `wmctrl`, `maim`, `tesseract-ocr`, `ufw`).
-> 2. Install the agent into `/opt/mint-agent` and configure a systemd service (`mint-agent.service`) for the current user.
-> 3. Add polkit rules to `/etc/polkit-1/rules.d/` allowing the agent to control volume, brightness, battery, power, and Wi-Fi without password prompts.
-> 4. Add desktop shortcuts and global CLI command `/usr/local/bin/mint-agent`.
-> 5. Create pre-action snapshots so users can rollback at any time.
+This plan delivers two major capabilities for **MintPilot on Linux Mint**:
+1. **OS Upgrade & Updater Option**: Enables users running standard Linux Mint (21.x / 22.x) to transform their OS into MintPilot Agent OS with a 1-line script or in-place CLI/WebUI update.
+2. **Offline & Online AI Model Customization**: Empowers users to customize, select, and switch between offline local SLMs (Qwen2.5 0.5B, 1.5B, 3B, 7B, local GGUF) and online cloud models (Google Gemini 2.5, OpenAI GPT-4o, Anthropic Claude, custom endpoints) via WebUI, CLI, and natural language.
 
 ---
 
-## Proposed Components & Changes
+## Architecture Overview
 
-### 1. Universal Upgrade & Installation Script (`upgrade_mint_to_agent_os.sh`)
+```mermaid
+graph TD
+    User([User]) --> UI[WebUI Model Selector / CLI / Natural Language]
+    UI --> MM[ModelManager Core]
+    
+    subgraph "Offline AI Execution (Local SLM)"
+        MM --> OfflineEng[Offline SLM Engine]
+        OfflineEng --> Tier1[Tier 1: Qwen2.5 0.5B / 1.5B GGUF 2GB-4GB RAM]
+        OfflineEng --> Tier2[Tier 2: Qwen2.5 3B GGUF]
+        OfflineEng --> Tier3[Tier 3: Qwen2.5 7B GGUF]
+        OfflineEng --> CustomGGUF[User Local .gguf file / Ollama]
+    end
 
-#### [NEW] [upgrade_mint_to_agent_os.sh](file:///home/alpesh/mint-agent-os/upgrade_mint_to_agent_os.sh)
-A robust, idempotent bash script that can be executed directly or piped from `curl`:
-- **Compatibility Check**: Verifies `/etc/os-release` (supports Linux Mint 21.x, 22.x, Ubuntu 22.04/24.04).
-- **Hardware Tier Detection**: Detects CPU cores and RAM size; configures optimal Tier 1 (2GB–4GB low RAM) or Tier 2/3 settings.
-- **Dependency Installation**: Installs required packages non-interactively via `apt-get`.
-- **Repository Setup**: Clones or updates code into `/opt/mint-agent`.
-- **System Integration**:
-  - Installs Polkit permissions in `/etc/polkit-1/rules.d/99-mint-agent-permissions.rules`.
-  - Configures and enables `mint-agent.service` systemd unit.
-  - Installs Desktop shortcuts in `/usr/share/applications/` and `~/Desktop/`.
-  - Symlinks `/usr/local/bin/mint-agent`.
-- **Cybersecurity & Safety Initialization**:
-  - Establishes initial SHA-256 cryptographic tripwire baseline for the system.
-  - Deploys canary honeypots and configures UFW firewall baseline.
-  - Takes a pre-install system configuration snapshot for easy rollback.
+    subgraph "Online AI Execution (Cloud LLM APIs)"
+        MM --> OnlineEng[Online API Dispatcher]
+        OnlineEng --> Gemini[Google Gemini 2.5 Flash / Pro]
+        OnlineEng --> OpenAI[OpenAI GPT-4o / GPT-4o-mini]
+        OnlineEng --> Claude[Anthropic Claude 3.5 Haiku / Sonnet]
+        OnlineEng --> CustomAPI[Custom Base URL / LocalAI / OpenRouter]
+    end
 
----
-
-### 2. In-Place OS Updater Engine (`agent/core/updater.py`)
-
-#### [NEW] [agent/core/updater.py](file:///home/alpesh/mint-agent-os/agent/core/updater.py)
-A dedicated Python module handling routine updates for existing MintPilot installations:
-- `check_for_updates()`: Checks GitHub remote repository for newer commits or releases.
-- `perform_update()`: Fetches updates via git, updates dependencies if necessary, verifies cryptographic integrity, reloads systemd services, and reports changelog.
-- `get_version_info()`: Returns local commit hash, version number, and install timestamp.
+    OnlineEng -.->|Internet Down / API Key Missing| OfflineEng
+```
 
 ---
 
-### 3. CLI In-Place Update Command
+## Proposed Changes
 
-#### [MODIFY] [agent/cli.py](file:///home/alpesh/mint-agent-os/agent/cli.py)
-- Add arguments:
-  - `--update-os`: Pulls the latest MintPilot updates from GitHub and reloads the service.
-  - `--check-update`: Checks if a newer version of MintPilot is available upstream.
-- Add fast router intent matching: "update os", "upgrade agent", "check updates".
+### 1. AI Model Management Engine (`agent/brain/model_manager.py`)
+#### [NEW] [model_manager.py](file:///home/alpesh/mint-agent-os/agent/brain/model_manager.py)
+- Manages model catalog (Offline: 0.5B, 1.5B, 3B, 7B, GGUF paths; Online: Gemini 2.5, GPT-4o, Claude 3.5, Custom URLs).
+- Handles API keys in `~/.config/mint-agent/keys.json` with env var fallbacks.
+- Dispatches inference requests with automatic offline fallback if internet or API keys fail.
+- Exposes `list_models()`, `set_model()`, `set_api_key()`, `generate()`.
 
----
+### 2. Integration into Brain Inference (`agent/brain/inference.py`)
+#### [MODIFY] [inference.py](file:///home/alpesh/mint-agent-os/agent/brain/inference.py)
+- Connects `ModelManager` to `AgentBrain`.
+- Fast intent matching for:
+  - "list models", "show models"
+  - "switch model to X", "change ai to X", "use gemini", "use gpt-4o", "use offline qwen"
+  - "update os", "check update"
 
-### 4. Embedded Open WebUI Update Dashboard
+### 3. CLI Command Options (`agent/cli.py`)
+#### [MODIFY] [cli.py](file:///home/alpesh/mint-agent-os/agent/cli.py)
+- `--list-models`: Displays table of offline and online models with active model highlight.
+- `--set-model <MODEL_ID>`: Sets active model (e.g. `mint-agent --set-model gemini-2.5-flash`).
+- `--set-key <PROVIDER> <KEY>`: Saves API key.
+- `--update-os`: In-place upgrade of MintPilot Agent OS.
+- `--check-update`: Checks upstream GitHub repo for updates.
 
-#### [MODIFY] [agent/webui/server.py](file:///home/alpesh/mint-agent-os/agent/webui/server.py)
-- Add API endpoints:
-  - `GET /api/check_update`: Returns whether updates are available.
-  - `POST /api/update_os`: Triggers in-place update with progress telemetry.
+### 4. WebUI Endpoints & Interface (`agent/webui/server.py` & `agent/webui/static/index.html`)
+#### [MODIFY] [server.py](file:///home/alpesh/mint-agent-os/agent/webui/server.py)
+- `GET /api/models`: Returns list of offline and online models, active selection.
+- `POST /api/set_model`: Switches active model and provider.
+- `GET /api/check_update`: Checks for OS updates.
+- `POST /api/update_os`: Triggers in-place OS update.
 
-#### [MODIFY] [agent/webui/static/index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html)
-- Add "Check for Updates" / "Upgrade OS" button in the WebUI header/settings.
-- Show update dialog with version info, changelog, and one-click update trigger.
+#### [MODIFY] [index.html](file:///home/alpesh/mint-agent-os/agent/webui/static/index.html)
+- Add **AI Model Selector Dropdown & Modal**:
+  - Offline tab: Quick switch between 0.5B, 1.5B, 3B, 7B, or custom GGUF path.
+  - Online tab: Select Gemini, OpenAI, Claude, enter API keys, test connection.
+- Add **Update Agent OS** button with live status modal.
 
----
-
-### 5. 24/7 Online Simulator & Documentation
-
+### 5. 24/7 Simulator & Documentation (`docs/` & `README.md`)
 #### [MODIFY] [docs/index.html](file:///home/alpesh/mint-agent-os/docs/index.html) & [docs/js/agent_simulator.js](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
-- Add an **"Upgrade Your Linux Mint"** modal / application launcher on the online simulator, allowing visitors to copy the 1-line upgrade command or run the simulation:
-  ```bash
-  curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash
-  ```
-- Support `mint-agent --update-os` in the simulated terminal.
+- Add AI model selector badge and switcher modal in the online simulator.
+- Simulate `--list-models`, `--set-model`, and `--update-os` in terminal.
+- Add "Upgrade Existing Linux Mint" quick modal with copyable 1-line command.
 
 #### [MODIFY] [README.md](file:///home/alpesh/mint-agent-os/README.md)
-- Add dedicated section: **"Upgrading an Existing Linux Mint Installation to MintPilot Agent OS"** with:
-  - 1-line automated command.
-  - Step-by-step manual instructions.
-  - Rollback and uninstaller options.
+- Document:
+  1. How to Upgrade an Existing Linux Mint OS into MintPilot Agent OS.
+  2. How Users Can Change AI Models (Offline & Online).
 
 ---
 
 ## Verification Plan
 
-### Automated & Script Tests
-1. **Script Syntax & Dry-Run Test**:
-   ```bash
-   bash -n /home/alpesh/mint-agent-os/upgrade_mint_to_agent_os.sh
-   ```
-2. **Updater Engine Unit Test**:
-   ```bash
-   python3 -c "from agent.core.updater import OSUpdater; u = OSUpdater(); print(u.get_version_info())"
-   ```
-3. **CLI Update Flag Test**:
-   ```bash
-   python3 /home/alpesh/mint-agent-os/agent/cli.py --check-update
-   ```
-4. **WebUI Update Endpoints Test**:
-   - Query `GET /api/check_update` and verify JSON response.
-5. **Git Synchronization**:
-   - Run `/home/alpesh/mint-agent-os/sync_to_github.sh` and verify push.
+### Automated & Manual Verification
+1. **Model Manager Unit Test**:
+   - Test offline model switching (`qwen2.5-0.5b`, `qwen2.5-1.5b`).
+   - Test online model configuration (`gemini-2.5-flash`, `gpt-4o-mini`).
+   - Test automatic offline fallback when online API key is missing.
+2. **CLI Flags Verification**:
+   - `python3 /home/alpesh/mint-agent-os/agent/cli.py --list-models`
+   - `python3 /home/alpesh/mint-agent-os/agent/cli.py --set-model qwen2.5-1.5b`
+   - `python3 /home/alpesh/mint-agent-os/agent/cli.py --check-update`
+3. **WebUI API Verification**:
+   - Test `GET /api/models` and `POST /api/set_model`.
+   - Test `GET /api/check_update` and `POST /api/update_os`.
+4. **Git Sync**:
+   - Verify all changes are pushed and live on GitHub Pages.
