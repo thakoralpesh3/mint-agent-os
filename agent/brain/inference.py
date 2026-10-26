@@ -226,7 +226,21 @@ class AgentBrain:
                 "result": {"mode": self.permissions.mode, "is_turbo": self.permissions.is_turbo()}
             }
 
-        # 4. Memory & Housekeeping
+        # 4. Memory & Butter-Smooth Linux Mint Performance
+        if any(w in p for w in ["smooth mint", "butter smooth", "optimize smoothness", "tune smoothness", "smooth performance"]):
+            res = self.memory.tune_kernel_smoothness()
+            return {
+                "thought": "Optimized Linux Mint kernel parameters (vm.swappiness=10, vm.vfs_cache_pressure=50) for butter-smooth 60fps desktop performance.",
+                "result": res
+            }
+
+        if any(w in p for w in ["mint compatibility", "smoothness benchmark", "check smoothness", "compatibility benchmark"]):
+            res = self.memory.verify_mint_compatibility()
+            return {
+                "thought": f"Linux Mint Hardware Compatibility: {res['score']}/100 ({res['grade']}). {res['recommendation']}",
+                "result": res
+            }
+
         if any(w in p for w in ["clean memory", "free ram", "clean ram", "optimize memory", "drop cache"]):
             return {
                 "thought": "Cleaned memory caches and collected runtime garbage.",
