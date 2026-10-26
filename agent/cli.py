@@ -140,6 +140,35 @@ def main():
             print(f"\033[1;34m[{res['agent']}]\033[0m {res['thought']}")
         return
 
+    if args.house_party:
+        print_banner(brain)
+        res = brain.marvel.execute_protocol("house party")
+        print("\033[1;36m🚀 STARK INDUSTRIES: HOUSE PARTY PROTOCOL ENGAGED\033[0m")
+        print("Autonomous Multi-Agent Coordinated Deployment:\n")
+        for member in res.get("multi_agent_team", []):
+            print(f"  \033[1;33m[{member['agent']}]\033[0m — \033[1;37m{member['role']}\033[0m [{member['status']}]")
+            print(f"    \033[1;32m\"{member['report']}\"\033[0m\n")
+        print(f"\033[1;34mSentries Active:\033[0m {len(res.get('sentries_activated', []))} background guardians deployed.")
+        return
+
+    if args.edith_scan:
+        print_banner(brain)
+        res = brain.marvel.edith_tactical_scan()
+        print("\033[1;36m🕶️  E.D.I.T.H. ORBITAL TACTICAL GRID SCANNER\033[0m")
+        print(f"  • Satellite Link:   \033[1;32m{res['satellite_link']}\033[0m")
+        print(f"  • Grid Status:      \033[1;32m{res['grid_status']}\033[0m")
+        print(f"  • Perimeter Score:  \033[1;36m{res['perimeter_score']}/100\033[0m")
+        print(f"  • Targets Scanned:  \033[1;33m{res['targets_scanned']} entities\033[0m\n")
+
+        print("Tactical Target Assessment Matrix:")
+        for t in res["targets"]:
+            col = "\033[1;31m" if t["threat_level"] == "HOSTILE" else ("\033[1;33m" if t["threat_level"] == "ELEVATED" else "\033[1;32m")
+            print(f"  [{t['target_id']}] {col}{t['threat_level']:<8}\033[0m Index: {t['threat_index']:>2}% | {t['category']:<16} | Action: \033[1;37m{t['action_recommended']}\033[0m")
+            print(f"    Target: {t['entity']}")
+            print(f"    Classification: {t['classification']}\n")
+        print(f"\033[1;34m[E.D.I.T.H.]\033[0m {res['thought']}")
+        return
+
     if args.interaction:
         print_banner(brain)
         status = brain.interaction.get_status()
