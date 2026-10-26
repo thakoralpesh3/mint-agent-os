@@ -74,6 +74,9 @@ def main():
     parser.add_argument("--update-os", action="store_true", help="Perform in-place upgrade of MintPilot Agent OS from GitHub")
     parser.add_argument("--smooth", action="store_true", help="Apply Linux Mint kernel swappiness and cache tuning for 60fps butter-smooth performance")
     parser.add_argument("--benchmark-smoothness", action="store_true", help="Audit PC hardware against Linux Mint official standards and check agent footprint")
+    parser.add_argument("--immune-status", action="store_true", help="Display Digital Immune Memory, attack fingerprints, active antibodies, and resilience score")
+    parser.add_argument("--harden-future", action="store_true", help="Synthesize antibodies and enforce kernel network defenses against future attacks")
+    parser.add_argument("--defcon", action="store_true", help="Display active dynamic DEFCON threat escalation posture")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
