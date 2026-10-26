@@ -106,6 +106,10 @@
           </div>
           <div style="padding: 6px 12px; display: flex; gap: 6px; overflow-x: auto; background: #161a17;">
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('security status')">🛡️ Security Status</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#9b59b6; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('counter threats')">⚔️ Counter Threats</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#3498db; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('deploy decoys')">🪤 Deploy Decoys</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e67e22; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('circuit breaker')">🛑 Circuit Breaker</button>
+            <button class="btn-sm" style="background:#222; border:1px solid #333; color:#d35400; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('rollback')">⏮️ Rollback</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#f39c12; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('scan threats')">🔍 Scan Threats</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Lockdown</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#aaa; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('volume 60%')">🔊 Volume 60%</button>
@@ -137,10 +141,13 @@
           <div class="sec-card" style="display:flex; justify-content:space-between; align-items:center;">
             <div>
               <h2 style="color:#2ecc71; font-size:1.2rem; margin-bottom:4px;">Cybersecurity Posture: 92/100 (Hardened)</h2>
-              <p style="color:#aaa; font-size:0.85rem;">Continuous real-time threat monitoring and self-defense active.</p>
-              <div style="display:flex; gap:8px; margin-top:10px;">
-                <button class="btn-green" onclick="AgentSimulator.sendWebUIMessage('scan threats')">🔍 Run Threat Scan</button>
-                <button class="btn-red" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Emergency Lockdown</button>
+              <p style="color:#aaa; font-size:0.85rem;">Continuous real-time threat monitoring, active countermeasures & self-governance active.</p>
+              <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                <button class="btn-green" onclick="AgentSimulator.sendWebUIMessage('scan threats')">🔍 Threat Scan</button>
+                <button class="btn-sm" style="background:#8e44ad; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:0.8rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('counter threats')">⚔️ Active Counter</button>
+                <button class="btn-sm" style="background:#2980b9; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:0.8rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('deploy decoys')">🪤 Canary Decoys</button>
+                <button class="btn-sm" style="background:#d35400; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:0.8rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('rollback')">⏮️ Rollback</button>
+                <button class="btn-red" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Lockdown</button>
               </div>
             </div>
             <div style="width:70px; height:70px; border-radius:50%; border:5px solid #2ecc71; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.3rem; color:#2ecc71;">
@@ -149,11 +156,13 @@
           </div>
 
           <div class="sec-card">
-            <h3 style="font-size:0.95rem; margin-bottom:10px;">🛡️ Active Protections:</h3>
+            <h3 style="font-size:0.95rem; margin-bottom:10px;">🛡️ Active Protections & Self-Counter Governance:</h3>
             <div style="font-size:0.85rem; line-height:1.8; color:#ccc;">
               <div>🔥 <strong>UFW Firewall Shield:</strong> <span style="color:#2ecc71;">ACTIVE (Default Deny Incoming)</span></div>
               <div>🔒 <strong>Anti-Tamper Cryptographic Tripwire:</strong> <span style="color:#2ecc71;">✓ Verified Intact (SHA-256)</span></div>
-              <div>🛡️ <strong>Sudoers & SSH Keys Protection:</strong> <span style="color:#2ecc71;">Locked (0440 / 0700)</span></div>
+              <div>⚔️ <strong>Socket Disruption:</strong> <span style="color:#2ecc71;">SEVER READY (ss -K / TCP RST)</span></div>
+              <div>🪤 <strong>Canary Honeytokens:</strong> <span style="color:#2ecc71;">3 DECOYS MONITORED</span></div>
+              <div>🛑 <strong>Self-Countering Circuit Breaker:</strong> <span style="color:#2ecc71;">ACTIVE (Max 12 Actions / 4 Loops)</span></div>
               <div>⚡ <strong>Autonomous Remediation:</strong> <span style="color:#2ecc71;">TURBO ACTIVE</span></div>
             </div>
           </div>
