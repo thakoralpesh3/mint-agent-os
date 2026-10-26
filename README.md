@@ -12,7 +12,85 @@ An autonomous, customized **Linux Mint Operating System** equipped with **MintPi
 
 ---
 
-## 🌐 1. Try the 24/7 Online OS Simulator Now!
+## 💾 1. Download MintPilot Agent OS & Make Bootable USB
+
+Get the full operating system ISO image or flash it directly to a USB drive to boot on any physical laptop or PC.
+
+[![Download ISO](https://img.shields.io/badge/📥_Download-MintPilot_Agent_OS_ISO_(v1.0.0)-87cf3e?style=for-the-badge&logo=linuxmint)](https://github.com/thakoralpesh3/mint-agent-os/releases/latest)
+[![Create Bootable USB](https://img.shields.io/badge/⚡_Tool-Automated_Bootable_USB_Flasher-blue?style=for-the-badge&logo=gnubash)](https://github.com/thakoralpesh3/mint-agent-os#option-a-automated-linux-terminal-flasher-safest--easiest)
+[![Ventoy Drag-and-Drop](https://img.shields.io/badge/📁_Ventoy-Drag_&_Drop_ISO-purple?style=for-the-badge)](https://github.com/thakoralpesh3/mint-agent-os#option-b-ventoy-drag--drop-iso-recommended-for-all-users)
+
+### 📥 Download Options:
+1. **Direct Live Bootable ISO Image**:
+   - **[Download LinuxMint-AI-Agent-Edition.iso (GitHub Releases)](https://github.com/thakoralpesh3/mint-agent-os/releases/latest)**
+   - Base: **Linux Mint 22.3 (Zena) 64-bit Cinnamon**
+   - Architecture: **x86_64** (UEFI & Legacy BIOS bootable)
+   - Pre-installed: MintPilot Daemon, Open WebUI, Offline Qwen SLM, Cyber Guardian & DEFCON Matrix
+2. **In-Place Upgrade (Convert existing Linux Mint without USB or reformatting)**:
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash
+   ```
+
+---
+
+### ⚡ 4 Ways to Make a Bootable USB Drive:
+
+#### Option A: Automated Linux Terminal Flasher (Safest & Easiest)
+We provide an interactive script in the repository that automatically detects your USB drive, protects your internal system disk from accidental erasure, and writes the bootable ISO:
+
+```bash
+# Clone repository or navigate to directory:
+git clone https://github.com/thakoralpesh3/mint-agent-os.git
+cd mint-agent-os
+
+# Run the automated bootable USB creator:
+sudo ./make_bootable_usb.sh
+```
+
+#### Option B: Ventoy (Drag & Drop ISO — Recommended for All Users)
+Ventoy is the easiest way to make a multi-boot USB on Windows, macOS, or Linux without wiping your drive every time:
+1. Download and install **[Ventoy](https://www.ventoy.net/en/download.html)** onto your USB flash drive (8GB+ recommended).
+2. Download `LinuxMint-AI-Agent-Edition.iso` from [GitHub Releases](https://github.com/thakoralpesh3/mint-agent-os/releases/latest).
+3. Simply **copy and paste the `.iso` file directly into your USB drive folder** in File Explorer / Nemo / Finder.
+4. Plug the USB into any laptop and power on. Ventoy will boot and display MintPilot Agent OS in the boot menu!
+
+#### Option C: Graphical Flashers (BalenaEtcher / Rufus / Raspberry Pi Imager)
+Works on Windows, Mac, and Linux:
+1. Download **[BalenaEtcher](https://etcher.balena.io/)** or **[Rufus](https://rufus.ie/)** (for Windows).
+2. Select the downloaded `LinuxMint-AI-Agent-Edition.iso`.
+3. Select your USB drive as the target.
+4. Click **Flash / Start** and wait for completion.
+
+#### Option D: Native Linux Command Line (`dd`)
+```bash
+# 1. Identify your USB drive (e.g., sdb, sdc - DO NOT use your OS drive!):
+lsblk
+
+# 2. Unmount any active partitions on the USB:
+sudo umount /dev/sdX*
+
+# 3. Flash the ISO (replace /dev/sdX with your USB drive):
+sudo dd if=LinuxMint-AI-Agent-Edition.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
+```
+
+---
+
+### 💻 How to Boot from USB on Any PC / Laptop:
+1. Plug the USB into a USB 3.0 / USB-C port while the PC is turned off.
+2. Power on the PC and immediately press the **Boot Menu Key** repeatedly:
+   - **Lenovo / ThinkPad:** `F12` (or `Fn + F12`)
+   - **Dell / Alienware:** `F12`
+   - **HP / Pavilion / Omen:** `F9` or `Esc`
+   - **Asus / ROG:** `F8`, `Del`, or `Esc`
+   - **Acer / Predator:** `F12`
+   - **MSI:** `F11`
+   - **Apple Mac (Intel):** Hold `Option / Alt` at startup
+3. Select your USB drive from the menu and press `Enter`.
+4. The system will boot into the **MintPilot Agent OS Live Environment** with full offline AI laptop control and cyber defense ready!
+
+---
+
+## 🌐 2. Try the 24/7 Online OS Simulator Now!
 
 Experience the Linux Mint AI Agent OS & Cyber Defense Guardian directly in your browser:
 
