@@ -186,6 +186,10 @@ Available Snapshots for Rollback: 2`);
         this.printTermLine(`⏮️ Self-Countering Rollback: Reverting to pre-action snapshot...
 ✓ Successfully rolled back snapshot: 'Pre-execution safe configuration snapshot'
 Restored files:
+  • /etc/security/mint-agent-rules.conf
+  • /home/alpesh/.config/mint-agent/settings.json`);
+        return;
+      }
       if (args === '--list-models') {
         this.printTermLine(`Active AI: Qwen2.5 0.5B Instruct (Ultra-Light) [Provider: OFFLINE]
 
