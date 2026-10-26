@@ -1045,18 +1045,71 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     }
   },
 
-  speak(text) {
-    if (!this.voiceEnabled) return;
+  speak(text, force = false) {
+    if (!this.voiceEnabled && !force) return;
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-        const clean = text.replace(/[*_#`]/g, '');
+        const persona = this.personas[this.activePersona] || this.personas.jarvis;
+        const clean = text.replace(/[*_#`\[\]]/g, '');
         const utter = new SpeechSynthesisUtterance(clean);
-        utter.rate = 1.05;
-        utter.pitch = 1.0;
+        utter.rate = persona.rate || 1.0;
+        utter.pitch = persona.pitch || 1.0;
+        utter.lang = persona.voiceLang || 'en-GB';
+
+        // Match browser voice if available
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const matched = voices.find(v => v.lang.toLowerCase().startsWith(persona.voiceLang.toLowerCase())) ||
+                        voices.find(v => v.lang.toLowerCase().includes('en'));
+          if (matched) utter.voice = matched;
+        }
+
         window.speechSynthesis.speak(utter);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Speech error:", e);
+      }
     }
+  },
+
+  switchPersona(id) {
+    const pId = id.toLowerCase().trim();
+    if (!this.personas[pId]) return;
+    this.activePersona = pId;
+    const persona = this.personas[pId];
+
+    // Update Marvel Headquarters active badge
+    const badge = document.getElementById('starkActiveBadge');
+    if (badge) {
+      badge.innerText = `Active: ${persona.name}`;
+      badge.style.borderColor = persona.color;
+      badge.style.color = persona.color;
+    }
+
+    // Update WebUI header badge
+    const simBadge = document.getElementById('simMarvelBadge');
+    if (simBadge) {
+      simBadge.innerText = `🤖 ${persona.name.replace(/\./g, '')} [STARK]`;
+      simBadge.style.borderColor = persona.color;
+      simBadge.style.color = persona.color;
+    }
+
+    this.voiceEnabled = true;
+    this.updateInteractionBadges();
+    this.speak(persona.greeting, true);
+    this.sendWebUIMessage(`Switched active AI persona to ${persona.name}. "${persona.greeting}"`);
+  },
+
+  testCurrentPersonaVoice() {
+    const persona = this.personas[this.activePersona] || this.personas.jarvis;
+    this.voiceEnabled = true;
+    this.updateInteractionBadges();
+    this.speak(persona.greeting, true);
+    alert(`🔊 ${persona.name} speaking:\n"${persona.greeting}"\n\n(Voice Accent: ${persona.voiceLang}, Pitch: ${persona.pitch}, Cadence: ${persona.rate})`);
+  },
+
+  openMarvelModal() {
+    WindowManager.openApp('marvel');
   },
 
   testVoiceAudio() {
