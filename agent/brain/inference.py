@@ -18,6 +18,8 @@ from typing import Dict, Any, List, Optional
 from agent.core.permission_manager import PermissionManager
 from agent.core.memory_guard import MemoryGuard
 from agent.security.guardian import SecurityGuardian
+from agent.brain.model_manager import ModelManager
+from agent.core.updater import OSUpdater
 from agent.controllers.system_control import SystemController
 from agent.controllers.gui_control import GUIController
 from agent.controllers.terminal_control import TerminalController
@@ -35,6 +37,8 @@ class AgentBrain:
         self.permissions = PermissionManager(mode=mode)
         self.memory = MemoryGuard()
         self.security = SecurityGuardian(self.permissions)
+        self.models = ModelManager()
+        self.updater = OSUpdater()
 
         # Controllers
         self.system = SystemController()
