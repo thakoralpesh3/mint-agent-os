@@ -1545,6 +1545,392 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
         </div>`;
       }
     });
+  },
+
+  // ==================== MARVEL ARC-REACTOR HOLOGRAPHIC CANVAS ====================
+  initArcReactorCanvas() {
+    const renderLoop = () => {
+      this.arcAngle += 0.025;
+      if (this.arcPulseEnergy > 1.0) {
+        this.arcPulseEnergy = Math.max(1.0, this.arcPulseEnergy * 0.965);
+      }
+
+      const miniCanvas = document.getElementById('arcReactorMiniCanvas');
+      if (miniCanvas) {
+        this.drawArcReactor(miniCanvas, 48, this.arcPulseEnergy, this.arcAngle);
+      }
+
+      const largeCanvas = document.getElementById('arcReactorLargeCanvas');
+      if (largeCanvas && largeCanvas.offsetParent !== null) {
+        this.drawArcReactor(largeCanvas, 220, this.arcPulseEnergy, this.arcAngle);
+      }
+
+      requestAnimationFrame(renderLoop);
+    };
+    requestAnimationFrame(renderLoop);
+  },
+
+  drawArcReactor(canvas, size, energy, angle) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const persona = this.personas[this.activePersona] || this.personas.jarvis;
+    const baseColor = persona.color || '#00d2d3';
+
+    // Outer glow
+    const glowRadius = (size * 0.45) * Math.min(1.4, energy);
+    const grad = ctx.createRadialGradient(cx, cy, size * 0.1, cx, cy, glowRadius);
+    grad.addColorStop(0, 'rgba(0, 210, 211, 0.45)');
+    grad.addColorStop(0.6, 'rgba(0, 150, 200, 0.15)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, glowRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Outer ring (chassis)
+    ctx.save();
+    ctx.strokeStyle = baseColor;
+    ctx.lineWidth = size > 60 ? 3 : 1.5;
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.44, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Secondary gear ring rotating opposite
+    ctx.strokeStyle = '#70d6ff';
+    ctx.lineWidth = size > 60 ? 1.5 : 1;
+    ctx.setLineDash([size > 60 ? 6 : 3, size > 60 ? 4 : 2]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.38, -angle * 0.8, -angle * 0.8 + Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // 10 Energy Coils / Arc Segments radiating
+    const numCoils = 10;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    for (let i = 0; i < numCoils; i++) {
+      const theta = (i * 2 * Math.PI) / numCoils;
+      ctx.save();
+      ctx.rotate(theta);
+
+      ctx.fillStyle = energy > 1.3 ? '#ffffff' : baseColor;
+      ctx.globalAlpha = 0.75 + (Math.sin(angle * 3 + i) * 0.2);
+      const segW = size > 60 ? 8 : 2.5;
+      const segH = size > 60 ? 14 : 4.5;
+      const segR = size * 0.28;
+      ctx.fillRect(-segW / 2, segR, segW, segH);
+
+      if (size > 60) {
+        ctx.strokeStyle = '#f1c40f';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, segR + segH);
+        ctx.lineTo(0, size * 0.43);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+
+    // Inner Core Ring
+    ctx.save();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = size > 60 ? 2.5 : 1.5;
+    ctx.shadowColor = baseColor;
+    ctx.shadowBlur = size > 60 ? 15 * energy : 6;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.22, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Inner Glowing Core (Heart of Arc Reactor)
+    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.2);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.4, baseColor);
+    coreGrad.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Center Stark triangle crystal for large canvas
+    if (size > 60) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle * 1.5);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      const r = size * 0.11;
+      for (let j = 0; j < 3; j++) {
+        const a = (j * 2 * Math.PI) / 3 - Math.PI / 2;
+        const x = r * Math.cos(a);
+        const y = r * Math.sin(a);
+        if (j === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  },
+
+  pulseArcReactor() {
+    this.arcPulseEnergy = 2.4;
+    const persona = this.personas[this.activePersona] || this.personas.jarvis;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.16);
+    } catch (e) {}
+    console.log(`[STARK] Arc Reactor pulsed at 100% capacity by ${persona.name}.`);
+  },
+
+  // ==================== HANDS-FREE VOICE WAKE-WORD RECOGNITION ====================
+  toggleVoiceRecognition() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+      alert("🎙️ Web Speech API is not supported in this browser.\n\nPlease use Google Chrome, Chromium, Microsoft Edge, or activate the Linux Mint offline VOSK voice engine via:\n  mint-agent --listen");
+      return;
+    }
+
+    if (this.isListening && this.recognition) {
+      try {
+        this.recognition.stop();
+      } catch (e) {}
+      this.isListening = false;
+      this.updateVoiceWakeUI(false);
+      return;
+    }
+
+    try {
+      this.recognition = new SpeechRec();
+      this.recognition.continuous = false;
+      this.recognition.interimResults = false;
+
+      const persona = this.personas[this.activePersona] || this.personas.jarvis;
+      this.recognition.lang = persona.voiceLang || 'en-GB';
+
+      this.recognition.onstart = () => {
+        this.isListening = true;
+        this.updateVoiceWakeUI(true);
+        this.pulseArcReactor();
+      };
+
+      this.recognition.onresult = (event) => {
+        this.isListening = false;
+        this.updateVoiceWakeUI(false);
+        if (event.results && event.results[0] && event.results[0][0]) {
+          const spoken = event.results[0][0].transcript;
+          console.log("[STARK VOICE RECOGNITION]:", spoken);
+          this.pulseArcReactor();
+          this.sendWebUIMessage(spoken);
+        }
+      };
+
+      this.recognition.onerror = (event) => {
+        console.warn("[STARK VOICE ERROR]:", event.error);
+        this.isListening = false;
+        this.updateVoiceWakeUI(false);
+        if (event.error === 'not-allowed') {
+          alert("Microphone permission was denied. Please allow microphone access in your browser to talk to J.A.R.V.I.S., F.R.I.D.A.Y., or E.D.I.T.H.");
+        }
+      };
+
+      this.recognition.onend = () => {
+        this.isListening = false;
+        this.updateVoiceWakeUI(false);
+      };
+
+      this.recognition.start();
+    } catch (err) {
+      console.error("[STARK VOICE INIT FAILED]:", err);
+      this.isListening = false;
+      this.updateVoiceWakeUI(false);
+    }
+  },
+
+  updateVoiceWakeUI(listening) {
+    const simBtn = document.getElementById('simVoiceWakeBtn');
+    const simText = document.getElementById('simVoiceWakeText');
+    const starkBtn = document.getElementById('starkMicBtn');
+    const starkText = document.getElementById('starkMicText');
+
+    if (listening) {
+      if (simBtn) {
+        simBtn.style.background = '#ff4757';
+        simBtn.style.boxShadow = '0 0 14px #ff4757';
+      }
+      if (simText) simText.innerText = 'Listening...';
+      if (starkBtn) {
+        starkBtn.style.background = '#ff4757';
+        starkBtn.style.color = '#fff';
+        starkBtn.style.boxShadow = '0 0 15px #ff4757';
+      }
+      if (starkText) starkText.innerText = 'Listening...';
+    } else {
+      if (simBtn) {
+        simBtn.style.background = 'linear-gradient(135deg, #00cec9, #0984e3)';
+        simBtn.style.boxShadow = '0 0 8px rgba(0,206,201,0.5)';
+      }
+      if (simText) simText.innerText = 'Voice Wake';
+      if (starkBtn) {
+        starkBtn.style.background = 'linear-gradient(135deg, #00cec9, #0984e3)';
+        starkBtn.style.color = '#000';
+        starkBtn.style.boxShadow = 'none';
+      }
+      if (starkText) starkText.innerText = 'Voice Wake (Mic)';
+    }
+  },
+
+  // ==================== STARK TAB SWITCHER ====================
+  switchStarkTab(tabId, btn) {
+    const win = document.getElementById('win-marvel');
+    if (!win) return;
+
+    const panes = win.querySelectorAll('.dl-tab-pane');
+    panes.forEach(p => {
+      p.style.display = 'none';
+      p.classList.remove('active');
+    });
+
+    const target = document.getElementById(tabId);
+    if (target) {
+      target.style.display = 'block';
+      target.classList.add('active');
+    }
+
+    const tabBtns = win.querySelectorAll('.dl-tab-nav .dl-tab-btn');
+    tabBtns.forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (tabId === 'stark-tab-holo') {
+      this.pulseArcReactor();
+    }
+  },
+
+  // ==================== E.D.I.T.H. TACTICAL AR SCANNER ====================
+  runEdithTacticalScan() {
+    this.pulseArcReactor();
+    this.speak("Accessing Stark orbital defense grid. Real-time tactical scan of local network and processes underway.", true);
+    
+    const list = document.getElementById('edithTargetsList');
+    if (list) {
+      list.innerHTML = `
+        <div style="background:#131a21; border-left:4px solid #f39c12; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="color:#f39c12; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-01] ELEVATED (78%)</span>
+              <span style="color:#aaa; font-size:0.75rem;">NETWORK_SOCKET</span>
+            </div>
+            <strong style="color:#fff; font-size:0.85rem;">0.0.0.0:8080 (Wildcard HTTP Service)</strong>
+            <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Unencrypted Local LAN Exposure • Action: SEVER_SOCKET</p>
+          </div>
+          <button class="dl-btn-secondary" style="background:#f39c12; color:#000; font-weight:bold; font-size:0.72rem; padding:4px 10px;" onclick="AgentSimulator.sendWebUIMessage('counter threats')">⚡ Sever Socket</button>
+        </div>
+
+        <div style="background:#131a21; border-left:4px solid #e74c3c; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="color:#e74c3c; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-02] HOSTILE (92%)</span>
+              <span style="color:#aaa; font-size:0.75rem;">REMOTE_INGRESS</span>
+            </div>
+            <strong style="color:#fff; font-size:0.85rem;">185.220.101.42 (Tor Exit Node Probe)</strong>
+            <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Port Scan / Reconnaissance Probe • Action: NULL_ROUTE_DROP</p>
+          </div>
+          <button class="dl-btn-secondary" style="background:#e74c3c; color:#fff; font-weight:bold; font-size:0.72rem; padding:4px 10px;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚫 Null-Route IP</button>
+        </div>
+
+        <div style="background:#131a21; border-left:4px solid #2ecc71; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="color:#2ecc71; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-03] NOMINAL (2%)</span>
+              <span style="color:#aaa; font-size:0.75rem;">DESKTOP_PROCESS</span>
+            </div>
+            <strong style="color:#fff; font-size:0.85rem;">PID 1240 (/usr/bin/cinnamon)</strong>
+            <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Verified Linux Mint Cinnamon Compositor (60fps Fluidity) • Action: ALLOW</p>
+          </div>
+          <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">VERIFIED 60FPS</span>
+        </div>
+
+        <div style="background:#131a21; border-left:4px solid #2ecc71; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="color:#2ecc71; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-04] NOMINAL (0%)</span>
+              <span style="color:#aaa; font-size:0.75rem;">SECURITY_WATCHDOG</span>
+            </div>
+            <strong style="color:#fff; font-size:0.85rem;">PID 2108 (/usr/sbin/ufw-sentry)</strong>
+            <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Active Cyber Guardian Kernel Sentry Daemon • Action: PRIORITIZE</p>
+          </div>
+          <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">SHIELD ACTIVE</span>
+        </div>
+      `;
+    }
+
+    this.sendWebUIMessage("edith scan");
+  },
+
+  // ==================== HOUSE PARTY MULTI-AGENT PROTOCOL ====================
+  executeHousePartyCoordinated() {
+    this.pulseArcReactor();
+    this.sendWebUIMessage("engage house party protocol");
+    this.speak("House Party Protocol confirmed. All 5 Marvel Series AI Agents deployed simultaneously across Linux Mint.", true);
+  },
+
+  speakMultiAgentReport(agentId, customText) {
+    const persona = this.personas[agentId] || this.personas.jarvis;
+    const reports = {
+      jarvis: "Sir, system diagnostic sweeps confirmed. Hardware parameters nominal, swappiness locked at 10.",
+      friday: "Boss, tactical combat socket watchers armed. Zero unauthorized listeners on port grid.",
+      edith: "Orbital perimeter sentry locked. External IP ingress points actively filtered and traced.",
+      vision: "Digital immune memory synthesized. 16 adaptive antibodies maintaining system equilibrium.",
+      karen: "All safety checks passed! Your PC is protected and running butter-smooth."
+    };
+
+    const text = customText || reports[agentId] || persona.greeting;
+    this.pulseArcReactor();
+
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = persona.rate || 1.0;
+        utter.pitch = persona.pitch || 1.0;
+        utter.lang = persona.voiceLang || 'en-GB';
+
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          const matched = voices.find(v => v.lang.toLowerCase().startsWith(persona.voiceLang.toLowerCase())) ||
+                          voices.find(v => v.lang.toLowerCase().startsWith('en'));
+          if (matched) utter.voice = matched;
+        }
+
+        window.speechSynthesis.speak(utter);
+      } catch (e) {
+        console.warn("Speech error:", e);
+      }
+    }
+
+    this.printTermLine(`[${persona.name}] "${text}"`);
   }
 };
 
