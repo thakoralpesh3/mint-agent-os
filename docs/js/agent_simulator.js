@@ -64,6 +64,10 @@ MintPilot OS Available Commands:
   mint-agent "<prompt>"      Run natural language laptop control or security intent
   mint-agent --security      Display full cybersecurity posture score & audit
   mint-agent --scan-threats  Scan network ports, rogue processes, and persistence
+  mint-agent --counter-threats Active countermeasures (sever sockets, neutralize threats)
+  mint-agent --deploy-decoys Deploy honeypot canary decoy credentials
+  mint-agent --self-check    Inspect self-countering safety circuit breaker status
+  mint-agent --rollback      Revert last system modifications to snapshot
   mint-agent --lockdown      Activate emergency UFW firewall lockdown
   mint-agent --turbo         Switch to Antigravity Autonomous Turbo Mode
   mint-agent --safe          Switch to Guarded Safe Mode (prompts confirmation)
@@ -147,6 +151,43 @@ Active Protections:
 Threat Level: LOW | Total Threats: ${this.threats.length}
 Remediated Actions: 1 (Autonomous Port Isolation)
 Status: System is protected under MintPilot Cyber Guardian.`);
+        return;
+      }
+
+      if (args === '--counter-threats') {
+        this.printTermLine(`⚔️ Executing Active Counter-Measures (Socket Severs & Decoy Traps)...
+Threat Level: HIGH | Total Threats: 7
+Countered Threats: 7 | Execution Mode: turbo_counter_active
+Status: Insecure sockets severed via ss -K; TCP reset frames transmitted.`);
+        return;
+      }
+
+      if (args === '--deploy-decoys') {
+        this.printTermLine(`🪤 Deploying Honeypot Canary Decoys...
+✓ Canary decoy honeypots active. Any unauthorized read will trip an emergency counter-lockdown.
+Monitored Decoys:
+  • /home/alpesh/.config/mint-agent/canary_decoys/aws_credentials.fake
+  • /home/alpesh/.config/mint-agent/canary_decoys/ssh_private_key.fake
+  • /home/alpesh/.config/mint-agent/canary_decoys/db_password.fake`);
+        return;
+      }
+
+      if (args === '--self-check') {
+        this.printTermLine(`🛑 Agent Self-Countering Safety Circuit Breaker Status:
+Status: NORMAL / GOVERNING
+Safety Governor: ACTIVE (Autonomous circuit breaker enabled)
+Recent Action Velocity: 0 actions in 60s (Threshold: 12)
+Repetition Throttler: 0 repetitions (Threshold: 4)
+Available Snapshots for Rollback: 2`);
+        return;
+      }
+
+      if (args === '--rollback') {
+        this.printTermLine(`⏮️ Self-Countering Rollback: Reverting to pre-action snapshot...
+✓ Successfully rolled back snapshot: 'Pre-execution safe configuration snapshot'
+Restored files:
+  • /etc/security/mint-agent-rules.conf
+  • /home/alpesh/.config/mint-agent/settings.json`);
         return;
       }
 
