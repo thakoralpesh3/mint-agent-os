@@ -228,10 +228,11 @@ class MarvelAgentManager:
 
     def execute_protocol(self, protocol_name: str) -> Dict[str, Any]:
         """Executes a Marvel Stark Protocol on Linux Mint."""
-        key = protocol_name.lower().replace("protocol", "").strip()
+        clean_in = protocol_name.lower().replace("protocol", "").replace("_", "").replace(" ", "").strip()
         matched_key = None
         for k in self.PROTOCOLS:
-            if k in key or key in k:
+            clean_k = k.lower().replace("_", "").replace(" ", "").strip()
+            if clean_k == clean_in or clean_k in clean_in or clean_in in clean_k:
                 matched_key = k
                 break
 
