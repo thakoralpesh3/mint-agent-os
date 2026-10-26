@@ -205,6 +205,8 @@ class MarvelAgentManager:
             "message": f"Marvel Agent Persona switched to {p['name']} ({p['title']})"
         }
 
+    switch_persona = set_persona
+
     def list_personas(self) -> List[Dict[str, Any]]:
         """Returns list of all available Marvel AI agents."""
         res = []
