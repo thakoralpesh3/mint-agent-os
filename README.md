@@ -383,7 +383,80 @@ mint-agent --set-model gpt-4o
 
 ---
 
-## 💿 10. Building the Custom Linux Mint OS ISO
+---
+
+## 🤖 11. Marvel Series AI Agents & Stark Defense Protocols
+
+MintPilot Agent OS allows users to operate their Linux Mint PC just like Tony Stark, Peter Parker, or the Avengers, featuring **5 distinct Marvel AI Agent Personas** and **6 Stark Emergency Defense Protocols**:
+
+```
+╔═══════════════════════════════════════════════════════════════╗
+║         ⚡ STARK INDUSTRIES MARVEL AI AGENT MATRIX            ║
+║       Integrated Personas & Protocols for Linux Mint OS       ║
+╚═══════════════════════════════════════════════════════════════╝
+```
+
+### 🦸 5 Marvel Series AI Agent Personas:
+
+| Agent Persona | Full Name & Title | Voice Accent | Cadence & Pitch | Personality & Core Role |
+| :--- | :--- | :--- | :--- | :--- |
+| **🤖 J.A.R.V.I.S.** | *Just A Rather Very Intelligent System* | British (`en-GB`) | 165 wpm, Pitch: 0.95 | Suave British butler, laptop hardware diagnostics, thermal & battery telemetry, executive protocol governor. |
+| **⚡ F.R.I.D.A.Y.** | *Female Replacement Intelligent Digital Assistant Youth* | Irish (`en-IE`) | 185 wpm, Pitch: 1.15 | Tactical combat copilot, rapid threat neutralization, emergency socket severing, overclocking, combat sentry. |
+| **🕶️ E.D.I.T.H.** | *Even Dead, I'm The Hero* | American (`en-US`) | 170 wpm, Pitch: 1.05 | Orbital network reconnaissance, perimeter sentry, hostile IP tracking, digital reconnaissance, ingress firewall. |
+| **💎 V.I.S.I.O.N.** | *Mind Stone Synthezoid Consciousness* | British (`en-GB`) | 145 wpm, Pitch: 0.85 | Digital immune memory synthesis, ethical self-countering circuit breaker, anomaly forecasting, equilibrium. |
+| **🕷️ K.A.R.E.N.** | *Kinetic Analysis & Reconnaissance Entity Network* | American (`en-US`) | 165 wpm, Pitch: 1.20 | Friendly neighborhood mentor, explanatory diagnostics, tutorial guidance, Baby Monitor Protocol safe mode. |
+
+---
+
+### ⚡ 6 Stark Emergency Defense Protocols:
+
+| Protocol Name | Strategic Function | Trigger Command | System & Hardware Actions |
+| :--- | :--- | :--- | :--- |
+| **🚀 House Party Protocol** | Tactical Multi-Agent Deployment | `mint-agent --protocol house_party` | Deploys 4 autonomous background sentries across network sockets (`ss`), process trees, kernel memory, and tripwire files. |
+| **🧹 Clean Slate Protocol** | System Hygiene & State Reset | `mint-agent --protocol clean_slate` | Purges kernel PageCache and dentries, syncs swap, clears ephemeral `/tmp` staging residue, and resets safety breaker state. |
+| **⚔️ Instant Kill Mode** | Active Defensive Counter-Assault | `mint-agent --protocol instant_kill` | Dispatches TCP RST disruption packets, severs all unauthorized listening/inbound sockets via `ss -K`, and force-kills rogue PIDs. |
+| **🛡️ Veronica Protocol** | Hulkbuster Performance Armor | `mint-agent --protocol veronica` | Locks kernel `vm.swappiness=10`, sets `vm.vfs_cache_pressure=50`, gives agent `nice +10`, and guarantees 60fps Cinnamon fluidity. |
+| **🔒 Barn Door Protocol** | Emergency Perimeter Lockdown | `mint-agent --protocol barn_door` | Drops all inbound network ports instantly via UFW default-deny, isolating laptop perimeter from local LAN and WAN. |
+| **👶 Baby Monitor Protocol** | Guarded Safety Interception | `mint-agent --protocol baby_monitor` | Engages Guarded Safe Mode, intercepting all sensitive bash commands and file changes with interactive user approval. |
+
+---
+
+### 🎙️ Natural Language Invocations & Voice Commands:
+
+You can address the active agent by name or command protocols directly:
+
+```bash
+# Direct name invocations:
+mint-agent "Jarvis, scan laptop thermals and battery"
+mint-agent "Friday, sever any unauthorized network sockets"
+mint-agent "Edith, scan external perimeter ports"
+mint-agent "Vision, check digital immune system balance"
+mint-agent "Karen, how do I configure my display?"
+
+# Switching personas on the fly:
+mint-agent --list-personas
+mint-agent --persona friday
+mint-agent --persona edith
+mint-agent --persona jarvis
+
+# Stark Protocols execution:
+mint-agent --list-protocols
+mint-agent --protocol house_party
+mint-agent --protocol clean_slate
+mint-agent --protocol instant_kill
+mint-agent --protocol veronica
+mint-agent --protocol barn_door
+mint-agent --protocol baby_monitor
+
+# Natural language protocol triggers:
+mint-agent "engage house party protocol"
+mint-agent "activate instant kill mode"
+mint-agent "deploy veronica armor"
+```
+
+---
+
+## 💿 12. Building the Custom Linux Mint OS ISO
 
 ```bash
 cd iso_builder
@@ -398,7 +471,7 @@ chmod +x *.sh
 
 ---
 
-## 🔄 11. Continuous GitHub Conversation Auto-Sync
+## 🔄 13. Continuous GitHub Conversation Auto-Sync
 
 The background daemon ([`sync/sync_daemon.py`](file:///home/alpesh/mint-agent-os/sync/sync_daemon.py)) runs persistently in the background, automatically syncing conversation turns, transcripts ([`conversation/CONVERSATION.md`](file:///home/alpesh/mint-agent-os/conversation/CONVERSATION.md)), and code changes directly to [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os).
 
