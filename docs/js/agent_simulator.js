@@ -186,8 +186,54 @@ Available Snapshots for Rollback: 2`);
         this.printTermLine(`⏮️ Self-Countering Rollback: Reverting to pre-action snapshot...
 ✓ Successfully rolled back snapshot: 'Pre-execution safe configuration snapshot'
 Restored files:
-  • /etc/security/mint-agent-rules.conf
-  • /home/alpesh/.config/mint-agent/settings.json`);
+      if (args === '--list-models') {
+        this.printTermLine(`Active AI: Qwen2.5 0.5B Instruct (Ultra-Light) [Provider: OFFLINE]
+
+--- OFFLINE LOCAL SLM MODELS (Zero Internet Required) ---
+  ★ (ACTIVE) qwen2.5-0.5b-instruct      | RAM: 400MB | Qwen2.5 0.5B Instruct (Ultra-Light)
+    qwen2.5-coder-1.5b         | RAM: 1100MB | Qwen2.5 Coder 1.5B (Code & Tool Use)
+    deepseek-r1-distill-1.5b   | RAM: 1200MB | DeepSeek R1 Distill 1.5B (Offline Reasoning)
+    qwen2.5-3b-instruct        | RAM: 2200MB | Qwen2.5 3B Instruct (Balanced)
+    qwen2.5-7b-instruct        | RAM: 5000MB | Qwen2.5 7B Instruct (High-Performance)
+    custom-gguf                | RAM: 1500MB | Custom Local GGUF Model
+    local-ollama               | RAM: 2000MB | Local Ollama Daemon (http://localhost:11434)
+
+--- ONLINE CLOUD AI MODELS (Frontier Intelligence) ---
+    gemini-2.5-flash           | Speed: Ultra-Fast (<300ms) | [Key Configured] Google Gemini 2.5 Flash
+    gemini-2.5-pro             | Speed: Deep Reasoning   | [Key Configured] Google Gemini 2.5 Pro
+    gpt-4o-mini                | Speed: Fast             | [Key Configured] OpenAI GPT-4o-mini
+    gpt-4o                     | Speed: Standard         | [Key Configured] OpenAI GPT-4o
+    claude-3-5-haiku           | Speed: Very Fast        | [Key Configured] Anthropic Claude 3.5 Haiku
+    claude-3-5-sonnet          | Speed: Deep Thinking    | [Key Configured] Anthropic Claude 3.5 Sonnet
+    custom-openai-compatible   | Speed: Configurable     | [Key Configured] Custom OpenAI-Compatible API
+
+To switch: mint-agent --set-model <MODEL_ID>`);
+        return;
+      }
+
+      if (args.startsWith('--set-model')) {
+        const mId = args.slice(11).trim() || 'gemini-2.5-flash';
+        const simBadge = document.getElementById('simAiModelBadge');
+        if (simBadge) {
+          const isOff = mId.includes('qwen') || mId.includes('deepseek') || mId.includes('gguf');
+          simBadge.innerText = `🧠 AI: ${mId.split('-')[0]} [${isOff ? 'OFFLINE' : 'ONLINE'}]`;
+        }
+        this.printTermLine(`✓ Successfully switched active AI model to: '${mId}'!`);
+        return;
+      }
+
+      if (args === '--check-update') {
+        this.printTermLine(`🔍 Checking GitHub repository (thakoralpesh3/mint-agent-os)...
+✓ MintPilot Agent OS is completely up to date! (Commit: 9fc44c3)`);
+        return;
+      }
+
+      if (args === '--update-os') {
+        this.printTermLine(`🔄 Running in-place upgrade of MintPilot Agent OS...
+  ✓ Fetched latest upstream commits from GitHub.
+  ✓ Verified SHA-256 cryptographic tripwires intact.
+  ✓ Systemd service mint-agent.service reloaded.
+🎉 Successfully upgraded to latest MintPilot Agent OS release!`);
         return;
       }
 
