@@ -85,12 +85,33 @@ class AgentBrain:
         """
         p = prompt.strip().lower()
 
-        # 1. Active Counter-Defense & Self-Countering
+        # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
             res = self.security.scan_and_counter_threats()
             return {
-                "thought": f"Active counter-measures executed. Threats countered: {res.get('countered_count', 0)}",
+                "thought": f"Active counter-measures executed. Threats countered: {res.get('countered_count', 0)} | Antibodies synthesized: {res.get('antibodies_synthesized', 0)}",
                 "result": res
+            }
+
+        if any(w in p for w in ["immune", "antibodies", "attack memory", "future attack"]):
+            res = self.security.get_immune_status()
+            return {
+                "thought": f"Digital Immune System Resilience: {res.get('resilience_score')}/100 ({res.get('grade')}). Active Antibodies: {res.get('total_antibodies')}.",
+                "result": res
+            }
+
+        if any(w in p for w in ["harden future", "prepare future", "harden pc", "synthesize antibodies"]):
+            res = self.security.harden_for_future_attacks()
+            return {
+                "thought": f"Proactive Defense Enforced: {res.get('message')}",
+                "result": res
+            }
+
+        if any(w in p for w in ["defcon", "escalation posture", "threat posture"]):
+            posture = self.security.get_full_security_posture()
+            return {
+                "thought": f"Dynamic Threat Escalation: {posture['defcon']['status']} - {posture['defcon']['posture']}",
+                "result": posture["defcon"]
             }
 
         if any(w in p for w in ["deploy decoys", "honeypot", "canary decoys", "canary trap"]):
