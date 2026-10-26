@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=MintPilot AI Agent HUD
+Comment=Autonomous Offline Laptop Controller Agent
+Exec=/usr/bin/python3 /opt/mint-agent/agent/ui/hud_overlay.py
+Icon=system-run
+Terminal=false
+Categories=Utility;System;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

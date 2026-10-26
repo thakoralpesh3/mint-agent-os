@@ -37,3 +37,10 @@ agent/models/*.gguf
 Thumbs.db
 .idea/
 .vscode/
+
+# Cloudflare Security Auditor Hardening
+.env
+*.pyc
+*.key
+*.token
+*.pem
