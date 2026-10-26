@@ -116,7 +116,13 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(update_data)
             return
 
-        # 7. OpenAI-Compatible: GET /v1/models
+        # 7. Linux Mint PC Smoothness & Hardware Audit: GET /api/smoothness
+        if path == "/api/smoothness":
+            compat = self.brain.memory.verify_mint_compatibility()
+            self._send_json(compat)
+            return
+
+        # 8. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
@@ -241,6 +247,12 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
         # 11. Perform In-Place OS Update: POST /api/update_os
         if path == "/api/update_os":
             res = self.brain.updater.perform_update()
+            self._send_json(res)
+            return
+
+        # 12. Optimize Linux Mint Smoothness (Kernel Swappiness & Cache Tuning): POST /api/optimize_smoothness
+        if path == "/api/optimize_smoothness":
+            res = self.brain.memory.tune_kernel_smoothness()
             self._send_json(res)
             return
 
