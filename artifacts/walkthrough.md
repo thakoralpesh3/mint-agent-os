@@ -1,179 +1,150 @@
-# Walkthrough: PC Self-Defense, Dynamic Threat Counter-Measures & Self-Countering Circuit Breaker for Linux Mint OS
+# Walkthrough: Linux Mint OS Upgrade Engine & Offline/Online AI Customization
 
-We have designed, implemented, verified, and integrated the complete **Autonomous Cyber Defense, Threat Counter-Measures, and Agent Self-Countering Safety Governor** for **MintPilot** on Linux Mint. All code and documentation are live and synchronized with GitHub at [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os) and accessible via the 24/7 online simulator at [thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/).
+We have implemented, verified, and synchronized two major capabilities for **MintPilot on Linux Mint**:
+1. **In-Place OS Upgrade & Installation Engine**: Allows any existing Linux Mint system to be converted into MintPilot Agent OS via a 1-line script or in-place CLI/WebUI updates.
+2. **Offline & Online AI Customization**: Gives users complete control to switch their AI model themselves between local offline SLMs (Qwen 0.5B–7B, DeepSeek R1, GGUF, Ollama) and online cloud models (Google Gemini 2.5, OpenAI GPT-4o, Anthropic Claude, custom endpoints) via WebUI, CLI, and natural language.
+
+All source code, live sync daemons, and artifacts are published and synchronized live on GitHub at [thakoralpesh3/mint-agent-os](https://github.com/thakoralpesh3/mint-agent-os) and deployed on the 24/7 online simulator at [thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/).
 
 ---
 
-## 🛡️ Complete Cyber Defense Architecture
+## 🚀 1. In-Place Linux Mint OS Upgrade Engine
 
-```mermaid
-graph TD
-    User([User / Autonomous Agent]) --> Brain[AgentBrain Inference & Fast Router]
-    Brain --> Guardian[SecurityGuardian Coordinator]
-    
-    subgraph "External Threat Protection"
-        Guardian --> ThreatDet[ThreatDetector ss, ps, cron, /tmp]
-        Guardian --> Remed[SecurityRemediation UFW, IP Block, Lockdown]
-        Guardian --> Counter[ThreatCounterMeasures Socket Sever, Canary Decoys]
-    end
+### 1-Line Universal Upgrade Script ([`upgrade_mint_to_agent_os.sh`](file:///home/alpesh/mint-agent-os/upgrade_mint_to_agent_os.sh))
+Users running Linux Mint (21.x or 22.x) can transform their existing installation without reformatting or reinstalling:
 
-    subgraph "Self-Defense & Self-Countering"
-        Guardian --> SelfDef[SelfDefenseGuardian SHA-256 Tripwire, Privilege Audit]
-        Guardian --> SelfCounter[SelfCounterCircuitBreaker Dead-Man Switch & Rollback]
-    end
+```bash
+curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash
+```
 
-    SelfCounter --> Snapshots[(Pre-Action Micro-Snapshots)]
-    Counter --> Honeytokens[(Canary Honeytokens)]
+### What the Script Automates:
+1. **OS & Hardware Tier Detection**: Verifies `/etc/os-release` and optimizes for 2GB–4GB low RAM or high-spec hardware.
+2. **Dependency Installation**: Non-interactively installs `brightnessctl`, `pulseaudio-utils`, `xdotool`, `wmctrl`, `maim`, `tesseract-ocr`, `speech-dispatcher`, `ufw`, and `git`.
+3. **Passwordless Polkit Control**: Installs `/etc/polkit-1/rules.d/99-mint-agent-permissions.rules` for seamless brightness, volume, power, and network control.
+4. **Systemd Background Daemon**: Deploys, enables, and starts `mint-agent.service` for the desktop user.
+5. **Desktop & Menu Integration**: Places desktop shortcuts in `/usr/share/applications/` and on `~/Desktop/`.
+6. **Global CLI Launcher**: Installs `/usr/local/bin/mint-agent` accessible from any terminal.
+7. **Security Baseline Setup**: Establishes SHA-256 cryptographic tripwires, activates UFW firewall, and deploys canary honeypots.
+
+### In-Place Routine Updates ([`agent/core/updater.py`](file:///home/alpesh/mint-agent-os/agent/core/updater.py))
+```bash
+# Check if a new version is available upstream:
+mint-agent --check-update
+
+# Run in-place upgrade from GitHub:
+mint-agent --update-os
 ```
 
 ---
 
-## ⚔️ New Cybersecurity Capabilities Implemented
+## 🧠 2. Offline & Online AI Model Customization System
 
-### 1. Active Threat Counter-Measures Subsystem ([`agent/security/counter_measures.py`](file:///home/alpesh/mint-agent-os/agent/security/counter_measures.py))
-- **Socket Disruption & Active Severing**:
-  - Leverages Linux socket diagnostic tool (`ss -K`) and TCP RST injection to immediately sever hostile connections to vulnerable or unauthorized ports.
-- **Canary Honeypot Decoys & Honeytokens**:
-  - Deploys fake high-value targets (e.g. `aws_credentials.fake`, `ssh_private_key.fake`, `db_password.fake`) in `~/.config/mint-agent/canary_decoys/`.
-  - Sets file traps; any unauthorized process attempting to read, exfiltrate, or alter these canary files immediately triggers an emergency defense lockdown.
+Users can customize and switch their AI brain anytime:
 
----
+```mermaid
+graph TD
+    User([User]) --> Selector[WebUI Badge / CLI / Natural Language]
+    Selector --> MM[ModelManager Core]
 
-### 2. Agent Self-Countering Safety Circuit Breaker ([`agent/security/self_counter.py`](file:///home/alpesh/mint-agent-os/agent/security/self_counter.py))
-- **Self-Countering Dead-Man Switch**:
-  - Monitors the agent's own action velocity and loop patterns.
-  - Automatically trips the circuit breaker if the agent enters a runaway autonomous loop (>12 consecutive actions) or repeats the exact same action 4 times in a loop.
-  - Halts all further execution until reset by the user, countering runaway AI behaviors.
-- **Pre-Action Micro-Snapshots & Autonomous Rollback**:
-  - Before modifying any critical system file or configuration, the agent captures a micro-snapshot of the file.
-  - If an anomaly or error is detected, or if the user requests it, the agent autonomous rolls back to the previous snapshot, restoring the exact safe state.
+    subgraph "Offline AI (Zero Internet, 100% Private)"
+        MM --> Q05[Qwen2.5 0.5B Ultra-Light 400MB RAM]
+        MM --> Q15[Qwen2.5 Coder 1.5B 1.1GB RAM]
+        MM --> DSK[DeepSeek R1 Distill 1.5B 1.2GB RAM]
+        MM --> Q3[Qwen2.5 3B 2.2GB RAM]
+        MM --> Q7[Qwen2.5 7B 5.0GB RAM]
+        MM --> LocalGGUF[User Local .gguf Path]
+        MM --> Ollama[Local Ollama http://localhost:11434]
+    end
 
----
+    subgraph "Online Cloud AI (Frontier Intelligence)"
+        MM --> Gemini[Google Gemini 2.5 Flash / Pro]
+        MM --> OpenAI[OpenAI GPT-4o / GPT-4o-mini]
+        MM --> Claude[Anthropic Claude 3.5 Haiku / Sonnet]
+        MM --> Custom[Custom OpenAI-Compatible Endpoint]
+    end
 
-### 3. Master Security Coordinator ([`agent/security/guardian.py`](file:///home/alpesh/mint-agent-os/agent/security/guardian.py))
-- Coordinates `SelfDefenseGuardian`, `ThreatDetector`, `SecurityRemediation`, `ThreatCounterMeasures`, and `SelfCounterCircuitBreaker`.
-- Exposes clean unified APIs:
-  - `get_full_security_posture()`
-  - `scan_and_counter_threats()`
-  - `deploy_decoys()`
-  - `lockdown()`
-  - `rollback_last_change()`
+    Online Cloud -.->|Internet Down or Key Missing| Q05
+```
 
----
-
-### 4. CLI Additions ([`agent/cli.py`](file:///home/alpesh/mint-agent-os/agent/cli.py))
-- `mint-agent --counter-threats`: Scans and executes active countermeasures against listening sockets and hostile actors.
-- `mint-agent --deploy-decoys`: Deploys honeypot canary decoy credentials.
-- `mint-agent --self-check`: Inspects the agent self-countering safety circuit breaker and dead-man switch.
-- `mint-agent --rollback`: Reverts the agent's recent modifications to the last pre-action snapshot.
-
----
-
-### 5. Open WebUI Endpoints & UI Panels ([`agent/webui/server.py`](file:///home/alpesh/mint-agent-os/agent/webui/server.py))
-- `POST /api/counter_threats`: Dispatches active countermeasures.
-- `POST /api/deploy_decoys`: Deploys and monitors honeytoken traps.
-- `GET /api/self_counter` & `POST /api/self_counter`: Inspects or resets the safety circuit breaker.
-- `POST /api/rollback`: Autonomous state rollback.
-- Added interactive buttons and status cards for Honeypot Decoys and the Self-Countering Safety Circuit Breaker directly in the WebUI.
-
----
-
-### 6. 24/7 Simulator on GitHub Pages ([`docs/index.html`](file:///home/alpesh/mint-agent-os/docs/index.html), [`docs/js/agent_simulator.js`](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js))
-- Added active counter-measures, canary honeypots, circuit breaker status, and rollback commands to the online simulator terminal and WebUI quick chips.
-- Verified live deployment at [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/).
+### Automatic Zero-Downtime Offline Fallback:
+If an online cloud model is selected but internet drops or an API key is missing, MintPilot **automatically and gracefully falls back to the local offline SLM**, ensuring that laptop control and cybersecurity protection are never interrupted.
 
 ---
 
 ## 🧪 Verification & Test Results
 
-### 1. Safety Circuit Breaker Self-Check
+### 1. Model Listing & Active Model Inspection
 ```bash
-python3 /home/alpesh/mint-agent-os/agent/cli.py --self-check
+python3 /home/alpesh/mint-agent-os/agent/cli.py --list-models
 ```
 ```text
-🛑 Agent Self-Countering Safety Circuit Breaker Status:
-Status: NORMAL / GOVERNING
-Recent Action Velocity: 0 actions in 60s (Threshold: 12)
-Available Snapshots for Rollback: 0
-{
-  "circuit_tripped": false,
-  "trip_reason": null,
-  "recent_action_count": 0,
-  "runaway_threshold": 12,
-  "repetition_threshold": 4,
-  "safety_governor": "active"
-}
+Active AI: Qwen2.5 0.5B Instruct (Ultra-Light) [Provider: OFFLINE]
+
+--- OFFLINE LOCAL SLM MODELS (Zero Internet Required) ---
+  ★ (ACTIVE) qwen2.5-0.5b-instruct      | RAM: 400MB | Qwen2.5 0.5B Instruct (Ultra-Light)
+    qwen2.5-coder-1.5b         | RAM: 1100MB | Qwen2.5 Coder 1.5B (Code & Tool Use)
+    deepseek-r1-distill-1.5b   | RAM: 1200MB | DeepSeek R1 Distill 1.5B (Offline Reasoning)
+    qwen2.5-3b-instruct        | RAM: 2200MB | Qwen2.5 3B Instruct (Balanced)
+    qwen2.5-7b-instruct        | RAM: 5000MB | Qwen2.5 7B Instruct (High-Performance)
+    custom-gguf                | RAM: 1500MB | Custom Local GGUF Model
+    local-ollama               | RAM: 2000MB | Local Ollama Daemon (http://localhost:11434)
+
+--- ONLINE CLOUD AI MODELS (Frontier Intelligence) ---
+    gemini-2.5-flash           | Speed: Ultra-Fast (<300ms) | Google Gemini 2.5 Flash
+    gemini-2.5-pro             | Speed: Deep Reasoning   | Google Gemini 2.5 Pro
+    gpt-4o-mini                | Speed: Fast             | OpenAI GPT-4o-mini
+    gpt-4o                     | Speed: Standard         | OpenAI GPT-4o
+    claude-3-5-haiku           | Speed: Very Fast        | Anthropic Claude 3.5 Haiku
+    claude-3-5-sonnet          | Speed: Deep Thinking    | Anthropic Claude 3.5 Sonnet
+    custom-openai-compatible   | Speed: Configurable     | Custom OpenAI-Compatible API
 ```
 
-### 2. Deploy Honeypot Canary Decoys
+### 2. Model Switching Test
 ```bash
-python3 /home/alpesh/mint-agent-os/agent/cli.py --deploy-decoys
-```
-```text
-🪤 Deploying Honeypot Canary Decoys...
-✓ Canary decoy honeypots active. Any unauthorized read will trip an emergency counter-lockdown.
-{
-  "status": "deployed",
-  "decoys_count": 3,
-  "newly_created": [
-    "/home/alpesh/.config/mint-agent/canary_decoys/aws_credentials.fake",
-    "/home/alpesh/.config/mint-agent/canary_decoys/ssh_private_key.fake",
-    "/home/alpesh/.config/mint-agent/canary_decoys/db_password.fake"
-  ]
-}
+# Switch to offline 1.5B coder:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --set-model qwen2.5-coder-1.5b
+# Output: ✓ Successfully switched active AI to: 'qwen2.5-coder-1.5b' (OFFLINE)
+
+# Reset to default 0.5B ultra-light:
+python3 /home/alpesh/mint-agent-os/agent/cli.py --set-model qwen2.5-0.5b-instruct
+# Output: ✓ Successfully switched active AI to: 'qwen2.5-0.5b-instruct' (OFFLINE)
 ```
 
-### 3. Active Threat Counter-Measures Execution
+### 3. Check OS Update Test
 ```bash
-python3 /home/alpesh/mint-agent-os/agent/cli.py --counter-threats
+python3 /home/alpesh/mint-agent-os/agent/cli.py --check-update
 ```
 ```text
-⚔️ Executing Active Counter-Measures (Socket Severs & Decoy Traps)...
-Threat Level: HIGH | Total Threats: 7
-Countered Threats: 7 | Execution Mode: turbo_counter_active
+🔍 Checking GitHub repository for MintPilot Agent OS updates...
+✓ MintPilot Agent OS is completely up to date! (Commit: 561f6c1)
 ```
 
-### 4. Agent Self-Countering Circuit Breaker Test
-Simulated runaway repetition loop where an action is repeated 4 times:
-```text
-Agent countered itself at iteration 4 Reason: Runaway repetition loop detected: 'modify_system_setting:/etc/sysctl.conf' repeated 4 times.
-Circuit breaker tripped: True
-Status report: {'circuit_tripped': True, 'trip_reason': "Runaway repetition loop detected...", 'safety_governor': 'active'}
-✓ Agent Self-Countering Circuit Breaker Test Passed!
-```
+### 4. WebUI API Endpoints Verification
+- `GET /api/models` -> returned 14 models with active model metadata.
+- `POST /api/set_model` -> successfully switched to `gemini-2.5-flash` and reset to `qwen2.5-0.5b-instruct`.
+- `GET /api/check_update` -> returned up to date status.
 
-### 5. Pre-Action Micro-Snapshot & Autonomous Rollback Test
-Simulated configuration alteration and executed rollback:
-```text
-Created snapshot: snap_1793026752_0
-Modified file content: version=2.0_CORRUPTED safe=false
-Rollback result: success Successfully rolled back snapshot: 'Test config change'
-Restored file content: version=1.0 safe=true
-✓ Self-Countering Rollback Verified Successfully!
-```
-
-### 6. GitHub Pages 24/7 Simulator Status
+### 5. 24/7 Simulator Live Status
 ```bash
 curl -sI https://thakoralpesh3.github.io/mint-agent-os/
 ```
 ```text
 HTTP/2 200 OK
-content-length: 22341
+content-length: 22893
 server: GitHub.com
 ```
 
 ---
 
-## 🚀 Summary of User Commands
+## 📋 Summary of User Options
 
-| Command | Action |
+| User Goal | How to Do It |
 |---|---|
-| `mint-agent --security` | Complete CIS/SAIF security hardening score and audit |
-| `mint-agent --scan-threats` | Deep scan for network exposures and rogue processes |
-| `mint-agent --counter-threats` | Actively sever hostile sockets and counter threats |
-| `mint-agent --deploy-decoys` | Deploy canary honeypot credential traps |
-| `mint-agent --self-check` | Check self-countering safety circuit breaker status |
-| `mint-agent --rollback` | Revert to previous pre-action configuration snapshot |
-| `mint-agent --lockdown` | Enforce emergency UFW inbound network lockdown |
-| `mint-agent --turbo` | Switch to Antigravity Autonomous Turbo Mode |
-| `mint-agent --safe` | Switch to Guarded Safe Mode |
+| **Upgrade Existing Linux Mint to Agent OS** | Run `curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh \| sudo bash` |
+| **Check for Agent OS Updates** | `mint-agent --check-update` or click "Update OS" in WebUI |
+| **Perform In-Place Agent OS Upgrade** | `mint-agent --update-os` or click "Run In-Place Upgrade" in WebUI |
+| **View All AI Models (Offline & Online)** | `mint-agent --list-models` or click "🧠 AI" badge in WebUI |
+| **Switch to Offline Local Model** | `mint-agent --set-model qwen2.5-1.5b` or pick in WebUI |
+| **Switch to Online Google Gemini** | `mint-agent --set-key gemini <KEY>` then `mint-agent --set-model gemini-2.5-flash` |
+| **Switch to Online OpenAI GPT-4o** | `mint-agent --set-key openai <KEY>` then `mint-agent --set-model gpt-4o` |
+| **Try 24/7 Online OS Simulator** | Visit [thakoralpesh3.github.io/mint-agent-os](https://thakoralpesh3.github.io/mint-agent-os/) |
