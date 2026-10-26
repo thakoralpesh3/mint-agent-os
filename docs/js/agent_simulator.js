@@ -699,13 +699,49 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       }
     }
 
+    // E.D.I.T.H. Tactical Grid Scan
+    if (p.includes('edith scan') || p.includes('tactical scan') || p.includes('target scan') || p.includes('orbital scan') || p.includes('scan targets')) {
+      const edithP = this.personas.edith;
+      this.activePersona = 'edith';
+      this.updateInteractionBadges();
+      const text = `${edithP.prefix} Orbital tactical grid sweep complete. 4 tactical entities identified. Perimeter under continuous surveillance.`;
+      this.speak(text);
+      return {
+        thought: `${edithP.name}: "${text}" ${edithP.suffix}`,
+        result: {
+          grid_status: "TACTICAL_SURVEILLANCE_ACTIVE",
+          satellite_link: "STARK-ORBITAL-SENTRY-7 ONLINE",
+          targets_scanned: 4,
+          threats_detected: 2,
+          perimeter_score: 94,
+          targets: [
+            { id: "TARGET-EDITH-01", entity: "0.0.0.0:8080", threat: "ELEVATED (78%)", action: "SEVER_SOCKET" },
+            { id: "TARGET-EDITH-02", entity: "185.220.101.42", threat: "HOSTILE (92%)", action: "NULL_ROUTE_DROP" },
+            { id: "TARGET-EDITH-03", entity: "PID 1240 cinnamon", threat: "NOMINAL (2%)", action: "ALLOW_60FPS" },
+            { id: "TARGET-EDITH-04", entity: "PID 2108 ufw-sentry", threat: "NOMINAL (0%)", action: "SHIELD_ACTIVE" }
+          ]
+        },
+        latency_ms: 1.1
+      };
+    }
+
     // Stark Defense Protocols Intent
     if (p.includes('house party') || p.includes('house party protocol')) {
-      const text = `${activeP.prefix} House Party Protocol deployed: 4 autonomous micro-watchdogs launched across network, memory, and processes.`;
+      const text = `${activeP.prefix} House Party Protocol deployed: All 5 Marvel Series AI Agents autonomously dispatched across Linux Mint.`;
       this.speak(text);
       return {
         thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
-        result: { protocol: "house_party", active_sentries: 4, status: "deployed", execution_mode: "autonomous_grid" },
+        result: {
+          protocol: "house_party",
+          status: "deployed",
+          multi_agent_team: [
+            { agent: "J.A.R.V.I.S.", role: "Executive Governor", status: "NOMINAL", report: "Core system sweeps confirmed. Swappiness locked at 10." },
+            { agent: "F.R.I.D.A.Y.", role: "Combat Defense", status: "ENGAGED", report: "Combat socket watcher armed. Zero rogue ports." },
+            { agent: "E.D.I.T.H.", role: "Orbital Sentry", status: "VIGILANT", report: "Orbital perimeter sentry locked. Ingress filtered." },
+            { agent: "V.I.S.I.O.N.", role: "Immune Synthesizer", status: "ALIGNED", report: "Digital immune memory synthesized. 16 antibodies active." },
+            { agent: "K.A.R.E.N.", role: "Safety Mentor", status: "STANDBY", report: "All safety checks passed! System butter-smooth." }
+          ]
+        },
         latency_ms: 1.4
       };
     }
