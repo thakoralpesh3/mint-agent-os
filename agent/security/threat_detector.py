@@ -34,6 +34,9 @@ class ThreatDetector:
         "/dev/shm"
     ]
 
+    def __init__(self, immune_system=None):
+        self.immune = immune_system
+
     def scan_all_threats(self) -> Dict[str, Any]:
         """Runs a complete system audit and categorizes threats by severity."""
         threats = []
@@ -49,6 +52,10 @@ class ThreatDetector:
         # 3. Persistence & Privilege Escalation Sentry
         persist_threats = self.scan_persistence_threats()
         threats.extend(persist_threats)
+
+        # 4. Authentication & Brute-Force Sentry
+        auth_threats = self.scan_auth_threats()
+        threats.extend(auth_threats)
 
         # Count by severity
         crit_count = sum(1 for t in threats if t.get("severity") == "CRITICAL")
