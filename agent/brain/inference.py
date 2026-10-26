@@ -249,6 +249,80 @@ class AgentBrain:
                 "result": {"mode": self.permissions.mode, "is_turbo": self.permissions.is_turbo()}
             }
 
+        # 3b. User Interaction Options & Modalities
+        if any(w in p for w in ["interaction status", "interaction options", "how do you interact", "interaction settings", "interaction modes"]):
+            status = self.interaction.get_status()
+            return {
+                "thought": f"Interaction Options: Modality='{status['modality']}' | Verbosity='{status['verbosity']}' | Proactivity='{status['proactivity']}' | Voice={'ON' if status['voice']['enabled'] else 'OFF'}.",
+                "result": status
+            }
+
+        if any(w in p for w in ["enable voice", "turn on voice", "voice on", "speak replies", "talk to me", "voice output"]):
+            res = self.interaction.set_voice(True)
+            self.voice.speak("Spoken voice replies enabled. I am ready to interact aloud.")
+            return {
+                "thought": "Voice interaction enabled. MintPilot will speak replies aloud using offline speech synthesis.",
+                "result": res
+            }
+
+        if any(w in p for w in ["disable voice", "turn off voice", "voice off", "mute voice", "silent voice", "stop speaking"]):
+            res = self.interaction.set_voice(False)
+            return {
+                "thought": "Voice interaction disabled. MintPilot will interact silently via text and visual UI.",
+                "result": res
+            }
+
+        if any(w in p for w in ["concise mode", "be concise", "minimalist mode", "terse mode", "short replies", "brief mode"]):
+            res = self.interaction.set_verbosity("concise")
+            return {
+                "thought": "Communication style set to Concise. Terse one-line confirmations enabled.",
+                "result": res
+            }
+
+        if any(w in p for w in ["detailed mode", "be detailed", "explain everything", "mentor mode", "verbose mode", "detailed replies"]):
+            res = self.interaction.set_verbosity("detailed")
+            return {
+                "thought": "Communication style set to Detailed Mentor. Deep explanations and underlying system commands will be shown.",
+                "result": res
+            }
+
+        if any(w in p for w in ["security style", "security auditor", "auditor style", "security verbosity"]):
+            res = self.interaction.set_verbosity("security_auditor")
+            return {
+                "thought": "Communication style set to Security Auditor. Responses will highlight DEFCON levels, CVE telemetry, and firewall posture.",
+                "result": res
+            }
+
+        if any(w in p for w in ["normal style", "normal mode", "balanced style", "default style"]):
+            res = self.interaction.set_verbosity("normal")
+            return {
+                "thought": "Communication style reset to Normal Balanced.",
+                "result": res
+            }
+
+        if any(w in p for w in ["proactive mode", "be proactive", "ambient mode", "ambient copilot"]):
+            res = self.interaction.set_proactivity("proactive")
+            return {
+                "thought": "Proactivity level set to Proactive Ambient Copilot. MintPilot will actively monitor and suggest system optimizations.",
+                "result": res
+            }
+
+        if any(w in p for w in ["reactive mode", "be reactive", "silent proactivity", "speak only when asked"]):
+            res = self.interaction.set_proactivity("reactive")
+            return {
+                "thought": "Proactivity level set to Reactive. MintPilot will act only when explicitly commanded.",
+                "result": res
+            }
+
+        modality_m = re.search(r"(?:switch|set)\s+modality\s+to\s+([a-zA-Z_]+)", p)
+        if modality_m:
+            target_mod = modality_m.group(1)
+            res = self.interaction.set_modality(target_mod)
+            return {
+                "thought": f"Switched interaction modality to '{target_mod}'.",
+                "result": res
+            }
+
         # 4. Memory & Butter-Smooth Linux Mint Performance
         if any(w in p for w in ["smooth mint", "butter smooth", "optimize smoothness", "tune smoothness", "smooth performance"]):
             res = self.memory.tune_kernel_smoothness()
