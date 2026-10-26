@@ -145,3 +145,46 @@ g.self_counter.record_action_and_check('rm -rf /')
 | `mint-agent --self-check` | Audit agent self-countering circuit breaker and dead-man switch |
 | `mint-agent --rollback` | Roll back to the last pre-action micro-snapshot |
 | `mint-agent --lockdown` | Activate emergency PC lockdown (strict firewall inbound drop) |
+
+---
+
+## 💾 7. OS Download & Bootable USB Creator System
+
+Users can now download the OS and create bootable USB media through 4 comprehensive channels:
+
+### 1. Automated Safe Terminal Flasher ([`make_bootable_usb.sh`](file:///home/alpesh/mint-agent-os/make_bootable_usb.sh))
+- **Safety First**: Resolves `findmnt /` to identify the host operating system drive (e.g. `/dev/nvme0n1` or `/dev/sda`) and locks it out to prevent accidental deletion of host files.
+- **USB Device Sentry**: Detects and displays only removable USB drives with `lsblk`.
+- **Automatic Image Discovery**: Automatically locates `LinuxMint-AI-Agent-Edition.iso` across directories.
+- **Buffer Sync**: Employs `conv=fdatasync` and runs `sync` to ensure complete flushing before USB removal.
+- **Usage**:
+  ```bash
+  chmod +x make_bootable_usb.sh && sudo ./make_bootable_usb.sh
+  ```
+
+### 2. Zero-Friction Ventoy Multi-Boot
+- Install [Ventoy](https://www.ventoy.net) on an 8GB+ USB thumb drive.
+- Simply drag-and-drop `LinuxMint-AI-Agent-Edition.iso` onto the drive.
+- No flashing or drive formatting required.
+
+### 3. Graphical Tool Support (Rufus & BalenaEtcher)
+- **Windows**: Rufus (GPT/UEFI partition scheme, ISO write mode).
+- **macOS / Linux / Windows**: BalenaEtcher (Flash from file -> Select USB -> Flash).
+
+### 4. Laptop BIOS Boot Key Guide
+Immediate boot key matrix displayed on both README and simulator:
+- **Lenovo**: `F12` (or `Fn + F12`) / Novo button
+- **Dell**: `F12`
+- **HP**: `F9` (or `Esc` -> `F9`)
+- **ASUS**: `F8` or `Esc`
+- **Acer**: `F12`
+- **MSI**: `F11`
+- **Apple Mac**: Hold `Option` (`Alt`) on startup chime
+
+### 5. 24/7 Interactive Online Simulator Integration
+- **Desktop Icon**: "Download & USB" on the desktop opens the full creator hub.
+- **Top Bar & WebUI Buttons**: "💾 Download ISO / USB" directly accessible from the chat header.
+- **Window 6 (`#win-download`)**: 6 interactive tabs covering Direct ISO Download, Checksum copying, Automated Flasher, Ventoy, Rufus/Etcher, and Laptop Boot Keys.
+- **Terminal Simulator Integration**: Running `sudo ./make_bootable_usb.sh` inside the simulator triggers a realistic, step-by-step flashing animation.
+- Live at: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
+
