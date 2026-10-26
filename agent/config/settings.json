@@ -21,8 +21,8 @@
   },
   "interaction": {
     "modality": "hybrid",
-    "verbosity": "detailed",
-    "proactivity": "proactive",
+    "verbosity": "concise",
+    "proactivity": "balanced",
     "voice": {
       "enabled": true,
       "engine": "spd-say",
