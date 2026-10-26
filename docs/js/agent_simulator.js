@@ -502,6 +502,53 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     if (ramEl) ramEl.innerText = `RAM: ${ramPct}% (${this.ramTotalMb - this.ramUsedMb}MB free)`;
   },
 
+  openModelModal() {
+    const choice = prompt(
+      "🧠 MintPilot AI Model Selector:\n" +
+      "Choose an AI model:\n" +
+      "  1. qwen2.5-0.5b (Offline SLM, 400MB RAM)\n" +
+      "  2. qwen2.5-1.5b (Offline Coder SLM, 1.1GB RAM)\n" +
+      "  3. deepseek-r1-1.5b (Offline Reasoning, 1.2GB RAM)\n" +
+      "  4. gemini-2.5-flash (Online Cloud, Ultra-Fast)\n" +
+      "  5. gpt-4o (Online Cloud Frontier)\n\n" +
+      "Enter model name or number (e.g. 1 or gemini-2.5-flash):",
+      "gemini-2.5-flash"
+    );
+    if (!choice) return;
+
+    let target = choice.trim();
+    if (target === '1') target = 'qwen2.5-0.5b';
+    if (target === '2') target = 'qwen2.5-1.5b';
+    if (target === '3') target = 'deepseek-r1-1.5b';
+    if (target === '4') target = 'gemini-2.5-flash';
+    if (target === '5') target = 'gpt-4o';
+
+    const simBadge = document.getElementById('simAiModelBadge');
+    const isOff = target.includes('qwen') || target.includes('deepseek') || target.includes('gguf');
+    if (simBadge) {
+      simBadge.innerText = `🧠 AI: ${target.split('-')[0]} [${isOff ? 'OFFLINE' : 'ONLINE'}]`;
+    }
+    this.sendWebUIMessage(`switch model to ${target}`);
+  },
+
+  openUpgradeModal() {
+    const runInTerm = confirm(
+      "🍃 Upgrade Existing Linux Mint to MintPilot Agent OS:\n\n" +
+      "Run this 1-line command on any Linux Mint (21.x/22.x) machine:\n\n" +
+      "curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash\n\n" +
+      "Would you like to simulate this upgrade in the terminal right now?"
+    );
+    if (runInTerm) {
+      WindowManager.openApp('terminal');
+      const input = document.getElementById('termInput');
+      if (input) {
+        input.value = "mint-agent --update-os";
+        const e = new KeyboardEvent('keydown', { key: 'Enter' });
+        input.dispatchEvent(e);
+      }
+    }
+  },
+
   // ==================== HUD OVERLAY SIMULATION ====================
   setupHUD() {
     const hudInput = document.getElementById('hudInput');
