@@ -96,6 +96,48 @@ def main():
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
 
+    if args.list_personas:
+        print_banner(brain)
+        personas = brain.marvel.list_personas()
+        print("🤖 Marvel Series AI Agents for Linux Mint:\n")
+        for p in personas:
+            status = "\033[1;32m[ACTIVE]\033[0m" if p["is_active"] else "\033[1;30m[INACTIVE]\033[0m"
+            print(f"  • \033[1;36m{p['name']:<12}\033[0m {status} — {p['title']}")
+            print(f"    \033[1;33mSpecialty:\033[0m {p['specialty']}")
+            print(f"    \033[1;35mTagline:\033[0m   {p['tagline']}\n")
+        print("Switch anytime: mint-agent --persona <jarvis|friday|edith|vision|karen>")
+        return
+
+    if args.list_protocols:
+        print_banner(brain)
+        protos = brain.marvel.list_protocols()
+        print("⚡ Stark Industries & Marvel Protocols for Linux Mint:\n")
+        for k, pr in protos.items():
+            print(f"  • \033[1;36mProtocol: {pr['name']:<35}\033[0m [{pr['level']}]")
+            print(f"    \033[1;37m{pr['description']}\033[0m\n")
+        print("Execute anytime: mint-agent --protocol '<name>' or in natural language: 'Jarvis, engage house party protocol'")
+        return
+
+    if args.persona:
+        print_banner(brain)
+        res = brain.marvel.set_persona(args.persona)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;32m✓\033[0m {res['message']}")
+            print(f"  \033[1;34mGreeting:\033[0m {res['greeting']}")
+        return
+
+    if args.protocol:
+        print_banner(brain)
+        res = brain.marvel.execute_protocol(args.protocol)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;32m✓ Protocol Executed:\033[0m {res['protocol']} ({res['level']})")
+            print(f"\033[1;34m[{res['agent']}]\033[0m {res['thought']}")
+        return
+
     if args.interaction:
         print_banner(brain)
         status = brain.interaction.get_status()
