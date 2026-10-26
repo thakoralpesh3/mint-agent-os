@@ -247,6 +247,8 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
 
   // ==================== AGENT REASONING ENGINE ====================
   processAgentIntent(prompt) {
+    const p = prompt.toLowerCase().trim();
+
     // Active Counter-Measures & Self-Countering Circuit Breaker
     if (p.includes('counter threat') || p.includes('active counter') || p.includes('sever socket')) {
       return {
