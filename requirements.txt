@@ -3,7 +3,7 @@ PyGObject>=3.42.0
 
 # Desktop Perception & Control
 Pillow>=9.0.0
-pyautogui>=0.9.53
+pyautogui>=0.9.54
 pytesseract>=0.3.10
 
 # Optional Offline Voice Interaction
