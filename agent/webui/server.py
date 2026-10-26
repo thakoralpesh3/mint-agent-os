@@ -125,7 +125,19 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(compat)
             return
 
-        # 8. OpenAI-Compatible: GET /v1/models
+        # 8. Digital Immune Memory & Future Attack Readiness: GET /api/immune
+        if path == "/api/immune":
+            immune_data = self.brain.security.get_immune_status()
+            self._send_json(immune_data)
+            return
+
+        # 9. Dynamic Threat Escalation Posture: GET /api/defcon
+        if path == "/api/defcon":
+            posture = self.brain.security.get_full_security_posture()
+            self._send_json(posture.get("defcon", {}))
+            return
+
+        # 10. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
@@ -256,6 +268,12 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
         # 12. Optimize Linux Mint Smoothness (Kernel Swappiness & Cache Tuning): POST /api/optimize_smoothness
         if path == "/api/optimize_smoothness":
             res = self.brain.memory.tune_kernel_smoothness()
+            self._send_json(res)
+            return
+
+        # 13. Synthesize Digital Antibodies & Harden for Future Attacks: POST /api/harden_future
+        if path == "/api/harden_future":
+            res = self.brain.security.harden_for_future_attacks()
             self._send_json(res)
             return
 
