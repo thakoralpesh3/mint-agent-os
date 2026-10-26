@@ -162,6 +162,80 @@ graph TD
 | **Sensitive Actions** | Auto-approved (bash scripts, browser clicks, file writes) | Triggers WebUI approval modal or CLI `[y/N]` prompt |
 | **Self-Healing** | Automatically retries alternative paths on error | Notifies user and requests guidance on error |
 | **How to Toggle** | Click toggle switch in WebUI or run `mint-agent --turbo` | Click toggle switch in WebUI or run `mint-agent --safe` |
+---
+
+## 🗣️ 4. User Interaction Options & Modalities
+
+MintPilot provides extensive, customizable options for **how the agent communicates, listens, and interacts** with the user across 4 comprehensive pillars:
+
+```mermaid
+graph TD
+    User([User]) <--> InteractionHub[Interaction Governance Hub]
+
+    subgraph "1. Modality Channels"
+        InteractionHub <--> WebUI[Visual WebUI & Chat]
+        InteractionHub <--> Voice[Offline Speech TTS/STT Piper / spd-say]
+        InteractionHub <--> HUD[Spotlight Floating HUD Super+Space]
+        InteractionHub <--> Toast[Desktop Notifications libnotify]
+        InteractionHub <--> CLI[Terminal Interactive REPL]
+    end
+
+    subgraph "2. Communication Personas & Depth"
+        InteractionHub --> Concise[⚡ Concise: Terse 1-Liner Action Confirmations]
+        InteractionHub --> Normal[🍃 Normal: Balanced Conversational Explanations]
+        InteractionHub --> Detailed[📖 Detailed: Mentor Breakdown & Underlying CLI Commands]
+        InteractionHub --> Security[🛡️ Security Auditor: DEFCON & Risk Telemetry]
+    end
+
+    subgraph "3. Ambient Proactivity"
+        InteractionHub --> Reactive[🤫 Reactive: Speaks/Acts ONLY when Commanded]
+        InteractionHub --> Balanced[⚖️ Balanced: Quiet, Alerts on Threats/Low Battery]
+        InteractionHub --> Proactive[🚀 Proactive: Ambient Copilot & Optimization Suggestions]
+    end
+
+    subgraph "4. Autonomy & Safeguards"
+        InteractionHub --> Turbo[⚡ Turbo Mode: Autonomous Multi-Step Execution]
+        InteractionHub --> Safe[🛡️ Safe Mode: Confirms Sensitive/Destructive Actions]
+    end
+```
+
+### 🎛️ Interaction Configuration Options:
+
+| Setting Category | Options Available | Description & Purpose |
+|---|---|---|
+| **Modality Channel** | `text`, `voice`, `hybrid`, `hud`, `notification`, `cli` | Controls where and how messages are delivered. `voice` provides 100% offline spoken replies via Piper/spd-say; `hud` provides instant `Super+Space` overlay. |
+| **Communication Style** | `concise`, `normal`, `detailed`, `security_auditor` | Controls explanation depth. `concise` outputs 1-liners; `detailed` explains thought process and underlying system commands; `security_auditor` outputs DEFCON telemetry. |
+| **Ambient Proactivity** | `reactive`, `balanced`, `proactive` | `reactive` stays silent until spoken to; `balanced` alerts on low battery/threats; `proactive` acts as an ambient copilot suggesting system tune-ups. |
+| **Voice Synthesizer** | `piper` (Neural ONNX), `spd-say` (Mint default), `espeak-ng` | Configures speech engine, playback speed (100–300 wpm), and audio output. |
+| **Permission Guard** | `turbo`, `safe` | Controls whether sensitive actions execute autonomously or require user confirmation. |
+
+### 💻 Instant CLI Configuration Commands:
+```bash
+# View active interaction status and preferences:
+mint-agent --interaction
+
+# Change communication style on-the-fly:
+mint-agent --verbosity concise          # Terse 1-liners
+mint-agent --verbosity detailed         # Deep mentor explanations
+mint-agent --verbosity security_auditor # DEFCON & threat telemetry
+
+# Configure interaction modality & spoken voice:
+mint-agent --modality hybrid            # Both visual UI and spoken replies
+mint-agent --voice-reply on             # Enable offline spoken replies
+mint-agent --voice-reply off            # Silent visual mode
+
+# Adjust background proactivity:
+mint-agent --proactivity proactive      # Ambient copilot suggestions
+mint-agent --proactivity reactive       # Speak only when asked
+```
+
+### 🗣️ Natural Language Voice & Interaction Prompts:
+You can also reconfigure the agent on-the-fly simply by talking to it in WebUI or Terminal:
+- *"enable voice"* or *"talk to me"* $\rightarrow$ Enables offline spoken voice replies.
+- *"be concise"* or *"concise mode"* $\rightarrow$ Switches to brief, minimalist one-liner responses.
+- *"explain everything"* or *"detailed mode"* $\rightarrow$ Shows step-by-step reasoning and CLI commands.
+- *"be proactive"* $\rightarrow$ Arms ambient copilot system suggestions.
+- *"interaction options"* $\rightarrow$ Opens the User Interaction Control Center.
 
 ---
 
