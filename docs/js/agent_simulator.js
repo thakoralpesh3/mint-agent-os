@@ -73,6 +73,7 @@ MintPilot OS Available Commands:
   mint-agent --safe          Switch to Guarded Safe Mode (prompts confirmation)
   mint-agent --tier          Display hardware detection and model recommendations
   mint-agent --clean-ram     Execute memory cache cleanup
+  sudo ./make_bootable_usb.sh  Safe interactive bootable USB creator
   neofetch                   Display Linux Mint OS telemetry & hardware specs
   free -h                    Display RAM and swap statistics
   ls -la                     List current directory contents
@@ -126,6 +127,49 @@ drwxr-xr-x  3 alpesh alpesh 4096 Oct 26 18:40 iso_builder
       this.printTermLine(`               total        used        free      shared  buff/cache   available
 Mem:           3.7Gi       2.1Gi       512Mi        92Mi       1.1Gi       1.5Gi
 Swap:          3.9Gi       780Mi       3.1Gi`);
+      return;
+    }
+
+    if (c.includes('make_bootable_usb') || c === 'mint-agent --bootable' || c === 'mint-agent --download') {
+      this.printTermLine(`
+================================================================================
+💾 MintPilot Linux Mint AI Agent Edition — Bootable USB Creator
+================================================================================
+[INFO] Verifying root privileges... OK (root verified)
+[INFO] Detecting available block devices...
+[INFO] Host Root Partition: /dev/nvme0n1p2 (PROTECTED from selection)
+
+Target Candidate Disks Found:
+  1) /dev/sdb  [Size: 28.9G]  [Model: SanDisk Ultra 3.0]  [Type: disk] (REMOVABLE USB)
+
+[INFO] Auto-selected USB Drive: /dev/sdb (28.9G - SanDisk Ultra 3.0)
+[INFO] Auto-detected ISO Image: /home/alpesh/mint-agent-os/LinuxMint-AI-Agent-Edition.iso (2.8G)
+[INFO] ISO SHA-256 Checksum: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+⚠️  WARNING: ALL DATA ON /dev/sdb WILL BE COMPLETELY OVERWRITTEN!
+Are you sure you want to proceed? Type 'YES' to confirm: YES
+
+[1/3] Unmounting existing partitions on /dev/sdb... OK
+[2/3] Writing ISO image to /dev/sdb with dd (bs=4M status=progress)...
+2832+0 records in
+2832+0 records out
+2969567232 bytes (2.8 GB, 2.8 GiB) copied, 18.234 s, 163 MB/s
+[3/3] Flushing kernel disk buffers (sync)... OK
+
+================================================================================
+✅ SUCCESS! Bootable USB created successfully on /dev/sdb!
+================================================================================
+Next steps to boot into Linux Mint AI Agent Edition:
+  1. Insert this USB into your laptop.
+  2. Power on and immediately tap your laptop's boot menu key:
+     • Lenovo: F12 (or Fn + F12)
+     • Dell: F12
+     • HP: F9 (or Esc -> F9)
+     • ASUS: F8 or Esc
+     • Acer: F12
+     • MSI: F11
+     • Apple Mac: Hold Option (Alt) key on boot
+  3. Select the USB drive from the boot menu.`);
       return;
     }
 
@@ -357,6 +401,21 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
   // ==================== AGENT REASONING ENGINE ====================
   processAgentIntent(prompt) {
     const p = prompt.toLowerCase().trim();
+
+    if (p.includes('download') || p.includes('bootable') || p.includes('make usb') || p.includes('flash usb') || p.includes('iso')) {
+      setTimeout(() => WindowManager.openApp('download'), 300);
+      return {
+        thought: "Opening Linux Mint AI Agent OS Download & Bootable USB Creator Hub...",
+        result: {
+          iso_name: "LinuxMint-AI-Agent-Edition.iso",
+          size: "2.8 GB",
+          usb_flasher: "make_bootable_usb.sh",
+          ventoy_compatible: true,
+          status: "ready"
+        },
+        latency_ms: 1.2
+      };
+    }
 
     // Active Counter-Measures & Self-Countering Circuit Breaker
     if (p.includes('counter threat') || p.includes('active counter') || p.includes('sever socket')) {
@@ -648,6 +707,30 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       simBadge.innerText = `🧠 AI: ${target.split('-')[0]} [${isOff ? 'OFFLINE' : 'ONLINE'}]`;
     }
     this.sendWebUIMessage(`switch model to ${target}`);
+  },
+
+  switchDlTab(tabId, btn) {
+    document.querySelectorAll('.dl-tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.dl-tab-btn').forEach(b => b.classList.remove('active'));
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+  },
+
+  openDownloadModal(tab = 'tab-iso') {
+    WindowManager.openApp('download');
+    const btn = document.querySelector(`.dl-tab-btn[onclick*="${tab}"]`);
+    this.switchDlTab(tab, btn);
+  },
+
+  simulateFlasherInTerm() {
+    WindowManager.openApp('terminal');
+    const input = document.getElementById('termInput');
+    if (input) {
+      input.value = "sudo ./make_bootable_usb.sh";
+      const e = new KeyboardEvent('keydown', { key: 'Enter' });
+      input.dispatchEvent(e);
+    }
   },
 
   openUpgradeModal() {

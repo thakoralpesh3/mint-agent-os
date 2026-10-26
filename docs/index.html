@@ -37,6 +37,30 @@
     .sec-card { background: #1e2225; border: 1px solid #2d3338; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
     .btn-green { background: #2ecc71; color: #000; border: none; padding: 6px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
     .btn-red { background: #e74c3c; color: #fff; border: none; padding: 6px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+    /* Download & Bootable USB Hub Window */
+    .dl-hub { padding: 16px; height: 100%; overflow-y: auto; background: #131719; color: #fff; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; }
+    .dl-hero { background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%); border: 1px solid #2b3d52; border-radius: 8px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .dl-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .dl-badge { background: rgba(0, 180, 216, 0.15); border: 1px solid #00b4d8; color: #90e0ef; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: bold; }
+    .dl-nav { display: flex; gap: 6px; border-bottom: 1px solid #273036; padding-bottom: 8px; overflow-x: auto; }
+    .dl-tab-btn { background: #1a2024; color: #aaa; border: 1px solid #2a343b; border-radius: 6px; padding: 6px 12px; font-size: 0.78rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .dl-tab-btn:hover { background: #232c32; color: #fff; }
+    .dl-tab-btn.active { background: #0077b6; color: #fff; border-color: #0096c7; font-weight: bold; }
+    .dl-tab-pane { display: none; flex-direction: column; gap: 12px; }
+    .dl-tab-pane.active { display: flex; }
+    .dl-card { background: #181d20; border: 1px solid #283138; border-radius: 8px; padding: 14px; }
+    .dl-card h4 { margin: 0 0 8px 0; font-size: 0.95rem; color: #90e0ef; display: flex; align-items: center; gap: 6px; }
+    .dl-btn-primary { background: #0096c7; color: #fff; padding: 9px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; border: none; cursor: pointer; }
+    .dl-btn-primary:hover { background: #00b4d8; }
+    .dl-btn-secondary { background: #27323a; color: #fff; padding: 7px 14px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; border: 1px solid #3d4c57; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .dl-btn-secondary:hover { background: #33424d; }
+    .dl-code-box { background: #0b0e10; border: 1px solid #21282e; border-radius: 6px; padding: 10px 12px; font-family: monospace; font-size: 0.82rem; color: #70d6ff; display: flex; justify-content: space-between; align-items: center; word-break: break-all; }
+    .dl-copy-btn { background: #232c32; border: 1px solid #3c4953; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; cursor: pointer; flex-shrink: 0; margin-left: 8px; }
+    .dl-copy-btn:hover { background: #34424c; }
+    .dl-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 8px; }
+    .dl-table th, .dl-table td { border: 1px solid #27323a; padding: 8px 10px; text-align: left; }
+    .dl-table th { background: #1c2328; color: #90e0ef; }
+    .dl-table tr:nth-child(even) { background: #14181b; }
   </style>
 </head>
 <body>
@@ -72,6 +96,10 @@
         <div class="icon-img">📁</div>
         <div class="icon-label">Nemo Files</div>
       </div>
+      <div class="desktop-icon" data-app="download">
+        <div class="icon-img">💾</div>
+        <div class="icon-label">Download & USB</div>
+      </div>
     </div>
 
     <!-- ==================== WINDOW 1: OPEN WEBUI ==================== -->
@@ -96,6 +124,7 @@
               <div id="simAiModelBadge" onclick="AgentSimulator.openModelModal()" style="cursor:pointer; background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🧠 AI: Qwen 0.5B [OFFLINE]</div>
               <div id="simSmoothBadge" onclick="AgentSimulator.openSmoothnessModal()" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🍃 Smooth: 100% (A+)</div>
               <button style="background:#2d6a4f; color:#d8f3dc; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; cursor:pointer;" onclick="AgentSimulator.openUpgradeModal()">🔄 Upgrade Mint OS</button>
+              <button style="background:#0077b6; color:#fff; border:none; padding:2px 10px; border-radius:10px; font-size:0.75rem; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('download')">💾 Download ISO / USB</button>
               <span id="webuiRamBadge" style="font-size: 0.75rem; color: #9aa0a6;">RAM: 58%</span>
               <div id="webuiModePill" onclick="AgentSimulator.toggleWebUIMode()" style="cursor:pointer; background: rgba(231,76,60,0.2); color:#ff6b6b; border: 1px solid #ff6b6b; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold;">
                 ⚡ TURBO MODE (Autonomous)
@@ -121,6 +150,7 @@
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.openSmoothnessModal()">🍃 Smoothness Audit</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#f39c12; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('check update')">🔄 Check Update</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Lockdown</button>
+            <button class="btn-sm" style="background:#0077b6; border:1px solid #0096c7; color:#fff; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('download')">💾 Download & Bootable USB</button>
           </div>
           <div class="webui-input-bar">
             <input type="text" id="webuiInput" placeholder="Ask MintPilot to defend PC or control laptop (e.g. 'security status', 'scan threats', 'volume 50%')...">
@@ -271,11 +301,197 @@
             <div class="file-icon" onclick="WindowManager.openApp('terminal')"><div class="ico">📁</div><div class="name">agent</div></div>
             <div class="file-icon" onclick="WindowManager.openApp('webui')"><div class="ico">📁</div><div class="name">webui</div></div>
             <div class="file-icon" onclick="WindowManager.openApp('security')"><div class="ico">🛡️</div><div class="name">security</div></div>
+            <div class="file-icon" onclick="WindowManager.openApp('download')"><div class="ico">💾</div><div class="name">make_bootable_usb.sh</div></div>
+            <div class="file-icon" onclick="WindowManager.openApp('download')"><div class="ico">💿</div><div class="name">LinuxMint-AI-Agent.iso</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">iso_builder</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">conversation</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">artifacts</div></div>
             <div class="file-icon"><div class="ico">📝</div><div class="name">README.md</div></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 6: DOWNLOAD & BOOTABLE USB HUB ==================== -->
+    <div id="win-download" class="window" data-icon="💾" style="top: 40px; left: 160px; width: 780px; height: 530px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>💾</span> <span>Download MintPilot Agent OS & Bootable USB Creator Hub</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-download')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-download')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-download')">×</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="dl-hub">
+          <!-- Hero Section -->
+          <div class="dl-hero">
+            <div>
+              <h3 style="margin:0 0 4px 0; font-size:1.1rem; color:#fff;">Linux Mint 22.3 (Zena) LTS — AI Agent Edition</h3>
+              <p style="margin:0; font-size:0.8rem; color:#9aa0a6;">Full laptop autonomous control, DEFCON cyber immune system, and offline LLM intelligence on native Mint Cinnamon.</p>
+              <div class="dl-badges">
+                <span class="dl-badge">💾 ISO Size: 2.8 GB</span>
+                <span class="dl-badge">🧠 Qwen 0.5B Offline Bundled</span>
+                <span class="dl-badge">🛡️ DEFCON Immune System</span>
+                <span class="dl-badge">🍃 2GB-4GB Smooth RAM</span>
+                <span class="dl-badge">⚡ UEFI & BIOS Ready</span>
+              </div>
+            </div>
+            <a href="https://github.com/thakoralpesh3/mint-agent-os/releases" target="_blank" class="dl-btn-primary">
+              ⬇️ GitHub Releases (.ISO)
+            </a>
+          </div>
+
+          <!-- Nav Tabs -->
+          <div class="dl-nav">
+            <button class="dl-tab-btn active" onclick="AgentSimulator.switchDlTab('tab-iso', this)">📥 1. Direct ISO Download</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchDlTab('tab-flasher', this)">🚀 2. Automated USB Flasher</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchDlTab('tab-ventoy', this)">💽 3. Ventoy (No Flashing!)</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchDlTab('tab-rufus', this)">⚡ 4. Rufus & BalenaEtcher</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchDlTab('tab-bootkeys', this)">⌨️ 5. Laptop BIOS Boot Keys</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchDlTab('tab-upgrade', this)">🔄 6. In-Place OS Upgrade</button>
+          </div>
+
+          <!-- Tab 1: ISO Download -->
+          <div id="tab-iso" class="dl-tab-pane active">
+            <div class="dl-card">
+              <h4>📥 Download Live Installation ISO</h4>
+              <p style="font-size:0.82rem; color:#ccc; margin-top:0;">Download the bootable hybrid ISO image containing Linux Mint 22.3 LTS Cinnamon pre-integrated with MintPilot Autonomous Cyber Guardian and local offline AI.</p>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:12px 0;">
+                <a href="https://github.com/thakoralpesh3/mint-agent-os/releases/download/v1.0.0/LinuxMint-AI-Agent-Edition.iso" target="_blank" class="dl-btn-primary">
+                  ⬇️ Download LinuxMint-AI-Agent-Edition.iso (2.8 GB)
+                </a>
+                <a href="https://github.com/thakoralpesh3/mint-agent-os/releases" target="_blank" class="dl-btn-secondary">
+                  🏷️ View All Releases & Changelog
+                </a>
+              </div>
+              <div style="margin-top:14px;">
+                <div style="font-size:0.78rem; color:#888; margin-bottom:4px;">SHA-256 Checksum (Verify Integrity):</div>
+                <div class="dl-code-box">
+                  <span id="isoSha">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+                  <button class="dl-copy-btn" onclick="navigator.clipboard.writeText('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'); this.innerText='Copied!';">Copy SHA-256</button>
+                </div>
+              </div>
+            </div>
+            <div class="dl-card">
+              <h4>💻 Minimum System Requirements</h4>
+              <table class="dl-table">
+                <tr><th>Component</th><th>Minimum Requirements</th><th>Recommended Specifications</th></tr>
+                <tr><td>Processor</td><td>64-bit Dual Core x86_64 @ 1.8 GHz</td><td>Intel Core i3 / AMD Ryzen 3 or higher</td></tr>
+                <tr><td>RAM</td><td>2.0 GB RAM (Runs with 58% buffer)</td><td>4.0 GB+ RAM (Butter-smooth 60fps)</td></tr>
+                <tr><td>Storage</td><td>20 GB Drive space</td><td>50 GB+ SSD Storage</td></tr>
+                <tr><td>USB Drive</td><td>8 GB USB 2.0 Thumb Drive</td><td>16 GB+ USB 3.0 / 3.1 Thumb Drive</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 2: Automated Flasher -->
+          <div id="tab-flasher" class="dl-tab-pane">
+            <div class="dl-card">
+              <h4>🚀 Method A: Safe Automated Terminal Flasher (Included)</h4>
+              <p style="font-size:0.82rem; color:#ccc;">Our repository includes an automated interactive flasher with strict root-drive safety protection: it detects all block devices, refuses to overwrite your active root drive (<code style="color:#70d6ff;">/dev/sda</code> or <code style="color:#70d6ff;">/dev/nvme0n1</code>), confirms with double verification, writes with sync, and shows laptop boot keys.</p>
+              
+              <div style="margin: 10px 0;">
+                <div style="font-size:0.78rem; color:#888; margin-bottom:4px;">Terminal One-Liner:</div>
+                <div class="dl-code-box">
+                  <span>chmod +x make_bootable_usb.sh && sudo ./make_bootable_usb.sh</span>
+                  <button class="dl-copy-btn" onclick="navigator.clipboard.writeText('chmod +x make_bootable_usb.sh && sudo ./make_bootable_usb.sh'); this.innerText='Copied!';">Copy</button>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:12px;">
+                <button class="dl-btn-secondary" onclick="AgentSimulator.simulateFlasherInTerm()">▶️ Test Flasher in Simulator Terminal</button>
+              </div>
+            </div>
+            <div class="dl-card">
+              <h4>🛡️ Built-in Safety Verifications:</h4>
+              <ul style="font-size:0.8rem; color:#bbb; margin:4px 0 0 16px; line-height:1.6;">
+                <li><strong>Root Drive Lockout:</strong> Resolves <code style="color:#70d6ff;">findmnt /</code> to protect the host operating system from catastrophic erasure.</li>
+                <li><strong>Safe USB Filter:</strong> Lists only removable USB media (<code style="color:#70d6ff;">TRAN=usb</code>, <code style="color:#70d6ff;">RM=1</code>).</li>
+                <li><strong>Explicit Confirmation:</strong> Requires typing <code style="color:#ff6b6b;">YES</code> in uppercase before writing to disk.</li>
+                <li><strong>Data Buffer Flush:</strong> Employs <code style="color:#70d6ff;">conv=fdatasync</code> and executes <code style="color:#70d6ff;">sync</code> so unplugging is 100% safe.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Tab 3: Ventoy -->
+          <div id="tab-ventoy" class="dl-tab-pane">
+            <div class="dl-card">
+              <h4>💽 Method B: Ventoy Multi-Boot (Drag & Drop — Zero Flashing!)</h4>
+              <p style="font-size:0.82rem; color:#ccc;">Ventoy is the easiest and most recommended method. You never need to format or flash your USB drive again!</p>
+              <ol style="font-size:0.82rem; color:#bbb; line-height:1.7; margin-left:18px;">
+                <li>Download and install <strong>Ventoy</strong> once on your USB drive from <a href="https://www.ventoy.net" target="_blank" style="color:#70d6ff;">ventoy.net</a>.</li>
+                <li>Copy <code style="color:#70d6ff;">LinuxMint-AI-Agent-Edition.iso</code> directly onto the USB drive alongside any other ISO files.</li>
+                <li>Plug the USB drive into your laptop, reboot, press your boot menu key (e.g. <strong>F12</strong>), and select Ventoy!</li>
+                <li>Choose <strong>Linux Mint AI Agent Edition</strong> from the on-screen menu to boot instantly.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Tab 4: Rufus & BalenaEtcher -->
+          <div id="tab-rufus" class="dl-tab-pane">
+            <div class="dl-card">
+              <h4>⚡ Method C: Graphical Flashing Tools (Windows, Mac, Linux)</h4>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+                <div style="background:#131719; border:1px solid #273036; border-radius:6px; padding:12px;">
+                  <strong style="color:#90e0ef;">BalenaEtcher (Mac / Linux / Windows)</strong>
+                  <ol style="font-size:0.8rem; color:#aaa; margin:6px 0 0 16px; line-height:1.6;">
+                    <li>Download from <a href="https://etcher.balena.io" target="_blank" style="color:#70d6ff;">etcher.balena.io</a></li>
+                    <li>Click <em>Flash from file</em> → Select ISO</li>
+                    <li>Select Target USB drive (8GB+)</li>
+                    <li>Click <em>Flash!</em></li>
+                  </ol>
+                </div>
+                <div style="background:#131719; border:1px solid #273036; border-radius:6px; padding:12px;">
+                  <strong style="color:#90e0ef;">Rufus (Windows)</strong>
+                  <ol style="font-size:0.8rem; color:#aaa; margin:6px 0 0 16px; line-height:1.6;">
+                    <li>Download from <a href="https://rufus.ie" target="_blank" style="color:#70d6ff;">rufus.ie</a></li>
+                    <li>Select your USB Device</li>
+                    <li>Boot selection: choose ISO image</li>
+                    <li>Partition scheme: <strong>GPT / UEFI</strong></li>
+                    <li>Click <strong>START</strong> (Write in ISO Image mode)</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Laptop BIOS Boot Keys -->
+          <div id="tab-bootkeys" class="dl-tab-pane">
+            <div class="dl-card">
+              <h4>⌨️ How to Boot from USB: Laptop Boot Key Guide</h4>
+              <p style="font-size:0.82rem; color:#ccc; margin-top:0;">Insert your bootable USB into your powered-off laptop. Power on the laptop and immediately tap the corresponding boot key repeatedly until the boot selection menu appears:</p>
+              <table class="dl-table">
+                <tr><th>Laptop Brand</th><th>Boot Menu Key</th><th>BIOS / UEFI Setup Key</th></tr>
+                <tr><td><strong>Lenovo (ThinkPad, IdeaPad)</strong></td><td><strong style="color:#70d6ff;">F12</strong> (or Fn + F12) / Novo Button</td><td>F1 / F2</td></tr>
+                <tr><td><strong>Dell (Inspiron, XPS, Latitude)</strong></td><td><strong style="color:#70d6ff;">F12</strong></td><td>F2</td></tr>
+                <tr><td><strong>HP (Pavilion, Envy, EliteBook)</strong></td><td><strong style="color:#70d6ff;">F9</strong> (or Esc → F9)</td><td>F10 / Esc</td></tr>
+                <tr><td><strong>ASUS (ZenBook, ROG, VivoBook)</strong></td><td><strong style="color:#70d6ff;">F8</strong> or <strong style="color:#70d6ff;">Esc</strong></td><td>F2 / Del</td></tr>
+                <tr><td><strong>Acer (Aspire, Swift, Predator)</strong></td><td><strong style="color:#70d6ff;">F12</strong> (enable in BIOS first)</td><td>F2 / Del</td></tr>
+                <tr><td><strong>MSI</strong></td><td><strong style="color:#70d6ff;">F11</strong></td><td>Del</td></tr>
+                <tr><td><strong>Apple Mac (Intel)</strong></td><td>Hold <strong style="color:#70d6ff;">Option (Alt)</strong> on chime</td><td>Command + R</td></tr>
+                <tr><td><strong>Microsoft Surface</strong></td><td>Hold <strong style="color:#70d6ff;">Volume Down</strong> + Power</td><td>Volume Up + Power</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 6: In-Place Upgrade -->
+          <div id="tab-upgrade" class="dl-tab-pane">
+            <div class="dl-card">
+              <h4>🔄 Upgrade Existing Linux Mint to Agent Edition</h4>
+              <p style="font-size:0.82rem; color:#ccc; margin-top:0;">Already running Linux Mint 21.x or 22.x? You can transform your installation in-place without wiping your hard drive or formatting USBs:</p>
+              <div style="margin: 10px 0;">
+                <div style="font-size:0.78rem; color:#888; margin-bottom:4px;">In-Place Upgrade Command:</div>
+                <div class="dl-code-box">
+                  <span>curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash</span>
+                  <button class="dl-copy-btn" onclick="navigator.clipboard.writeText('curl -sSL https://raw.githubusercontent.com/thakoralpesh3/mint-agent-os/main/upgrade_mint_to_agent_os.sh | sudo bash'); this.innerText='Copied!';">Copy</button>
+                </div>
+              </div>
+              <button class="dl-btn-secondary" onclick="AgentSimulator.openUpgradeModal()">▶️ Simulate In-Place Upgrade in Terminal</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -325,6 +541,10 @@
         <div class="app-item" onclick="WindowManager.openApp('nemo'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">📁</span>
           <div><strong>Nemo Files</strong><br><small style="color:#888;">Explore Folders and Files</small></div>
+        </div>
+        <div class="app-item" onclick="WindowManager.openApp('download'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">💾</span>
+          <div><strong>Download & Make Bootable USB</strong><br><small style="color:#888;">ISO, Ventoy & Automated Flasher</small></div>
         </div>
       </div>
     </div>
