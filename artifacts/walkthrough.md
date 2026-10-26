@@ -243,3 +243,86 @@ python3 agent/cli.py --interaction
 - **Live Web Speech Audio**: Integrated with the Web Speech API (`window.speechSynthesis`) so users can test voice replies directly in their browser.
 - Deployed at: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
 
+---
+
+## 🤖 4. Marvel Series AI Agents & Stark Defense Protocols
+
+We have integrated full Marvel Cinematic Universe AI agent capabilities into Linux Mint, giving users the experience of having J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., or K.A.R.E.N. autonomously protecting and managing their PC.
+
+### Architecture Overview
+
+```mermaid
+graph TD
+    User([User Voice or Terminal Command]) --> Router[AgentBrain / Fast Router]
+    
+    subgraph "Marvel Series Agent Subsystem (marvel_agents.py)"
+        Router --> Jarvis[J.A.R.V.I.S. en-GB: Suave Butler & System Governor]
+        Router --> Friday[F.R.I.D.A.Y. en-IE: Tactical Combat & Socket Disruptor]
+        Router --> Edith[E.D.I.T.H. en-US: Orbital Network & Perimeter Sentry]
+        Router --> Vision[V.I.S.I.O.N. en-GB: Digital Immune Memory & Synthezoid Balance]
+        Router --> Karen[K.A.R.E.N. en-US: Warm Mentor & Baby Monitor Safe Mode]
+    end
+
+    subgraph "Stark Emergency Protocols Engine"
+        Jarvis & Friday & Edith & Vision & Karen --> HouseParty[House Party: Multi-Agent Deployment]
+        Jarvis & Friday & Edith & Vision & Karen --> CleanSlate[Clean Slate: Memory & Cache Scrub]
+        Jarvis & Friday & Edith & Vision & Karen --> InstantKill[Instant Kill: Active Socket Severing]
+        Jarvis & Friday & Edith & Vision & Karen --> Veronica[Veronica: Hulkbuster 60fps Armor]
+        Jarvis & Friday & Edith & Vision & Karen --> BarnDoor[Barn Door: UFW Default-Deny Lockdown]
+        Jarvis & Friday & Edith & Vision & Karen --> BabyMonitor[Baby Monitor: Guarded Safe Mode]
+    end
+
+    subgraph "Multimodal Output"
+        HouseParty & CleanSlate & InstantKill & Veronica & BarnDoor & BabyMonitor --> Speech[Voice Synthesis with Native Accent & Pitch]
+        HouseParty & CleanSlate & InstantKill & Veronica & BarnDoor & BabyMonitor --> WebUI[WebUI & 24/7 Simulator Window 8]
+        HouseParty & CleanSlate & InstantKill & Veronica & BarnDoor & BabyMonitor --> CLI[Terminal CLI Output]
+    end
+```
+
+### 1. The 5 Marvel AI Personas
+- **J.A.R.V.I.S.** (*Just A Rather Very Intelligent System*): British accent (`en-GB`), 165 wpm, pitch 0.95. Signature greeting: *"Good evening, sir. All Linux Mint subsystems are operating at peak efficiency. Ready for your command."* Focuses on laptop diagnostics, thermal & battery telemetry, and executive protocol governing.
+- **F.R.I.D.A.Y.** (*Female Replacement Intelligent Digital Assistant Youth*): Irish accent (`en-IE`), 185 wpm, pitch 1.15. Signature greeting: *"Boss! Tactical sentry grid is hot and scanning for threats. What's the play?"* Focuses on tactical combat defense, rapid socket severing, emergency overrides, and overclocking.
+- **E.D.I.T.H.** (*Even Dead, I'm The Hero*): American accent (`en-US`), 170 wpm, pitch 1.05. Signature greeting: *"Biometric scan confirmed. E.D.I.T.H. network surveillance grid online."* Focuses on orbital network reconnaissance, perimeter sentry, hostile IP tracking, and ingress firewalling.
+- **V.I.S.I.O.N.** (*Mind Stone Synthezoid Consciousness*): British cadence (`en-GB`), 145 wpm, pitch 0.85. Signature greeting: *"Greetings. The digital immune matrix and ethical safety governors are aligned."* Focuses on digital immune memory synthesis, ethical self-countering circuit breaker, anomaly forecasting, and equilibrium.
+- **K.A.R.E.N.** (*Kinetic Analysis & Reconnaissance Entity Network*): American accent (`en-US`), 165 wpm, pitch 1.20. Signature greeting: *"Hi there! Karen here. I'm ready to help you navigate and optimize your Linux Mint system."* Focuses on friendly explanatory guidance, safe onboarding, and Baby Monitor Protocol safe mode.
+
+### 2. The 6 Stark Emergency Defense Protocols
+1. **House Party Protocol**: Dispatches 4 autonomous background sentry daemons across network sockets (`ss -tulpn`), rogue processes in `/tmp`, kernel memory governor, and file tripwires.
+2. **Clean Slate Protocol**: Flushes PageCache, dentries, and inodes; syncs swap; wipes `/tmp` staging residue; and resets safety circuit breaker history.
+3. **Instant Kill Mode**: Counter-offensive strike dispatching TCP RST disruption packets, severing all hostile listening/connected sockets via `ss -K`, and terminating rogue PIDs.
+4. **Veronica Protocol**: Hulkbuster performance armor locking `vm.swappiness=10`, `vm.vfs_cache_pressure=50`, assigning agent background priority (`nice +10`), and guaranteeing 60fps Cinnamon fluidity.
+5. **Barn Door Protocol**: Emergency perimeter lockdown enforcing strict default-deny UFW firewall rules, isolating the laptop from external ingress.
+6. **Baby Monitor Protocol**: Intercepts state modifications with Guarded Safe Mode, requiring interactive user approval.
+
+### 3. Verification & Testing
+
+#### CLI Persona Switching & Protocol Execution:
+```bash
+# Switch to F.R.I.D.A.Y.
+python3 agent/cli.py --persona friday
+# Execute Veronica Protocol
+python3 agent/cli.py --protocol veronica
+```
+```text
+✓ Marvel Agent Persona switched to F.R.I.D.A.Y. (Female Replacement Intelligent Digital Assistant Youth)
+  Greeting: Boss! Tactical sentry grid is hot and scanning for threats. What's the play?
+
+✓ Protocol Executed: Veronica Protocol (Hulkbuster Performance Armor) (Hardware Armor Reinforcement)
+[F.R.I.D.A.Y.] On it, boss! Veronica Protocol (Hulkbuster Performance Armor) online! Kernel memory buffers reinforced for butter-smooth execution. Targets neutralized, boss.
+```
+
+#### Natural Language Invocations:
+```bash
+# Direct name calling
+mint-agent "Friday, scan threats"
+mint-agent "Jarvis, engage house party protocol"
+mint-agent "Edith, status"
+```
+
+### 4. 24/7 Simulator Integration (Window 8: `#win-marvel`)
+- **Desktop Icon**: `🤖 Stark Agents` opens the Stark Industries Headquarters window.
+- **Start Menu**: Integrated launcher under "Marvel Series AI Agents".
+- **Header Badges**: Quick 1-click status badge `🤖 JARVIS [STARK]` and `⚡ Stark Protocols`.
+- **Live Voice Speech Synthesis**: Personas speak with their authentic regional accents (`en-GB`, `en-IE`, `en-US`), rates, and pitches using the browser's Web Speech API.
+- Live URL: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
+
