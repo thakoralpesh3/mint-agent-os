@@ -6,6 +6,11 @@ const AgentSimulator = {
   muted: false,
   ramUsedMb: 2210,
   ramTotalMb: 3815,
+  securityScore: 92,
+  firewallActive: true,
+  threats: [
+    { severity: "HIGH", title: "Wildcard Port Exposure (0.0.0.0:8080)", details: "HTTP service exposed to local network without TLS." }
+  ],
 
   init() {
     this.setupTerminal();
@@ -21,7 +26,7 @@ const AgentSimulator = {
     if (!input || !term) return;
 
     this.printTermLine("Linux Mint 22.3 (Zena) LTS [Kernel: 6.8.0-45-generic x86_64]");
-    this.printTermLine("🍃 MintPilot Agent Edition initialized. Type 'mint-agent --help' or 'help'.\n");
+    this.printTermLine("🍃 MintPilot Cyber Defense Edition active. Type 'mint-agent --security' or 'help'.\n");
 
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -56,7 +61,10 @@ const AgentSimulator = {
     if (c === 'help') {
       this.printTermLine(`
 MintPilot OS Available Commands:
-  mint-agent "<prompt>"      Run natural language laptop control
+  mint-agent "<prompt>"      Run natural language laptop control or security intent
+  mint-agent --security      Display full cybersecurity posture score & audit
+  mint-agent --scan-threats  Scan network ports, rogue processes, and persistence
+  mint-agent --lockdown      Activate emergency UFW firewall lockdown
   mint-agent --turbo         Switch to Antigravity Autonomous Turbo Mode
   mint-agent --safe          Switch to Guarded Safe Mode (prompts confirmation)
   mint-agent --tier          Display hardware detection and model recommendations
@@ -105,7 +113,7 @@ drwxr-xr-x  3 alpesh alpesh 4096 Oct 26 18:40 iso_builder
   :MMM:MMM:\`                \`MMMM:        CPU: Intel i3-4005U (4) @ 1.700GHz
    .MMM.MMMM:............--'MMMM.         GPU: Intel Haswell-ULT HD Graphics
      \`-MMMM..MMMMMMMMMMMMMMM-.\`           Memory: ${this.ramUsedMb}MiB / ${this.ramTotalMb}MiB (58%)
-        \`\`--::-.......-:::--\`\`            Agent: MintPilot Offline SLM (Active)
+        \`\`--::-.......-:::--\`\`            Agent: MintPilot Cyber Guardian (Active)
 `);
       return;
     }
@@ -121,6 +129,37 @@ Swap:          3.9Gi       780Mi       3.1Gi`);
     if (c.startsWith('mint-agent')) {
       const args = cmd.slice(10).trim();
 
+      if (args === '--security') {
+        this.printTermLine(`🛡️  Security Hardening Score: ${this.securityScore}/100 (A (Hardened))
+🔥 Firewall Active: ${this.firewallActive}
+🔒 Anti-Tamper Tripwire: ✓ All Core Files Verified (SHA-256 Intact)
+⚠️  Threat Level: LOW (Total Threats: ${this.threats.length})
+
+Active Protections:
+  ✓ Autonomous UFW Firewall Shield Active
+  ✓ Sudoers & SSH Keys Permissions Locked (0440 / 0700)
+  ✓ Memory Guard & Process Watchdog Active`);
+        return;
+      }
+
+      if (args === '--scan-threats') {
+        this.printTermLine(`🔍 Scanning network sockets, processes, and persistence hooks...
+Threat Level: LOW | Total Threats: ${this.threats.length}
+Remediated Actions: 1 (Autonomous Port Isolation)
+Status: System is protected under MintPilot Cyber Guardian.`);
+        return;
+      }
+
+      if (args === '--lockdown') {
+        this.securityScore = 98;
+        this.firewallActive = true;
+        this.printTermLine(`🚨 Emergency PC Lockdown Enforced.
+  ✓ UFW default-deny incoming rule active.
+  ✓ All non-essential external ports dropped.
+  ✓ Filesystems synced and secured.`);
+        return;
+      }
+
       if (args === '--tier') {
         this.printTermLine(`RAM Detected: 3815 MB
 Hardware Tier: Tier 1: Ultra-Light (0.5B - 1.5B Q4 GGUF)
@@ -131,7 +170,7 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
 
       if (args === '--turbo') {
         this.setMode('turbo');
-        this.printTermLine("✓ Switched to TURBO MODE (Antigravity-Style). Unrestricted autonomous execution active.");
+        this.printTermLine("✓ Switched to TURBO MODE (Antigravity-Style). Unrestricted autonomous execution & threat remediation active.");
         return;
       }
 
@@ -168,6 +207,38 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
   // ==================== AGENT REASONING ENGINE ====================
   processAgentIntent(prompt) {
     const p = prompt.toLowerCase().trim();
+
+    // Cybersecurity intents
+    if (p.includes('security') || p.includes('defense') || p.includes('protect')) {
+      return {
+        thought: `Security Posture Score: ${this.securityScore}/100. System is guarded against network & process threats.`,
+        result: {
+          security_score: this.securityScore,
+          firewall_active: this.firewallActive,
+          threat_level: "LOW",
+          anti_tamper: "verified_intact"
+        },
+        latency_ms: 1.4
+      };
+    }
+
+    if (p.includes('scan threat') || p.includes('threat')) {
+      return {
+        thought: `Completed deep threat scan. No critical malware or unauthorized persistence detected.`,
+        result: { threat_level: "LOW", total_threats: this.threats.length, remediated: 0 },
+        latency_ms: 2.2
+      };
+    }
+
+    if (p.includes('lockdown')) {
+      this.securityScore = 98;
+      this.firewallActive = true;
+      return {
+        thought: `Emergency PC Lockdown enforced. All incoming ports blocked via UFW.`,
+        result: { status: "lockdown_active", firewall: "strict_drop" },
+        latency_ms: 1.8
+      };
+    }
 
     // Safe mode sensitive check
     if (this.mode === 'safe' && (p.includes('rm ') || p.includes('delete') || p.includes('lock') || p.includes('reboot') || p.includes('kill'))) {
@@ -260,13 +331,11 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     const history = document.getElementById('webuiHistory');
     if (!history) return;
 
-    // User message
     const userMsg = document.createElement('div');
     userMsg.className = 'webui-msg user';
     userMsg.innerText = prompt;
     history.appendChild(userMsg);
 
-    // Agent response with thought
     setTimeout(() => {
       const res = this.processAgentIntent(prompt);
       const agentMsg = document.createElement('div');
@@ -346,7 +415,7 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
           <p style="color:#aaa; margin-top:10px;">Simulated lightweight DOM view extracted by MintPilot BrowserController.</p>
           <div style="background:#1b1e20; padding:20px; border-radius:8px; margin-top:20px; text-align:left; max-width:500px; margin-left:auto; margin-right:auto;">
             <strong>Title:</strong> Linux Mint & MintPilot Autonomous OS<br>
-            <strong>Status:</strong> HTTP 200 OK<br>
+            <strong>Security:</strong> TLS Encrypted • Sentry Monitored<br>
             <strong>Memory:</strong> &lt;5MB RAM utilized
           </div>
         </div>`;
