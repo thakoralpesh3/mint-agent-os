@@ -77,12 +77,15 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             windows = self.brain.gui.list_windows().get("windows", [])
             security = self.brain.security.get_full_security_posture()
 
+            smoothness = self.brain.memory.verify_mint_compatibility()
+
             self._send_json({
                 "status": "online",
                 "mode": self.brain.permissions.mode,
                 "is_turbo": self.brain.permissions.is_turbo(),
                 "tier": self.brain.hardware_tier,
                 "active_model": self.brain.models.get_active_model(),
+                "smoothness": smoothness,
                 "memory": mem,
                 "hardware": hw,
                 "battery": bat,
