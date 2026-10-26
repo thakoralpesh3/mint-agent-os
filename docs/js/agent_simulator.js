@@ -268,6 +268,38 @@ Recommendation: System runs as butter-smooth as original Linux Mint.`);
         return;
       }
 
+      if (args === '--defcon') {
+        this.printTermLine(`🚨 Dynamic Threat Escalation Posture: DEFCON 2 (ELEVATED THREAT)
+  • Posture State: ACTIVE_COUNTER_DEFENSE
+  • Description: Hostile probes or suspicious execution detected. TCP RST disruptor and canary honeytokens active.
+  • Active Threat Count: 2 (Auto-quarantined)`);
+        return;
+      }
+
+      if (args === '--immune-status') {
+        this.printTermLine(`🛡️ Digital Immune System Resilience: 95/100 (A+ (Immune & Adaptive))
+  • Total Synthesized Antibodies: 16
+  • Recorded Threat Fingerprints: 12 indexed
+  • Banned Hostile IPs: 1 null-routed
+  • Dynamic Threat Signatures: 3 active
+  • Future Attack Readiness: MAXIMUM (Proactive Kernel Hardening + Auto-Antibody Synthesis)
+
+Sample Active Antibodies:
+  ✓ [ab_syn_flood_guard] Drop invalid SYN packets and prevent TCP exhaustion
+  ✓ [ab_icmp_broadcast_guard] Ignore broadcast ICMP requests (Smurf attack prevention)
+  ✓ [ab_ip_spoof_guard] Enforce reverse path filtering (rp_filter=1)
+  ✓ [ab_source_route_guard] Reject source-routed packets to prevent traffic hijacking`);
+        return;
+      }
+
+      if (args === '--harden-future') {
+        this.printTermLine(`🛡️ Synthesizing digital antibodies & enforcing proactive kernel network defense...
+✓ PC successfully hardened against future attacks with adaptive immune memory.
+  • Hardened Parameters: 12 (tcp_syncookies, rp_filter, log_martians)
+  • Predictive Preemptions: Stealth Mode Active • Inotify Staging Watchdog Active`);
+        return;
+      }
+
       if (args === '--lockdown') {
         this.securityScore = 98;
         this.firewallActive = true;
