@@ -1,0 +1,495 @@
+/* Linux Mint Cinnamon 22.3 Desktop Simulator Styles */
+:root {
+  --mint-green: #87cf3e;
+  --mint-accent: #2ecc71;
+  --cinnamon-dark: #1b1e20;
+  --cinnamon-panel: rgba(28, 32, 34, 0.95);
+  --window-bg: #23272a;
+  --window-title: #1a1c1e;
+  --window-border: #33393d;
+  --text-main: #f0f3f5;
+  --text-muted: #9aa0a6;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Ubuntu", "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0c0e10;
+}
+
+/* Desktop Canvas */
+#desktop {
+  width: 100vw;
+  height: calc(100vh - 42px);
+  position: relative;
+  background: radial-gradient(circle at 50% 40%, #1f2722 0%, #0d1210 100%);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+/* Background watermark */
+.os-watermark {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  text-align: right;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.os-watermark h2 {
+  font-size: 2.5rem;
+  color: var(--mint-green);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+.os-watermark p {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Desktop Icons Grid */
+.desktop-icons {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 10;
+}
+
+.desktop-icon {
+  width: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.desktop-icon:active, .desktop-icon.selected {
+  background: rgba(135, 207, 62, 0.25);
+  outline: 1px solid var(--mint-green);
+}
+
+.desktop-icon .icon-img {
+  font-size: 2.4rem;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+}
+
+.desktop-icon .icon-label {
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  word-break: break-word;
+}
+
+/* Windows System */
+.window {
+  position: absolute;
+  background: var(--window-bg);
+  border: 1px solid var(--window-border);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 20;
+  min-width: 320px;
+  min-height: 200px;
+}
+
+.window.active {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(135, 207, 62, 0.4);
+}
+
+.window.minimized {
+  display: none !important;
+}
+
+/* Window Titlebar */
+.window-titlebar {
+  background: var(--window-title);
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  cursor: move;
+  border-bottom: 1px solid var(--window-border);
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.win-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: transparent;
+  transition: all 0.15s;
+}
+
+.win-btn:hover { color: rgba(0,0,0,0.7); }
+.win-close { background: #e74c3c; }
+.win-minimize { background: #f1c40f; }
+.win-maximize { background: #2ecc71; }
+
+/* Window Body */
+.window-body {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  background: #181b1d;
+  color: #fff;
+}
+
+/* Bottom Cinnamon Panel */
+#panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  background: var(--cinnamon-panel);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  z-index: 1000;
+}
+
+/* Start Menu Button */
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-btn:hover, .menu-btn.active {
+  background: rgba(135, 207, 62, 0.2);
+  color: var(--mint-green);
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--mint-green);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1c1e;
+  font-weight: 900;
+  font-size: 0.75rem;
+}
+
+/* Panel Tasks (Open Window Buttons) */
+.panel-tasks {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  margin-left: 12px;
+  overflow-x: auto;
+}
+
+.task-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.15s;
+}
+
+.task-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.task-item.active {
+  background: rgba(135, 207, 62, 0.18);
+  border-color: var(--mint-green);
+  border-bottom: 2px solid var(--mint-green);
+}
+
+/* System Tray */
+.system-tray {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 8px;
+  color: var(--text-main);
+  font-size: 0.82rem;
+}
+
+.tray-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: 0.15s;
+}
+
+.tray-icon:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.tray-pill {
+  background: rgba(46, 204, 113, 0.2);
+  color: var(--mint-accent);
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border: 1px solid var(--mint-accent);
+}
+
+.tray-clock {
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+/* Start Menu Popup */
+#startMenu {
+  position: fixed;
+  bottom: 46px;
+  left: 8px;
+  width: 480px;
+  height: 520px;
+  background: rgba(26, 30, 32, 0.98);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--window-border);
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8);
+  display: none;
+  flex-direction: column;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+.menu-search-box {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--window-border);
+}
+
+.menu-search-box input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--window-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #fff;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.menu-search-box input:focus {
+  border-color: var(--mint-green);
+}
+
+.menu-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.menu-categories {
+  width: 150px;
+  border-right: 1px solid var(--window-border);
+  background: rgba(0,0,0,0.15);
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cat-item {
+  padding: 8px 14px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.15s;
+}
+
+.cat-item:hover, .cat-item.active {
+  background: rgba(135, 207, 62, 0.15);
+  color: #fff;
+}
+
+.menu-apps {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-item {
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: 0.15s;
+}
+
+.app-item:hover {
+  background: rgba(135, 207, 62, 0.2);
+}
+
+.app-item .app-icon {
+  font-size: 1.4rem;
+}
+
+/* Floating HUD Overlay */
+#hudOverlay {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 620px;
+  background: rgba(22, 26, 24, 0.95);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--mint-accent);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 20px rgba(46, 204, 113, 0.25);
+  display: none;
+  flex-direction: column;
+  padding: 16px 20px;
+  z-index: 99999;
+}
+
+.hud-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(46, 204, 113, 0.3);
+  padding-bottom: 12px;
+}
+
+.hud-input-row input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.hud-response {
+  margin-top: 12px;
+  color: var(--mint-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 24px;
+}
+
+/* Terminal Styling */
+.term-body {
+  background: #0d1117;
+  color: #58a6ff;
+  font-family: "Fira Code", monospace;
+  padding: 12px;
+  height: 100%;
+  overflow-y: auto;
+  user-select: text;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.term-output {
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #c9d1d9;
+}
+
+.term-prompt-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.term-prompt {
+  color: var(--mint-green);
+  font-weight: bold;
+}
+
+.term-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+}
