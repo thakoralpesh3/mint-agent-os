@@ -650,10 +650,10 @@
     </div>
 
     <!-- ==================== WINDOW 8: MARVEL & STARK AGENTS HEADQUARTERS ==================== -->
-    <div id="win-marvel" class="window" data-icon="🤖" style="top: 40px; left: 170px; width: 780px; height: 530px; display: none;">
+    <div id="win-marvel" class="window" data-icon="🤖" style="top: 30px; left: 140px; width: 840px; height: 570px; display: none;">
       <div class="window-titlebar">
         <div class="window-title">
-          <span>🤖</span> <span>Stark Industries & Marvel AI Agent Headquarters</span>
+          <span>🤖</span> <span>Stark Industries AI Headquarters & Marvel Command Matrix</span>
         </div>
         <div class="window-controls">
           <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-marvel')">−</button>
@@ -662,129 +662,309 @@
         </div>
       </div>
       <div class="window-body">
-        <div class="interact-hub" style="background:#0c1015;">
+        <div class="interact-hub" style="background:#0c1015; padding:16px;">
           <!-- Stark Arc-Reactor Hero Banner -->
-          <div style="background: radial-gradient(circle at 15% 50%, #153b47 0%, #08121a 100%); border: 1px solid #00d2d3; border-radius: 8px; padding: 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="background: radial-gradient(circle at 15% 50%, #153b47 0%, #08121a 100%); border: 1px solid #00d2d3; border-radius: 8px; padding: 14px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div style="display:flex; align-items:center; gap:14px;">
-              <div style="width:48px; height:48px; border-radius:50%; border:3px solid #00d2d3; box-shadow: 0 0 15px #00d2d3; display:flex; align-items:center; justify-content:center; font-size:1.6rem;">⚡</div>
+              <canvas id="arcReactorMiniCanvas" width="48" height="48" style="cursor:pointer; border-radius:50%; box-shadow: 0 0 15px #00d2d3;" onclick="AgentSimulator.pulseArcReactor()" title="Click to pulse Arc Reactor energy"></canvas>
               <div>
-                <h3 style="margin:0; font-size:1.15rem; color:#fff; letter-spacing:1px;">STARK INDUSTRIES AI OPERATING SYSTEM</h3>
-                <p style="margin:2px 0 0 0; font-size:0.8rem; color:#81ecec;">Integrated Marvel Intelligence Grid • Linux Mint Cinnamon Subsystem</p>
-                <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                <h3 style="margin:0; font-size:1.1rem; color:#fff; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+                  STARK INDUSTRIES AI OPERATING SYSTEM
+                  <span style="font-size:0.7rem; background:#00d2d3; color:#000; padding:1px 6px; border-radius:8px; font-weight:bold;">MK-85 GRID</span>
+                </h3>
+                <p style="margin:2px 0 0 0; font-size:0.78rem; color:#81ecec;">Integrated Marvel Intelligence Matrix • Linux Mint Cinnamon Subsystem</p>
+                <div style="display:flex; gap:6px; margin-top:5px; flex-wrap:wrap;">
                   <span id="starkActiveBadge" class="dl-badge" style="border-color:#00d2d3; color:#00d2d3;">Active: J.A.R.V.I.S.</span>
                   <span class="dl-badge" style="border-color:#ff4757; color:#ff6b6b;">Protocols: 6 Armed</span>
                   <span class="dl-badge" style="border-color:#f1c40f; color:#f1c40f;">Arc Reactor: 100% Online</span>
+                  <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">Satellites: 7 Linked</span>
                 </div>
               </div>
             </div>
-            <button class="dl-btn-primary" style="background:#00cec9; color:#000;" onclick="AgentSimulator.testCurrentPersonaVoice()">
-              🔊 Speak with Active Agent
-            </button>
-          </div>
-
-          <!-- Section 1: Choose Your Marvel Agent Persona -->
-          <h4 style="margin:10px 0 4px 0; font-size:0.95rem; color:#81ecec;">🤖 1. Select Marvel AI Agent Persona</h4>
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
-            <!-- JARVIS -->
-            <div class="interact-card" style="border-color:#00d2d3;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#00d2d3; font-size:0.92rem;">🤖 J.A.R.V.I.S.</strong>
-                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('jarvis')">Activate</button>
-              </div>
-              <small style="color:#aaa;">Just A Rather Very Intelligent System</small>
-              <p class="desc-text" style="font-size:0.75rem;">Suave British butler, hardware diagnostics, thermal & battery telemetry, executive protocol governor.</p>
-            </div>
-
-            <!-- FRIDAY -->
-            <div class="interact-card" style="border-color:#ff4757;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#ff4757; font-size:0.92rem;">⚡ F.R.I.D.A.Y.</strong>
-                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('friday')">Activate</button>
-              </div>
-              <small style="color:#aaa;">Female Replacement Intelligent Digital Assistant Youth</small>
-              <p class="desc-text" style="font-size:0.75rem;">Irish tactical copilot, rapid threat neutralization, emergency socket severing, overclocking, combat sentry.</p>
-            </div>
-
-            <!-- EDITH -->
-            <div class="interact-card" style="border-color:#00b4d8;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#00b4d8; font-size:0.92rem;">🕶️ E.D.I.T.H.</strong>
-                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('edith')">Activate</button>
-              </div>
-              <small style="color:#aaa;">Even Dead, I'm The Hero</small>
-              <p class="desc-text" style="font-size:0.75rem;">Orbital network surveillance, perimeter sentry, hostile IP tracking, digital reconnaissance, ingress firewall.</p>
-            </div>
-
-            <!-- VISION -->
-            <div class="interact-card" style="border-color:#f1c40f;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#f1c40f; font-size:0.92rem;">💎 V.I.S.I.O.N.</strong>
-                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('vision')">Activate</button>
-              </div>
-              <small style="color:#aaa;">Mind Stone Synthezoid Consciousness</small>
-              <p class="desc-text" style="font-size:0.75rem;">Digital immune memory, philosophical self-countering circuit breaker, anomaly forecasting, equilibrium.</p>
-            </div>
-
-            <!-- KAREN -->
-            <div class="interact-card" style="border-color:#ff6b6b;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#ff6b6b; font-size:0.92rem;">🕷️ K.A.R.E.N.</strong>
-                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('karen')">Activate</button>
-              </div>
-              <small style="color:#aaa;">Kinetic Analysis & Reconnaissance Entity Network</small>
-              <p class="desc-text" style="font-size:0.75rem;">Friendly neighborhood mentor, explanatory diagnostics, tutorial guidance, Baby Monitor Protocol.</p>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button id="starkMicBtn" class="dl-btn-primary" style="background:linear-gradient(135deg, #00cec9, #0984e3); color:#000; font-weight:bold;" onclick="AgentSimulator.toggleVoiceRecognition()">
+                🎙️ <span id="starkMicText">Voice Wake (Mic)</span>
+              </button>
+              <button class="dl-btn-primary" style="background:#222; color:#81ecec; border:1px solid #00d2d3;" onclick="AgentSimulator.testCurrentPersonaVoice()">
+                🔊 Hear Persona
+              </button>
             </div>
           </div>
 
-          <!-- Section 2: Stark Protocols Command Deck -->
-          <h4 style="margin:14px 0 4px 0; font-size:0.95rem; color:#ff9f43;">⚡ 2. Stark Protocols Command Deck</h4>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#70d6ff; font-size:0.85rem;">🚀 House Party Protocol</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('engage house party protocol')">Execute</button>
+          <!-- Stark Navigation Tabs -->
+          <div class="dl-tab-nav" style="margin-top:12px; margin-bottom:12px; display:flex; gap:6px; border-bottom:1px solid #1a2634; padding-bottom:6px; flex-wrap:wrap;">
+            <button class="dl-tab-btn active" onclick="AgentSimulator.switchStarkTab('stark-tab-core', this)">🤖 1. Personas & Protocols</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchStarkTab('stark-tab-edith', this)">🕶️ 2. E.D.I.T.H. Tactical AR Grid</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchStarkTab('stark-tab-multi', this)">🚀 3. House Party Multi-Agent</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchStarkTab('stark-tab-holo', this)">⚡ 4. Arc-Reactor Hologram</button>
+          </div>
+
+          <!-- ==================== TAB 1: PERSONAS & PROTOCOLS ==================== -->
+          <div id="stark-tab-core" class="dl-tab-pane active" style="display:flex;">
+            <!-- Section 1: Choose Your Marvel Agent Persona -->
+            <h4 style="margin:4px 0 6px 0; font-size:0.92rem; color:#81ecec;">🤖 Select Marvel AI Agent Persona</h4>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap:10px;">
+              <!-- JARVIS -->
+              <div class="interact-card" style="border-color:#00d2d3;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#00d2d3; font-size:0.92rem;">🤖 J.A.R.V.I.S.</strong>
+                  <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('jarvis')">Activate</button>
+                </div>
+                <small style="color:#aaa;">Just A Rather Very Intelligent System (en-GB)</small>
+                <p class="desc-text" style="font-size:0.75rem;">Suave British butler, hardware diagnostics, thermal & battery telemetry, executive protocol governor.</p>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Deploys multi-agent background watchdogs across network, memory, and processes.</p>
+
+              <!-- FRIDAY -->
+              <div class="interact-card" style="border-color:#ff4757;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#ff4757; font-size:0.92rem;">⚡ F.R.I.D.A.Y.</strong>
+                  <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('friday')">Activate</button>
+                </div>
+                <small style="color:#aaa;">Female Replacement Intelligent Digital Assistant Youth (en-IE)</small>
+                <p class="desc-text" style="font-size:0.75rem;">Irish tactical copilot, rapid threat neutralization, emergency socket severing, overclocking, combat sentry.</p>
+              </div>
+
+              <!-- EDITH -->
+              <div class="interact-card" style="border-color:#00b4d8;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#00b4d8; font-size:0.92rem;">🕶️ E.D.I.T.H.</strong>
+                  <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('edith')">Activate</button>
+                </div>
+                <small style="color:#aaa;">Even Dead, I'm The Hero (en-US)</small>
+                <p class="desc-text" style="font-size:0.75rem;">Orbital network surveillance, perimeter sentry, hostile IP tracking, digital reconnaissance, ingress firewall.</p>
+              </div>
+
+              <!-- VISION -->
+              <div class="interact-card" style="border-color:#f1c40f;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#f1c40f; font-size:0.92rem;">💎 V.I.S.I.O.N.</strong>
+                  <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('vision')">Activate</button>
+                </div>
+                <small style="color:#aaa;">Mind Stone Synthezoid Consciousness (en-GB)</small>
+                <p class="desc-text" style="font-size:0.75rem;">Digital immune memory, philosophical self-countering circuit breaker, anomaly forecasting, equilibrium.</p>
+              </div>
+
+              <!-- KAREN -->
+              <div class="interact-card" style="border-color:#ff6b6b;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#ff6b6b; font-size:0.92rem;">🕷️ K.A.R.E.N.</strong>
+                  <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('karen')">Activate</button>
+                </div>
+                <small style="color:#aaa;">Kinetic Analysis & Reconnaissance Entity Network (en-US)</small>
+                <p class="desc-text" style="font-size:0.75rem;">Friendly neighborhood mentor, explanatory diagnostics, tutorial guidance, Baby Monitor Protocol.</p>
+              </div>
             </div>
 
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#2ecc71; font-size:0.85rem;">🧹 Clean Slate Protocol</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('clean slate protocol')">Execute</button>
+            <!-- Section 2: Stark Protocols Command Deck -->
+            <h4 style="margin:14px 0 6px 0; font-size:0.92rem; color:#ff9f43;">⚡ Stark Emergency Protocols Command Deck</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#70d6ff; font-size:0.85rem;">🚀 House Party Protocol</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('engage house party protocol')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Deploys multi-agent background watchdogs across network, memory, and processes.</p>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Frees memory cache, swap, temporary residue, and resets safety circuit history.</p>
+
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#2ecc71; font-size:0.85rem;">🧹 Clean Slate Protocol</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('clean slate protocol')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Frees memory cache, swap, temporary residue, and resets safety circuit history.</p>
+              </div>
+
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#ff6b6b; font-size:0.85rem;">⚔️ Instant Kill Mode</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('instant kill mode')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Dispatches TCP RST packets, severs hostile sockets, and force-terminates rogue PIDs.</p>
+              </div>
+
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#f1c40f; font-size:0.85rem;">🛡️ Veronica Protocol</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('veronica protocol')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Hulkbuster armor: Locks swappiness=10 and allocates kernel buffers for 60fps fluidity.</p>
+              </div>
+
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#e74c3c; font-size:0.85rem;">🔒 Barn Door (Lockdown)</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('barn door protocol')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Default-deny UFW firewall lockdown. Isolates laptop perimeter instantly.</p>
+              </div>
+
+              <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:#9b59b6; font-size:0.85rem;">👶 Baby Monitor Protocol</strong>
+                  <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('baby monitor protocol')">Execute</button>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Engages Guarded Safe Mode requiring confirmation before any state modification.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 2: E.D.I.T.H. TACTICAL AR GRID ==================== -->
+          <div id="stark-tab-edith" class="dl-tab-pane" style="display:none;">
+            <div style="background:#091924; border:1px solid #00b4d8; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <strong style="color:#00b4d8; font-size:0.95rem;">🕶️ E.D.I.T.H. ORBITAL TACTICAL SCANNER (Even Dead, I'm The Hero)</strong>
+                <p style="margin:3px 0 0 0; font-size:0.75rem; color:#81ecec;">Satellites: STARK-ORBITAL-7 ONLINE • Perimeter Score: 94/100 • Grid: AR TARGETING ACTIVE</p>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button class="dl-btn-primary" style="background:#00b4d8; color:#000; font-weight:bold; font-size:0.75rem;" onclick="AgentSimulator.runEdithTacticalScan()">🔄 Rescan Orbital Grid</button>
+                <button class="dl-btn-secondary" style="background:#e74c3c; color:#fff; border:none; font-size:0.75rem;" onclick="AgentSimulator.sendWebUIMessage('instant kill mode')">⚔️ Neutralize Hostiles</button>
+              </div>
             </div>
 
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#ff6b6b; font-size:0.85rem;">⚔️ Instant Kill Mode</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('instant kill mode')">Execute</button>
+            <div id="edithTargetsList" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+              <!-- Target 1 -->
+              <div style="background:#131a21; border-left:4px solid #f39c12; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#f39c12; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-01] ELEVATED (78%)</span>
+                    <span style="color:#aaa; font-size:0.75rem;">NETWORK_SOCKET</span>
+                  </div>
+                  <strong style="color:#fff; font-size:0.85rem;">0.0.0.0:8080 (Wildcard HTTP Service)</strong>
+                  <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Unencrypted Local LAN Exposure • Action: SEVER_SOCKET</p>
+                </div>
+                <button class="dl-btn-secondary" style="background:#f39c12; color:#000; font-weight:bold; font-size:0.72rem; padding:4px 10px;" onclick="AgentSimulator.sendWebUIMessage('counter threats')">⚡ Sever Socket</button>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Dispatches TCP RST packets, severs hostile sockets, and force-terminates rogue PIDs.</p>
+
+              <!-- Target 2 -->
+              <div style="background:#131a21; border-left:4px solid #e74c3c; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#e74c3c; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-02] HOSTILE (92%)</span>
+                    <span style="color:#aaa; font-size:0.75rem;">REMOTE_INGRESS</span>
+                  </div>
+                  <strong style="color:#fff; font-size:0.85rem;">185.220.101.42 (Tor Exit Node Probe)</strong>
+                  <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Port Scan / Reconnaissance Probe • Action: NULL_ROUTE_DROP</p>
+                </div>
+                <button class="dl-btn-secondary" style="background:#e74c3c; color:#fff; font-weight:bold; font-size:0.72rem; padding:4px 10px;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚫 Null-Route IP</button>
+              </div>
+
+              <!-- Target 3 -->
+              <div style="background:#131a21; border-left:4px solid #2ecc71; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#2ecc71; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-03] NOMINAL (2%)</span>
+                    <span style="color:#aaa; font-size:0.75rem;">DESKTOP_PROCESS</span>
+                  </div>
+                  <strong style="color:#fff; font-size:0.85rem;">PID 1240 (/usr/bin/cinnamon)</strong>
+                  <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Verified Linux Mint Cinnamon Compositor (60fps Fluidity) • Action: ALLOW</p>
+                </div>
+                <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">VERIFIED 60FPS</span>
+              </div>
+
+              <!-- Target 4 -->
+              <div style="background:#131a21; border-left:4px solid #2ecc71; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#2ecc71; font-weight:bold; font-size:0.8rem;">[TARGET-EDITH-04] NOMINAL (0%)</span>
+                    <span style="color:#aaa; font-size:0.75rem;">SECURITY_WATCHDOG</span>
+                  </div>
+                  <strong style="color:#fff; font-size:0.85rem;">PID 2108 (/usr/sbin/ufw-sentry)</strong>
+                  <p style="margin:2px 0 0 0; font-size:0.72rem; color:#888;">Classification: Active Cyber Guardian Kernel Sentry Daemon • Action: PRIORITIZE</p>
+                </div>
+                <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">SHIELD ACTIVE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 3: HOUSE PARTY MULTI-AGENT DECK ==================== -->
+          <div id="stark-tab-multi" class="dl-tab-pane" style="display:none;">
+            <div style="background:#131a24; border:1px solid #70d6ff; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <strong style="color:#70d6ff; font-size:0.95rem;">🚀 HOUSE PARTY MULTI-AGENT DEFENSE GRID</strong>
+                <p style="margin:3px 0 0 0; font-size:0.75rem; color:#aaa;">Simultaneous coordinated deployment of all 5 Marvel Series AI Agents across Linux Mint.</p>
+              </div>
+              <button class="dl-btn-primary" style="background:#70d6ff; color:#000; font-weight:bold; font-size:0.78rem;" onclick="AgentSimulator.executeHousePartyCoordinated()">
+                🚀 Deploy All 5 Marvel Agents
+              </button>
             </div>
 
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#f1c40f; font-size:0.85rem;">🛡️ Veronica Protocol</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('veronica protocol')">Execute</button>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+              <!-- Jarvis Card -->
+              <div style="background:#131a21; border-left:4px solid #00d2d3; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="color:#00d2d3; font-size:0.88rem;">🤖 J.A.R.V.I.S.</strong> <span style="font-size:0.75rem; color:#888;">— Operating System Executive Governor [NOMINAL]</span>
+                  <p style="margin:4px 0 0 0; font-size:0.78rem; color:#ddd;">"Sir, system diagnostic sweeps confirmed. Hardware parameters nominal, swappiness locked at 10."</p>
+                </div>
+                <button class="dl-copy-btn" onclick="AgentSimulator.speakMultiAgentReport('jarvis')">🔊 Speak</button>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Hulkbuster armor: Locks swappiness=10 and allocates kernel buffers for 60fps fluidity.</p>
-            </div>
 
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#e74c3c; font-size:0.85rem;">🔒 Barn Door (Lockdown)</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('barn door protocol')">Execute</button>
+              <!-- Friday Card -->
+              <div style="background:#131a21; border-left:4px solid #ff4757; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="color:#ff4757; font-size:0.88rem;">⚡ F.R.I.D.A.Y.</strong> <span style="font-size:0.75rem; color:#888;">— Tactical Combat & Socket Watcher [ENGAGED]</span>
+                  <p style="margin:4px 0 0 0; font-size:0.78rem; color:#ddd;">"Boss, tactical combat socket watchers armed. Zero unauthorized listeners on port grid."</p>
+                </div>
+                <button class="dl-copy-btn" onclick="AgentSimulator.speakMultiAgentReport('friday')">🔊 Speak</button>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Default-deny UFW firewall lockdown. Isolates laptop perimeter instantly.</p>
-            </div>
 
-            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#9b59b6; font-size:0.85rem;">👶 Baby Monitor Protocol</strong>
-                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('baby monitor protocol')">Execute</button>
+              <!-- Edith Card -->
+              <div style="background:#131a21; border-left:4px solid #00b4d8; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="color:#00b4d8; font-size:0.88rem;">🕶️ E.D.I.T.H.</strong> <span style="font-size:0.75rem; color:#888;">— Orbital Network & Perimeter Sentry [VIGILANT]</span>
+                  <p style="margin:4px 0 0 0; font-size:0.78rem; color:#ddd;">"Orbital perimeter sentry locked. External IP ingress points actively filtered and traced."</p>
+                </div>
+                <button class="dl-copy-btn" onclick="AgentSimulator.speakMultiAgentReport('edith')">🔊 Speak</button>
               </div>
-              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Engages Guarded Safe Mode requiring confirmation before any state modification.</p>
+
+              <!-- Vision Card -->
+              <div style="background:#131a21; border-left:4px solid #f1c40f; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="color:#f1c40f; font-size:0.88rem;">💎 V.I.S.I.O.N.</strong> <span style="font-size:0.75rem; color:#888;">— Digital Immune Memory Synthesizer [ALIGNED]</span>
+                  <p style="margin:4px 0 0 0; font-size:0.78rem; color:#ddd;">"Digital immune memory synthesized. 16 adaptive antibodies maintaining system equilibrium."</p>
+                </div>
+                <button class="dl-copy-btn" onclick="AgentSimulator.speakMultiAgentReport('vision')">🔊 Speak</button>
+              </div>
+
+              <!-- Karen Card -->
+              <div style="background:#131a21; border-left:4px solid #ff6b6b; border-radius:4px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong style="color:#ff6b6b; font-size:0.88rem;">🕷️ K.A.R.E.N.</strong> <span style="font-size:0.75rem; color:#888;">— Safety Guardrails & User Copilot [STANDBY]</span>
+                  <p style="margin:4px 0 0 0; font-size:0.78rem; color:#ddd;">"All safety checks passed! Your PC is protected and running butter-smooth."</p>
+                </div>
+                <button class="dl-copy-btn" onclick="AgentSimulator.speakMultiAgentReport('karen')">🔊 Speak</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 4: ARC-REACTOR HOLOGRAM ==================== -->
+          <div id="stark-tab-holo" class="dl-tab-pane" style="display:none; text-align:center; padding:10px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+              <canvas id="arcReactorLargeCanvas" width="220" height="220" style="border-radius:50%; box-shadow:0 0 35px rgba(0,210,211,0.6); cursor:pointer;" onclick="AgentSimulator.pulseArcReactor()" title="Click to pulse Arc Reactor energy"></canvas>
+              <div>
+                <h4 style="margin:0; font-size:1.05rem; color:#00d2d3; letter-spacing:1px;">MK-85 ARC REACTOR ENERGY MATRIX</h4>
+                <p style="margin:3px 0 0 0; font-size:0.8rem; color:#aaa;">Pulsing audio reactive core • Real-time telemetry feed</p>
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; width:100%; max-width:620px; margin-top:4px;">
+                <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:8px;">
+                  <small style="color:#888;">POWER OUTPUT</small>
+                  <div style="color:#00d2d3; font-weight:bold; font-size:0.95rem;">8.24 GW</div>
+                </div>
+                <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:8px;">
+                  <small style="color:#888;">CORE VOLTAGE</small>
+                  <div style="color:#70d6ff; font-weight:bold; font-size:0.95rem;">4.85 kV</div>
+                </div>
+                <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:8px;">
+                  <small style="color:#888;">FREQUENCY</small>
+                  <div style="color:#f1c40f; font-weight:bold; font-size:0.95rem;">142.4 MHz</div>
+                </div>
+                <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:8px;">
+                  <small style="color:#888;">INTEGRITY</small>
+                  <div style="color:#2ecc71; font-weight:bold; font-size:0.95rem;">100% NOMINAL</div>
+                </div>
+              </div>
+              <button class="dl-btn-primary" style="background:#00d2d3; color:#000; font-weight:bold; margin-top:4px;" onclick="AgentSimulator.pulseArcReactor()">
+                ⚡ Trigger Arc-Reactor Energy Pulse
+              </button>
             </div>
           </div>
 
