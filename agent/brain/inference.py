@@ -626,3 +626,5 @@ class AgentBrain:
             "status": "completed",
             "message": f"Processed: '{prompt}'. Mode: {self.permissions.mode.upper()} | Tier: {self.hardware_tier['tier_name']}"
         }
+
+    infer = process_command
