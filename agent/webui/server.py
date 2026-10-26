@@ -97,7 +97,13 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(posture)
             return
 
-        # 4. OpenAI-Compatible: GET /v1/models
+        # 4. Self-Countering Safety Circuit Breaker API: GET /api/self_counter
+        if path == "/api/self_counter":
+            circuit = self.brain.security.self_counter.get_circuit_status()
+            self._send_json(circuit)
+            return
+
+        # 5. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
@@ -163,7 +169,35 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(scan_res)
             return
 
-        # 5. Block Hostile IP: POST /api/block_ip
+        # 5. Active Counter-Measures: POST /api/counter_threats
+        if path == "/api/counter_threats":
+            counter_res = self.brain.security.scan_and_counter_threats()
+            self._send_json(counter_res)
+            return
+
+        # 6. Deploy Honeypot Decoys: POST /api/deploy_decoys
+        if path == "/api/deploy_decoys":
+            decoy_res = self.brain.security.deploy_decoys()
+            self._send_json(decoy_res)
+            return
+
+        # 7. Self-Countering Rollback: POST /api/rollback
+        if path == "/api/rollback":
+            rollback_res = self.brain.security.rollback_last_change()
+            self._send_json(rollback_res)
+            return
+
+        # 8. Reset or Query Circuit Breaker: POST /api/self_counter
+        if path == "/api/self_counter":
+            action = body.get("action", "status")
+            if action == "reset":
+                self.brain.security.self_counter.circuit_tripped = False
+                self.brain.security.self_counter.trip_reason = None
+            circuit = self.brain.security.self_counter.get_circuit_status()
+            self._send_json(circuit)
+            return
+
+        # 9. Block Hostile IP: POST /api/block_ip
         if path == "/api/block_ip":
             ip = body.get("ip")
             if not ip:
