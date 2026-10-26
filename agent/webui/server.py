@@ -283,6 +283,24 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(res)
             return
 
+        # 14. Update User Interaction Settings: POST /api/interaction
+        if path == "/api/interaction":
+            if "modality" in body:
+                self.brain.interaction.set_modality(body["modality"])
+            if "verbosity" in body:
+                self.brain.interaction.set_verbosity(body["verbosity"])
+            if "proactivity" in body:
+                self.brain.interaction.set_proactivity(body["proactivity"])
+            if "voice" in body:
+                v = body["voice"]
+                self.brain.interaction.set_voice(
+                    enabled=v.get("enabled", False),
+                    engine=v.get("engine"),
+                    speed=v.get("speed")
+                )
+            self._send_json(self.brain.interaction.get_status())
+            return
+
         # 6. Resolve Approval: POST /api/resolve_permission
         if path == "/api/resolve_permission":
             act_id = body.get("id")
