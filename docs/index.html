@@ -115,6 +115,10 @@
         <div class="icon-img">🗣️</div>
         <div class="icon-label">Interaction</div>
       </div>
+      <div class="desktop-icon" data-app="marvel">
+        <div class="icon-img">🤖</div>
+        <div class="icon-label">Stark Agents</div>
+      </div>
     </div>
 
     <!-- ==================== WINDOW 1: OPEN WEBUI ==================== -->
@@ -137,6 +141,8 @@
               <div id="simDefconBadge" onclick="AgentSimulator.sendWebUIMessage('defcon')" style="cursor:pointer; background:#2c1b1b; border:1px solid #e74c3c; color:#ff6b6b; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🚨 DEFCON 2: ELEVATED</div>
               <div id="simImmuneBadge" onclick="AgentSimulator.openImmuneModal()" style="cursor:pointer; background:#1b2438; border:1px solid #3498db; color:#70d6ff; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🧬 Immune: 95% (A+)</div>
               <div id="simAiModelBadge" onclick="AgentSimulator.openModelModal()" style="cursor:pointer; background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🧠 AI: Qwen 0.5B [OFFLINE]</div>
+              <div id="simMarvelBadge" onclick="AgentSimulator.openMarvelModal()" style="cursor:pointer; background:#102227; border:1px solid #00d2d3; color:#00d2d3; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;" title="Click to switch Marvel Agent Persona">🤖 JARVIS [STARK]</div>
+              <button style="background:#b71540; color:#fff; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.openMarvelModal()">⚡ Stark Protocols</button>
               <div id="simSmoothBadge" onclick="AgentSimulator.openSmoothnessModal()" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🍃 Smooth: 100% (A+)</div>
               <button style="background:#2d6a4f; color:#d8f3dc; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; cursor:pointer;" onclick="AgentSimulator.openUpgradeModal()">🔄 Upgrade Mint OS</button>
               <button style="background:#0077b6; color:#fff; border:none; padding:2px 10px; border-radius:10px; font-size:0.75rem; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('download')">💾 Download ISO / USB</button>
@@ -170,6 +176,15 @@
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#f39c12; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('check update')">🔄 Check Update</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('lockdown')">🚨 Lockdown</button>
             <button class="btn-sm" style="background:#0077b6; border:1px solid #0096c7; color:#fff; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('download')">💾 Download & Bootable USB</button>
+            <button class="btn-sm" style="background:#102227; border:1px solid #00d2d3; color:#00d2d3; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.switchPersona('jarvis')">🤖 J.A.R.V.I.S.</button>
+            <button class="btn-sm" style="background:#2b1016; border:1px solid #ff4757; color:#ff4757; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.switchPersona('friday')">⚡ F.R.I.D.A.Y.</button>
+            <button class="btn-sm" style="background:#102029; border:1px solid #00b4d8; color:#00b4d8; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.switchPersona('edith')">🕶️ E.D.I.T.H.</button>
+            <button class="btn-sm" style="background:#272410; border:1px solid #f1c40f; color:#f1c40f; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.switchPersona('vision')">💎 V.I.S.I.O.N.</button>
+            <button class="btn-sm" style="background:#2b1414; border:1px solid #ff6b6b; color:#ff6b6b; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.switchPersona('karen')">🕷️ K.A.R.E.N.</button>
+            <button class="btn-sm" style="background:#3b141e; border:1px solid #e74c3c; color:#ff9f43; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('engage house party protocol')">🚀 House Party</button>
+            <button class="btn-sm" style="background:#1e3b2e; border:1px solid #2ecc71; color:#2ecc71; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('clean slate protocol')">🧹 Clean Slate</button>
+            <button class="btn-sm" style="background:#3b2a14; border:1px solid #f39c12; color:#f1c40f; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('veronica protocol')">🛡️ Veronica Armor</button>
+            <button class="btn-sm" style="background:#4a1420; border:1px solid #ff4757; color:#ff4757; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('instant kill mode')">⚔️ Instant Kill</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#d6a4e8; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.toggleVoice()">🎙️ Toggle Voice</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#70d6ff; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('concise mode')">💬 Concise Mode</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#a8dadc; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('detailed mode')">📖 Detailed Mentor</button>
@@ -327,6 +342,7 @@
             <div class="file-icon" onclick="WindowManager.openApp('download')"><div class="ico">💾</div><div class="name">make_bootable_usb.sh</div></div>
             <div class="file-icon" onclick="WindowManager.openApp('download')"><div class="ico">💿</div><div class="name">LinuxMint-AI-Agent.iso</div></div>
             <div class="file-icon" onclick="WindowManager.openApp('interaction')"><div class="ico">🗣️</div><div class="name">interaction_settings</div></div>
+            <div class="file-icon" onclick="WindowManager.openApp('marvel')"><div class="ico">🤖</div><div class="name">stark_protocols</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">iso_builder</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">conversation</div></div>
             <div class="file-icon"><div class="ico">📁</div><div class="name">artifacts</div></div>
@@ -632,6 +648,149 @@
       </div>
     </div>
 
+    <!-- ==================== WINDOW 8: MARVEL & STARK AGENTS HEADQUARTERS ==================== -->
+    <div id="win-marvel" class="window" data-icon="🤖" style="top: 40px; left: 170px; width: 780px; height: 530px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🤖</span> <span>Stark Industries & Marvel AI Agent Headquarters</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-marvel')">−</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-marvel')">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-marvel')">×</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="interact-hub" style="background:#0c1015;">
+          <!-- Stark Arc-Reactor Hero Banner -->
+          <div style="background: radial-gradient(circle at 15% 50%, #153b47 0%, #08121a 100%); border: 1px solid #00d2d3; border-radius: 8px; padding: 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <div style="width:48px; height:48px; border-radius:50%; border:3px solid #00d2d3; box-shadow: 0 0 15px #00d2d3; display:flex; align-items:center; justify-content:center; font-size:1.6rem;">⚡</div>
+              <div>
+                <h3 style="margin:0; font-size:1.15rem; color:#fff; letter-spacing:1px;">STARK INDUSTRIES AI OPERATING SYSTEM</h3>
+                <p style="margin:2px 0 0 0; font-size:0.8rem; color:#81ecec;">Integrated Marvel Intelligence Grid • Linux Mint Cinnamon Subsystem</p>
+                <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                  <span id="starkActiveBadge" class="dl-badge" style="border-color:#00d2d3; color:#00d2d3;">Active: J.A.R.V.I.S.</span>
+                  <span class="dl-badge" style="border-color:#ff4757; color:#ff6b6b;">Protocols: 6 Armed</span>
+                  <span class="dl-badge" style="border-color:#f1c40f; color:#f1c40f;">Arc Reactor: 100% Online</span>
+                </div>
+              </div>
+            </div>
+            <button class="dl-btn-primary" style="background:#00cec9; color:#000;" onclick="AgentSimulator.testCurrentPersonaVoice()">
+              🔊 Speak with Active Agent
+            </button>
+          </div>
+
+          <!-- Section 1: Choose Your Marvel Agent Persona -->
+          <h4 style="margin:10px 0 4px 0; font-size:0.95rem; color:#81ecec;">🤖 1. Select Marvel AI Agent Persona</h4>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+            <!-- JARVIS -->
+            <div class="interact-card" style="border-color:#00d2d3;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#00d2d3; font-size:0.92rem;">🤖 J.A.R.V.I.S.</strong>
+                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('jarvis')">Activate</button>
+              </div>
+              <small style="color:#aaa;">Just A Rather Very Intelligent System</small>
+              <p class="desc-text" style="font-size:0.75rem;">Suave British butler, hardware diagnostics, thermal & battery telemetry, executive protocol governor.</p>
+            </div>
+
+            <!-- FRIDAY -->
+            <div class="interact-card" style="border-color:#ff4757;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ff4757; font-size:0.92rem;">⚡ F.R.I.D.A.Y.</strong>
+                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('friday')">Activate</button>
+              </div>
+              <small style="color:#aaa;">Female Replacement Intelligent Digital Assistant Youth</small>
+              <p class="desc-text" style="font-size:0.75rem;">Irish tactical copilot, rapid threat neutralization, emergency socket severing, overclocking, combat sentry.</p>
+            </div>
+
+            <!-- EDITH -->
+            <div class="interact-card" style="border-color:#00b4d8;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#00b4d8; font-size:0.92rem;">🕶️ E.D.I.T.H.</strong>
+                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('edith')">Activate</button>
+              </div>
+              <small style="color:#aaa;">Even Dead, I'm The Hero</small>
+              <p class="desc-text" style="font-size:0.75rem;">Orbital network surveillance, perimeter sentry, hostile IP tracking, digital reconnaissance, ingress firewall.</p>
+            </div>
+
+            <!-- VISION -->
+            <div class="interact-card" style="border-color:#f1c40f;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#f1c40f; font-size:0.92rem;">💎 V.I.S.I.O.N.</strong>
+                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('vision')">Activate</button>
+              </div>
+              <small style="color:#aaa;">Mind Stone Synthezoid Consciousness</small>
+              <p class="desc-text" style="font-size:0.75rem;">Digital immune memory, philosophical self-countering circuit breaker, anomaly forecasting, equilibrium.</p>
+            </div>
+
+            <!-- KAREN -->
+            <div class="interact-card" style="border-color:#ff6b6b;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ff6b6b; font-size:0.92rem;">🕷️ K.A.R.E.N.</strong>
+                <button class="dl-copy-btn" onclick="AgentSimulator.switchPersona('karen')">Activate</button>
+              </div>
+              <small style="color:#aaa;">Kinetic Analysis & Reconnaissance Entity Network</small>
+              <p class="desc-text" style="font-size:0.75rem;">Friendly neighborhood mentor, explanatory diagnostics, tutorial guidance, Baby Monitor Protocol.</p>
+            </div>
+          </div>
+
+          <!-- Section 2: Stark Protocols Command Deck -->
+          <h4 style="margin:14px 0 4px 0; font-size:0.95rem; color:#ff9f43;">⚡ 2. Stark Protocols Command Deck</h4>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#70d6ff; font-size:0.85rem;">🚀 House Party Protocol</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('engage house party protocol')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Deploys multi-agent background watchdogs across network, memory, and processes.</p>
+            </div>
+
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#2ecc71; font-size:0.85rem;">🧹 Clean Slate Protocol</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('clean slate protocol')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Frees memory cache, swap, temporary residue, and resets safety circuit history.</p>
+            </div>
+
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ff6b6b; font-size:0.85rem;">⚔️ Instant Kill Mode</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('instant kill mode')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Dispatches TCP RST packets, severs hostile sockets, and force-terminates rogue PIDs.</p>
+            </div>
+
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#f1c40f; font-size:0.85rem;">🛡️ Veronica Protocol</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('veronica protocol')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Hulkbuster armor: Locks swappiness=10 and allocates kernel buffers for 60fps fluidity.</p>
+            </div>
+
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#e74c3c; font-size:0.85rem;">🔒 Barn Door (Lockdown)</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('barn door protocol')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Default-deny UFW firewall lockdown. Isolates laptop perimeter instantly.</p>
+            </div>
+
+            <div style="background:#131a21; border:1px solid #1e2c38; border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#9b59b6; font-size:0.85rem;">👶 Baby Monitor Protocol</strong>
+                <button class="dl-btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.sendWebUIMessage('baby monitor protocol')">Execute</button>
+              </div>
+              <p style="margin:4px 0 0 0; font-size:0.75rem; color:#888;">Engages Guarded Safe Mode requiring confirmation before any state modification.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== FLOATING HUD OVERLAY (SUPER+SPACE) ==================== -->
     <div id="hudOverlay">
       <div class="hud-input-row">
@@ -685,6 +844,10 @@
         <div class="app-item" onclick="WindowManager.openApp('interaction'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🗣️</span>
           <div><strong>User Interaction Options</strong><br><small style="color:#888;">Voice, HUD, Concise/Detailed & Proactivity</small></div>
+        </div>
+        <div class="app-item" onclick="WindowManager.openApp('marvel'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🤖</span>
+          <div><strong>Marvel Series AI Agents</strong><br><small style="color:#888;">Jarvis, Friday, Edith, Vision & Protocols</small></div>
         </div>
       </div>
     </div>
