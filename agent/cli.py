@@ -164,7 +164,7 @@ def main():
 
     # Interactive Mode
     print_banner(brain)
-    print("Commands: 'security', 'scan threats', 'lockdown', 'turbo mode', 'safe mode', 'exit'\n")
+    print("Commands: 'security', 'counter threats', 'deploy decoys', 'self check', 'rollback', 'lockdown', 'turbo mode', 'safe mode', 'exit'\n")
 
     while True:
         try:
