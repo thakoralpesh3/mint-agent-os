@@ -465,6 +465,18 @@
         if (data.recommendations) {
           recList.innerHTML = data.recommendations.map(r => `<li>${r}</li>`).join('');
         }
+
+        // Circuit Breaker Telemetry
+        if (data.circuit_breaker) {
+          const cb = data.circuit_breaker;
+          const cbEl = document.getElementById('circuitStateText');
+          if (cbEl) {
+            cbEl.innerText = cb.circuit_tripped ? `⚠️ TRIPPED (${cb.trip_reason})` : '✓ NORMAL (GOVERNING)';
+            cbEl.style.color = cb.circuit_tripped ? '#e74c3c' : '#2ecc71';
+          }
+          const snapEl = document.getElementById('snapCountText');
+          if (snapEl) snapEl.innerText = `${cb.available_snapshots || 0} available`;
+        }
       } catch(e) {}
     }
 
@@ -472,6 +484,28 @@
       const res = await fetch('/api/scan_threats', { method: 'POST' });
       const data = await res.json();
       alert(`Threat Scan Complete! Total threats: ${data.total_threats}. Remediated: ${data.remediated_count}`);
+      loadSecurityData();
+    }
+
+    async function counterThreats() {
+      const res = await fetch('/api/counter_threats', { method: 'POST' });
+      const data = await res.json();
+      alert(`⚔️ Active Counter-Defense Executed!\nThreats Countered: ${data.countered_count}\nMode: ${data.mode_executed}`);
+      loadSecurityData();
+    }
+
+    async function deployDecoys() {
+      const res = await fetch('/api/deploy_decoys', { method: 'POST' });
+      const data = await res.json();
+      alert(`🪤 Canary Decoys: ${data.message}\nDecoys Monitored: ${data.decoys_count}`);
+      loadSecurityData();
+    }
+
+    async function rollbackSnapshot() {
+      if(!confirm("Revert system and agent state to last pre-action snapshot?")) return;
+      const res = await fetch('/api/rollback', { method: 'POST' });
+      const data = await res.json();
+      alert(data.status === 'success' ? `⏮️ ${data.message}` : `⚠️ ${data.error || data.message || 'Rollback failed'}`);
       loadSecurityData();
     }
 
