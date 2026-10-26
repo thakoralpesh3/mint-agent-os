@@ -12,6 +12,101 @@ const AgentSimulator = {
   verbosity: 'normal',
   proactivity: 'balanced',
   modality: 'hybrid',
+  activePersona: 'jarvis',
+  personas: {
+    jarvis: {
+      id: 'jarvis',
+      name: 'J.A.R.V.I.S.',
+      title: 'Just A Rather Very Intelligent System',
+      voiceLang: 'en-GB',
+      rate: 1.0,
+      pitch: 0.95,
+      prefix: "Right away, sir.",
+      suffix: "Shall I run further diagnostics on the system, sir?",
+      greeting: "At your service, sir. All Linux Mint telemetry and core subsystems are running optimally.",
+      color: "#00d2d3"
+    },
+    friday: {
+      id: 'friday',
+      name: 'F.R.I.D.A.Y.',
+      title: 'Female Replacement Intelligent Digital Assistant Youth',
+      voiceLang: 'en-IE',
+      rate: 1.1,
+      pitch: 1.15,
+      prefix: "Right on it, boss!",
+      suffix: "Combat sentries and socket monitors are primed.",
+      greeting: "Hello, boss! Tactical combat and rapid threat neutralization systems are fully armed.",
+      color: "#ff4757"
+    },
+    edith: {
+      id: 'edith',
+      name: 'E.D.I.T.H.',
+      title: "Even Dead, I'm The Hero",
+      voiceLang: 'en-US',
+      rate: 1.05,
+      pitch: 1.05,
+      prefix: "Accessing Stark orbital defense grid:",
+      suffix: "Target coordinates and network flows confirmed.",
+      greeting: "Biometric match confirmed. E.D.I.T.H. orbital network surveillance and perimeter sentry online.",
+      color: "#00b4d8"
+    },
+    vision: {
+      id: 'vision',
+      name: 'V.I.S.I.O.N.',
+      title: 'Mind Stone Synthezoid Consciousness',
+      voiceLang: 'en-GB',
+      rate: 0.9,
+      pitch: 0.85,
+      prefix: "I perceive the equilibrium of our architecture:",
+      suffix: "Order and balance are maintained across all digital pathways.",
+      greeting: "Greetings. I am Vision. The digital immune matrix and ethical safety governors are aligned.",
+      color: "#f1c40f"
+    },
+    karen: {
+      id: 'karen',
+      name: 'K.A.R.E.N.',
+      title: 'Kinetic Analysis & Reconnaissance Entity Network',
+      voiceLang: 'en-US',
+      rate: 1.0,
+      pitch: 1.2,
+      prefix: "You've got this!",
+      suffix: "I'm monitoring your safety parameters in the background.",
+      greeting: "Hi there! Karen here. I'm ready to help you navigate and optimize your Linux Mint system.",
+      color: "#ff6b6b"
+    }
+  },
+  protocols: {
+    house_party: {
+      name: "House Party Protocol",
+      description: "Deploys multi-agent background watchdogs across network, memory, and processes.",
+      summary: "Autonomous multi-agent sentries dispatched. 4 background guardians active."
+    },
+    clean_slate: {
+      name: "Clean Slate Protocol",
+      description: "Frees memory cache, swap, temporary residue, and resets safety circuit history.",
+      summary: "System purged. Cache cleared, swap synced, forensic residue eliminated."
+    },
+    instant_kill: {
+      name: "Instant Kill Mode",
+      description: "Dispatches TCP RST packets, severs hostile sockets, and force-terminates rogue PIDs.",
+      summary: "Hostile connections severed. Inbound intruder sockets dropped with TCP RST."
+    },
+    veronica: {
+      name: "Veronica Protocol",
+      description: "Hulkbuster armor: Locks swappiness=10 and allocates kernel buffers for 60fps fluidity.",
+      summary: "Hulkbuster reinforcement active. Kernel swappiness locked at 10 (Butter-Smooth)."
+    },
+    barn_door: {
+      name: "Barn Door Protocol",
+      description: "Default-deny UFW firewall lockdown. Isolates laptop perimeter instantly.",
+      summary: "Perimeter locked down. Default-deny incoming firewall enforced."
+    },
+    baby_monitor: {
+      name: "Baby Monitor Protocol",
+      description: "Engages Guarded Safe Mode requiring confirmation before any state modification.",
+      summary: "Guarded Safe Mode engaged. All sensitive modifications require authorization."
+    }
+  },
   threats: [
     { severity: "HIGH", title: "Wildcard Port Exposure (0.0.0.0:8080)", details: "HTTP service exposed to local network without TLS." }
   ],
