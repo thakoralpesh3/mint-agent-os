@@ -632,7 +632,135 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
 
   // ==================== AGENT REASONING ENGINE ====================
   processAgentIntent(prompt) {
-    const p = prompt.toLowerCase().trim();
+    let p = prompt.toLowerCase().trim();
+
+    // Check for Marvel agent name prefix: "jarvis, ...", "friday, ...", "edith, ...", etc.
+    let invokedPersona = null;
+    if (p.startsWith('jarvis,') || p.startsWith('jarvis ')) {
+      invokedPersona = 'jarvis';
+      p = p.replace(/^jarvis[, ]+/, '').trim();
+    } else if (p.startsWith('friday,') || p.startsWith('friday ')) {
+      invokedPersona = 'friday';
+      p = p.replace(/^friday[, ]+/, '').trim();
+    } else if (p.startsWith('edith,') || p.startsWith('edith ')) {
+      invokedPersona = 'edith';
+      p = p.replace(/^edith[, ]+/, '').trim();
+    } else if (p.startsWith('vision,') || p.startsWith('vision ')) {
+      invokedPersona = 'vision';
+      p = p.replace(/^vision[, ]+/, '').trim();
+    } else if (p.startsWith('karen,') || p.startsWith('karen ')) {
+      invokedPersona = 'karen';
+      p = p.replace(/^karen[, ]+/, '').trim();
+    }
+
+    if (invokedPersona && this.personas[invokedPersona]) {
+      this.activePersona = invokedPersona;
+      const b = document.getElementById('starkActiveBadge');
+      if (b) {
+        b.innerText = `Active: ${this.personas[invokedPersona].name}`;
+        b.style.borderColor = this.personas[invokedPersona].color;
+        b.style.color = this.personas[invokedPersona].color;
+      }
+      const sb = document.getElementById('simMarvelBadge');
+      if (sb) {
+        sb.innerText = `🤖 ${this.personas[invokedPersona].name.replace(/\./g, '')} [STARK]`;
+        sb.style.borderColor = this.personas[invokedPersona].color;
+        sb.style.color = this.personas[invokedPersona].color;
+      }
+    }
+
+    const activeP = this.personas[this.activePersona] || this.personas.jarvis;
+
+    // Stark Headquarters Modal
+    if (p.includes('stark headquarters') || p.includes('marvel agents') || p.includes('stark ai') || p.includes('open marvel') || p.includes('marvel hub')) {
+      setTimeout(() => WindowManager.openApp('marvel'), 300);
+      const text = `${activeP.prefix} Opening Stark Industries Headquarters. All Marvel Series AI Personas and Stark Protocols are online.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { active_persona: activeP.name, protocols: Object.keys(this.protocols), status: "ready" },
+        latency_ms: 1.0
+      };
+    }
+
+    // Persona Switching Intent
+    for (const [key, pers] of Object.entries(this.personas)) {
+      if (p.includes(`switch to ${key}`) || p.includes(`activate ${key}`) || p.includes(`become ${key}`) || p.includes(`call ${key}`)) {
+        this.switchPersona(key);
+        return {
+          thought: `${pers.name}: "${pers.greeting}"`,
+          result: { persona: pers.name, voice_lang: pers.voiceLang, role: pers.title },
+          latency_ms: 1.2
+        };
+      }
+    }
+
+    // Stark Defense Protocols Intent
+    if (p.includes('house party') || p.includes('house party protocol')) {
+      const text = `${activeP.prefix} House Party Protocol deployed: 4 autonomous micro-watchdogs launched across network, memory, and processes.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "house_party", active_sentries: 4, status: "deployed", execution_mode: "autonomous_grid" },
+        latency_ms: 1.4
+      };
+    }
+
+    if (p.includes('clean slate') || p.includes('clean slate protocol')) {
+      this.ramUsedMb = Math.max(1600, this.ramUsedMb - 400);
+      this.updateTelemetryUI();
+      const text = `${activeP.prefix} Clean Slate Protocol executed: RAM caches freed, swap synced, and forensic residue scrubbed.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "clean_slate", freed_ram_mb: 400, swap_flushed: true, breaker_reset: true },
+        latency_ms: 1.6
+      };
+    }
+
+    if (p.includes('instant kill') || p.includes('instant kill mode')) {
+      this.securityScore = 96;
+      const text = `${activeP.prefix} Instant Kill Mode active: TCP RST disruption dispatches, all hostile network sockets severed.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "instant_kill", severed_sockets: 7, rst_packets_sent: 14, status: "neutralized" },
+        latency_ms: 1.8
+      };
+    }
+
+    if (p.includes('veronica') || p.includes('veronica protocol') || p.includes('hulkbuster')) {
+      const text = `${activeP.prefix} Veronica Protocol deployed: Hulkbuster armor active. Kernel swappiness locked at 10 for 60fps butter-smooth execution.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "veronica", vm_swappiness: 10, vfs_cache_pressure: 50, fluidity_fps: 60, status: "armored" },
+        latency_ms: 1.2
+      };
+    }
+
+    if (p.includes('barn door') || p.includes('barn door protocol')) {
+      this.firewallActive = true;
+      this.securityScore = 98;
+      const text = `${activeP.prefix} Barn Door Protocol enforced: Perimeter locked down with default-deny UFW firewall rules.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "barn_door", firewall: "ufw_default_deny", ingress: "blocked", status: "locked" },
+        latency_ms: 1.5
+      };
+    }
+
+    if (p.includes('baby monitor') || p.includes('baby monitor protocol')) {
+      this.setMode('safe');
+      const text = `${activeP.prefix} Baby Monitor Protocol engaged: Guarded Safe Mode active with mandatory interactive confirmation.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "baby_monitor", mode: "safe", approval_required: true, status: "guarded" },
+        latency_ms: 1.1
+      };
+    }
 
     if (p.includes('interaction') || p.includes('how to interact') || p.includes('how do you interact')) {
       setTimeout(() => WindowManager.openApp('interaction'), 300);
