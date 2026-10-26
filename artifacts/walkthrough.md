@@ -188,3 +188,58 @@ Immediate boot key matrix displayed on both README and simulator:
 - **Terminal Simulator Integration**: Running `sudo ./make_bootable_usb.sh` inside the simulator triggers a realistic, step-by-step flashing animation.
 - Live at: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
 
+---
+
+## 🗣️ 8. User Interaction Options & Modalities System
+
+We designed and implemented a comprehensive, multi-channel **User Interaction Governance System** allowing users to dictate exactly how MintPilot communicates and behaves:
+
+### 1. The Interaction Manager ([`interaction_manager.py`](file:///home/alpesh/mint-agent-os/agent/core/interaction_manager.py))
+- **Channel Modalities**:
+  - `text`: Pure visual dashboard & terminal text (silent).
+  - `voice`: 100% offline spoken replies via Linux Mint speech synthesis (Piper / spd-say / eSpeak-NG).
+  - `hybrid`: Combined visual dashboard and spoken audio feedback.
+  - `hud`: Centered Spotlight Raycast-style floating command overlay (`Super+Space`).
+  - `notification`: Silent passive desktop notifications via `notify-send`.
+  - `cli`: Interactive terminal shell (`mint-agent -i`).
+- **Communication Personas & Depth**:
+  - `concise` (Silent Pro): Terse 1-line action confirmations without boilerplate.
+  - `normal` (Balanced Copilot): Clear conversational answers and summary.
+  - `detailed` (Mentor / Explanatory): Step-by-step reasoning, underlying Linux CLI commands (`apt`, `systemctl`, `ufw`), and RAM impact.
+  - `security_auditor` (Cyber Sentinel): Highlights DEFCON levels, CVE risk scores, and firewall posture.
+- **Ambient Proactivity**:
+  - `reactive`: Speaks/acts *only* when explicitly commanded. Never interrupts.
+  - `balanced`: Quiet during normal operation, but alerts on battery < 15%, incoming attack, or >85% RAM pressure.
+  - `proactive`: Ambient copilot suggesting power optimizations, security updates, and cache cleanup.
+
+### 2. Verification & Testing
+
+#### CLI Interaction Status & Configuration:
+```bash
+python3 agent/cli.py --interaction
+```
+```text
+  Mode: [TURBO] | Hardware Tier: Tier 1: Ultra-Light (0.5B - 1.5B Q4 GGUF)
+  Interaction: HYBRID | Style: CONCISE | Voice: ON | Proactive: BALANCED
+
+🗣️  MintPilot User Interaction Settings & Preferences:
+  • Active Modality:       HYBRID (text, voice, hybrid, hud, notification, cli)
+  • Communication Style:   CONCISE (concise, normal, detailed, security_auditor)
+  • Proactivity Level:     BALANCED (reactive, balanced, proactive)
+  • Spoken Voice Feedback: ENABLED (Engine: spd-say, Speed: 165 wpm)
+  • Desktop Notifications: ENABLED (Urgency: normal)
+  • Floating HUD Hotkey:   <Super>space (Centered Spotlight Raycast-style)
+```
+
+#### Natural Language Interaction Reconfiguration:
+- Input: `concise mode` $\rightarrow$ Output: `Communication style set to Concise. Terse one-line confirmations enabled.`
+- Input: `enable voice` $\rightarrow$ Output: `Voice interaction enabled. MintPilot will speak replies aloud using offline speech synthesis.`
+- Input: `be detailed` $\rightarrow$ Output: `Communication style set to Detailed Mentor. Deep explanations and underlying system commands will be shown.`
+- Input: `be proactive` $\rightarrow$ Output: `Proactivity level set to Proactive Ambient Copilot. MintPilot will actively monitor and suggest system optimizations.`
+
+### 3. Online Simulator Interaction Center (Window 7: `#win-interaction`)
+- **Desktop Icon**: "🗣️ Interaction" opens the control center.
+- **Top Header Pills**: Real-time interactive badges for `🎙️ Voice: OFF`, `💬 Style: Normal`, and `🔔 Proactive: Balanced` with 1-click toggling.
+- **Live Web Speech Audio**: Integrated with the Web Speech API (`window.speechSynthesis`) so users can test voice replies directly in their browser.
+- Deployed at: [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/)
+
