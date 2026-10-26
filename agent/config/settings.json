@@ -18,5 +18,28 @@
   "hotkeys": {
     "hud_summon": "<Super>space",
     "turbo_toggle": "<Super><Alt>t"
+  },
+  "interaction": {
+    "modality": "hybrid",
+    "verbosity": "detailed",
+    "proactivity": "proactive",
+    "voice": {
+      "enabled": true,
+      "engine": "spd-say",
+      "speed": 165,
+      "pitch": 0,
+      "volume": 100,
+      "auto_listen_wake_word": false
+    },
+    "notifications": {
+      "enabled": true,
+      "urgency_threshold": "normal",
+      "sound": false
+    },
+    "hud": {
+      "hotkey": "<Super>space",
+      "keep_centered": true,
+      "auto_hide_sec": 3
+    }
   }
 }
