@@ -1,0 +1,14 @@
+[Unit]
+Description=Antigravity Conversation & Mint Agent OS GitHub Auto-Sync Service
+After=network.target
+
+[Service]
+Type=simple
+User=alpesh
+WorkingDirectory=/home/alpesh/mint-agent-os
+ExecStart=/usr/bin/python3 /home/alpesh/mint-agent-os/sync/sync_daemon.py --interval 30
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
