@@ -92,6 +92,10 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
                 "windows": windows,
                 "security": security,
                 "interaction": self.brain.interaction.get_status(),
+                "marvel": {
+                    "active": self.brain.marvel.get_active_persona(),
+                    "personas": self.brain.marvel.list_personas()
+                },
                 "pending_approvals": list(self.brain.permissions.pending_approvals.values())
             })
             return
@@ -141,6 +145,15 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
         # 10. User Interaction Settings & Modalities: GET /api/interaction
         if path == "/api/interaction":
             self._send_json(self.brain.interaction.get_status())
+            return
+
+        # 11. Marvel Series AI Agents & Stark Protocols: GET /api/marvel
+        if path == "/api/marvel":
+            self._send_json({
+                "active_persona": self.brain.marvel.get_active_persona(),
+                "personas": self.brain.marvel.list_personas(),
+                "protocols": self.brain.marvel.list_protocols()
+            })
             return
 
         # 11. OpenAI-Compatible: GET /v1/models
