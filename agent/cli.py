@@ -67,10 +67,66 @@ def main():
     parser.add_argument("--deploy-decoys", action="store_true", help="Deploy honeypot canary decoy credentials and files")
     parser.add_argument("--self-check", action="store_true", help="Check agent self-countering circuit breaker and dead-man switch status")
     parser.add_argument("--rollback", action="store_true", help="Roll back the agent's last changes to previous snapshot")
+    parser.add_argument("--list-models", action="store_true", help="List all available offline SLMs and online Cloud LLMs")
+    parser.add_argument("--set-model", type=str, help="Switch active AI model (e.g. 'qwen2.5-1.5b', 'gemini-2.5-flash', 'gpt-4o')")
+    parser.add_argument("--set-key", nargs=2, metavar=("PROVIDER", "KEY"), help="Store API key for online provider (e.g. gemini, openai, claude)")
+    parser.add_argument("--check-update", action="store_true", help="Check upstream GitHub repository for MintPilot Agent OS updates")
+    parser.add_argument("--update-os", action="store_true", help="Perform in-place upgrade of MintPilot Agent OS from GitHub")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
+
+    if args.list_models:
+        print_banner(brain)
+        data = brain.models.list_models()
+        active = data["active_model"]
+        print(f"Active AI: \033[1;32m{active['name']}\033[0m [Provider: \033[1;36m{active['provider'].upper()}\033[0m]")
+        print("\n\033[1;32m--- OFFLINE LOCAL SLM MODELS (Zero Internet Required) ---\033[0m")
+        for m in data["offline_models"]:
+            mark = "★ (ACTIVE)" if m["is_active"] else " "
+            print(f"  {mark} \033[1;37m{m['id']:<26}\033[0m | RAM: {m['ram_required_mb']}MB | {m['name']}")
+        print("\n\033[1;34m--- ONLINE CLOUD AI MODELS (Frontier Intelligence) ---\033[0m")
+        for m in data["online_models"]:
+            mark = "★ (ACTIVE)" if m["is_active"] else " "
+            key_tag = "\033[1;32m[Key Configured]\033[0m" if m["has_api_key"] else "\033[1;33m[Key Missing]\033[0m"
+            print(f"  {mark} \033[1;37m{m['id']:<26}\033[0m | Speed: {m['speed']:<16} | {key_tag} {m['name']}")
+        print("\nTo switch: mint-agent --set-model <MODEL_ID>")
+        return
+
+    if args.set_model:
+        print_banner(brain)
+        res = brain.models.set_model(args.set_model)
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
+        return
+
+    if args.set_key:
+        provider, key = args.set_key
+        res = brain.models.set_api_key(provider, key)
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
+        return
+
+    if args.check_update:
+        print_banner(brain)
+        print("🔍 Checking GitHub repository for MintPilot Agent OS updates...")
+        res = brain.updater.check_for_updates()
+        if res.get("update_available"):
+            print(f"🚀 \033[1;33m{res['message']}\033[0m")
+            print(f"Local Commit: {res.get('local_commit')} -> Remote: {res.get('remote_commit')}")
+            print("Run 'mint-agent --update-os' to apply.")
+        else:
+            print(f"✓ \033[1;32m{res.get('message', 'Up to date')}\033[0m (Commit: {res.get('local_commit')})")
+        return
+
+    if args.update_os:
+        print_banner(brain)
+        print("🔄 Performing in-place upgrade of MintPilot Agent OS from GitHub...")
+        res = brain.updater.perform_update()
+        if res.get("status") == "success":
+            print(f"🎉 \033[1;32m{res['message']}\033[0m (Commit: {res.get('current_commit')})")
+        else:
+            print(f"❌ \033[1;31mUpgrade failed: {res.get('error')}\033[0m")
+        return
 
     if args.counter_threats:
         print_banner(brain)
