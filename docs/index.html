@@ -1438,6 +1438,227 @@ mint-agent --replica all</pre>
       </div>
     </div>
 
+    <!-- ==================== WINDOW 10: 🎩 HAROLD OS AGENT-NATIVE WORKSTATION ==================== -->
+    <div id="win-harold-os" class="window" data-icon="🎩" style="top: 30px; left: 140px; width: 880px; height: 600px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🎩</span> <span>Harold OS Agent-Native Workstation — iamlukethedev/Herald-OS Adapted for Linux Mint</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-harold-os')" title="Minimize">—</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-harold-os')" title="Maximize">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-harold-os')" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="interact-hub" style="background:#0b0f14; padding:16px;">
+          
+          <!-- Hero Banner -->
+          <div style="background: linear-gradient(135deg, #162436 0%, #0c1219 100%); border: 1px solid #3498db; border-radius: 8px; padding: 14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                🎩 HAROLD OS AGENT-NATIVE WORKSTATION
+                <span style="font-size:0.7rem; background:#3498db; color:#fff; padding:1px 6px; border-radius:8px; font-weight:bold;">9 SKILLS ACTIVE</span>
+              </h3>
+              <p style="margin:2px 0 0 0; font-size:0.78rem; color:#dcdde1;">Adapted from iamlukethedev/Herald-OS • Rebuilt for Linux Mint 22.3 Cinnamon with 1GB RAM Optimization</p>
+              <div style="display:flex; gap:6px; margin-top:5px; flex-wrap:wrap;">
+                <span class="dl-badge" style="border-color:#3498db; color:#3498db;">🖥️ Diagnostics & Coredumps</span>
+                <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">📄 Smart Invoices & Undo</span>
+                <span class="dl-badge" style="border-color:#9b59b6; color:#9b59b6;">🎨 Cinnamon Desktop Tailor</span>
+                <span class="dl-badge" style="border-color:#f1c40f; color:#f1c40f;">🧮 Sentence Math & Docs</span>
+                <span class="dl-badge" style="border-color:#00f5d4; color:#00f5d4;">⚡ Sub-35MB RAM Footprint</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="dl-btn-primary" style="background:#3498db; color:#fff; font-weight:bold;" onclick="AgentSimulator.runHaroldCrash()">
+                🔍 Diagnose Crash
+              </button>
+              <button class="dl-btn-secondary" style="border-color:#2ecc71; color:#2ecc71;" onclick="AgentSimulator.runHaroldFiler()">
+                📄 Smart File Invoices
+              </button>
+            </div>
+          </div>
+
+          <!-- Navigation Tabs -->
+          <div class="dl-tab-nav" style="margin-top:12px; margin-bottom:12px; display:flex; gap:6px; border-bottom:1px solid #1a2634; padding-bottom:6px; flex-wrap:wrap;">
+            <button class="dl-tab-btn active" onclick="AgentSimulator.switchHaroldTab('harold-tab-crash', this)">🔍 1. Crash Diagnostics</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchHaroldTab('harold-tab-filer', this)">📄 2. Document Filer & Invoices</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchHaroldTab('harold-tab-apps', this)">🎨 3. Tailor, Calc, Canvas, Sheets & Docs</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchHaroldTab('harold-tab-observer', this)">📜 4. Security Audit & Process Observer</button>
+          </div>
+
+          <!-- ==================== TAB 1: CRASH DIAGNOSTICS ==================== -->
+          <div id="harold-tab-crash" class="dl-tab-pane active" style="display:flex; gap:12px;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+              <div style="background:#10151c; border:1px solid #1f2937; border-radius:6px; padding:12px;">
+                <label style="font-size:0.76rem; color:#888; font-weight:bold; display:block; margin-bottom:5px;">DIAGNOSE CRASH TARGET (OPTIONAL BINARY / APP):</label>
+                <input type="text" id="haroldCrashInput" value="cinnamon" placeholder="e.g. cinnamon, nemo, firefox, code" style="width:100%; box-sizing:border-box; background:#0b0e12; border:1px solid #33404c; color:#fff; padding:7px 10px; border-radius:5px; font-size:0.8rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+                  <button class="dl-btn-primary" style="background:#e74c3c; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldCrash()">
+                    💥 Diagnose Latest Crash
+                  </button>
+                  <button class="dl-btn-primary" style="background:#3498db; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldOOMCheck()">
+                    🛡️ Inspect OOM / Signal 9
+                  </button>
+                </div>
+              </div>
+
+              <!-- Crash Feature Cards -->
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="background:#0e1319; border:1px solid #1c2633; border-radius:5px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; font-size:0.76rem;">
+                  <div><strong style="color:#e74c3c;">SIGSEGV (Signal 11)</strong> <span style="color:#aaa;">Null pointer dereference & memory violation analysis</span></div>
+                  <span class="dl-badge" style="border-color:#e74c3c; color:#e74c3c;">systemd-coredump</span>
+                </div>
+                <div style="background:#0e1319; border:1px solid #1c2633; border-radius:5px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; font-size:0.76rem;">
+                  <div><strong style="color:#f39c12;">SIGKILL / OOM</strong> <span style="color:#aaa;">Kernel Out-Of-Memory termination prevention & ZRAM advice</span></div>
+                  <span class="dl-badge" style="border-color:#f39c12; color:#f39c12;">1GB PC Protect</span>
+                </div>
+                <div style="background:#0e1319; border:1px solid #1c2633; border-radius:5px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; font-size:0.76rem;">
+                  <div><strong style="color:#2ecc71;">Root-Cause Synthesis</strong> <span style="color:#aaa;">Actionable terminal fixes and automated apt package repair</span></div>
+                  <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">Autonomous RCA</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminal Output Telemetry -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1b2633; border-radius:6px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #17222e; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#3498db; font-family:monospace;">CRASH DIAGNOSTIC TELEMETRY</strong>
+                <span id="haroldCrashStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">STANDBY</span>
+              </div>
+              <div id="haroldCrashOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:350px;">
+                <span style="color:#888;">Click "Diagnose Latest Crash" or "Inspect OOM" to evaluate core dumps and system journals...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 2: DOCUMENT FILER ==================== -->
+          <div id="harold-tab-filer" class="dl-tab-pane" style="display:none; gap:12px;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+              <div style="background:#10151c; border:1px solid #1f2937; border-radius:6px; padding:12px;">
+                <label style="font-size:0.76rem; color:#888; font-weight:bold; display:block; margin-bottom:5px;">SOURCE SCAN FOLDER:</label>
+                <input type="text" id="haroldFilerDirInput" value="~/Downloads" style="width:100%; box-sizing:border-box; background:#0b0e12; border:1px solid #33404c; color:#fff; padding:7px 10px; border-radius:5px; font-size:0.8rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+                  <button class="dl-btn-primary" style="background:#2ecc71; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldFiler()">
+                    📂 Scan & Plan Filing
+                  </button>
+                  <button class="dl-btn-primary" style="background:#e67e22; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldUndo()">
+                    ↩️ Undo Last Filing
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rules & Supported Documents -->
+              <div style="background:#0e1319; border:1px solid #1c2633; border-radius:5px; padding:10px; font-size:0.76rem;">
+                <strong style="color:#2ecc71; display:block; margin-bottom:6px;">Smart Extraction & Renaming Rules:</strong>
+                <ul style="margin:0; padding-left:18px; color:#aaa; line-height:1.5;">
+                  <li>Invoices & Receipts: <code style="color:#00f5d4;">YYYY-MM-DD-Vendor-Invoice.pdf</code></li>
+                  <li>Legal Contracts: <code style="color:#a29bfe;">YYYY-MM-DD-Client-Contract.docx</code></li>
+                  <li>Statements: <code style="color:#f1c40f;">YYYY-MM-DD-Institution-Financial.pdf</code></li>
+                  <li>Undo Safety: Append-only <code style="color:#e67e22;">filing_undo.json</code> enables instant atomic revert.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Filer Output Log -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1b2633; border-radius:6px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #17222e; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#2ecc71; font-family:monospace;">SMART FILING PLAN & INVOICES</strong>
+                <span id="haroldFilerStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">READY</span>
+              </div>
+              <div id="haroldFilerOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:350px;">
+                <span style="color:#888;">Click "Scan & Plan Filing" to simulate document recognition, vendor extraction, and canonical year-based filing...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 3: TAILOR, CALC, CANVAS, SHEETS, DOCS ==================== -->
+          <div id="harold-tab-apps" class="dl-tab-pane" style="display:none; gap:12px;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+              <div style="background:#10151c; border:1px solid #1f2937; border-radius:6px; padding:10px;">
+                <strong style="color:#9b59b6; font-size:0.78rem;">🎨 Desktop Tailor Presets:</strong>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px;">
+                  <button class="dl-btn-secondary" style="border-color:#2ecc71; color:#2ecc71; font-size:0.72rem; padding:4px;" onclick="AgentSimulator.runHaroldTailor('nano-minimal')">⚡ 1GB Nano Minimal</button>
+                  <button class="dl-btn-secondary" style="border-color:#00f5d4; color:#00f5d4; font-size:0.72rem; padding:4px;" onclick="AgentSimulator.runHaroldTailor('arc-cyan')">💠 Arc Reactor Cyan</button>
+                  <button class="dl-btn-secondary" style="border-color:#87bd5c; color:#87bd5c; font-size:0.72rem; padding:4px;" onclick="AgentSimulator.runHaroldTailor('mint-classic')">🍃 Mint-Y Classic</button>
+                  <button class="dl-btn-secondary" style="border-color:#f1c40f; color:#f1c40f; font-size:0.72rem; padding:4px;" onclick="AgentSimulator.runHaroldTailor('high-contrast')">👁️ High Contrast</button>
+                </div>
+              </div>
+
+              <div style="background:#10151c; border:1px solid #1f2937; border-radius:6px; padding:10px;">
+                <strong style="color:#f1c40f; font-size:0.78rem;">🧮 Harold Office Skills Suite:</strong>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px;">
+                  <button class="dl-btn-primary" style="background:#f1c40f; color:#000; font-weight:bold; font-size:0.72rem; padding:5px;" onclick="AgentSimulator.runHaroldCalc()">🧮 Sentence Math</button>
+                  <button class="dl-btn-primary" style="background:#3498db; color:#fff; font-weight:bold; font-size:0.72rem; padding:5px;" onclick="AgentSimulator.runHaroldCanvas()">🖼️ System Canvas</button>
+                  <button class="dl-btn-primary" style="background:#2ecc71; color:#000; font-weight:bold; font-size:0.72rem; padding:5px;" onclick="AgentSimulator.runHaroldSheets()">📊 CSV Sheets</button>
+                  <button class="dl-btn-primary" style="background:#e74c3c; color:#fff; font-weight:bold; font-size:0.72rem; padding:5px;" onclick="AgentSimulator.runHaroldSlides()">📽️ Presentation</button>
+                  <button class="dl-btn-primary" style="background:#a29bfe; color:#000; font-weight:bold; font-size:0.72rem; padding:5px; grid-column:span 2;" onclick="AgentSimulator.runHaroldDocs()">📝 Markdown Whitepaper</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Apps Output Log -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1b2633; border-radius:6px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #17222e; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#9b59b6; font-family:monospace;">OFFICE & TAILOR TELEMETRY</strong>
+                <span id="haroldAppsStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">STANDBY</span>
+              </div>
+              <div id="haroldAppsOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:350px;">
+                <span style="color:#888;">Select Desktop Tailor preset or launch Canvas, Sheets, Docs, Slides, or Sentence Math...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 4: AUDIT TRAIL & OBSERVER ==================== -->
+          <div id="harold-tab-observer" class="dl-tab-pane" style="display:none; gap:12px;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+              <div style="background:#10151c; border:1px solid #1f2937; border-radius:6px; padding:12px;">
+                <strong style="color:#00f5d4; font-size:0.8rem; display:block; margin-bottom:8px;">Sovereignty & Security Auditing:</strong>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <button class="dl-btn-primary" style="background:#00f5d4; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldAudit()">
+                    📜 View Security Audit Trail
+                  </button>
+                  <button class="dl-btn-secondary" style="border-color:#3498db; color:#3498db; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runHaroldObserve()">
+                    👁️ Inspect Ambient Context & Top RAM
+                  </button>
+                </div>
+              </div>
+
+              <!-- Terminal Cheatsheet -->
+              <div style="background:#0e1319; border:1px solid #1c2633; border-radius:5px; padding:10px; font-size:0.74rem;">
+                <strong style="color:#3498db;">Harold OS Terminal CLI Commands:</strong>
+                <pre style="background:#080b0f; border:1px solid #1b242e; border-radius:5px; padding:8px; color:#dcdde1; font-size:0.71rem; margin-top:6px; overflow-x:auto;">
+mint-agent --harold crash
+mint-agent --harold filer
+mint-agent --harold undo
+mint-agent --harold tailor --idea "nano minimal"
+mint-agent --harold calc --idea "25% of 1600"
+mint-agent --harold canvas
+mint-agent --harold sheets
+mint-agent --harold docs
+mint-agent --harold slides
+mint-agent --harold audit
+mint-agent --harold observe
+mint-agent --harold all</pre>
+              </div>
+            </div>
+
+            <!-- Audit Output Log -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1b2633; border-radius:6px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #17222e; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#00f5d4; font-family:monospace;">IMMUTABLE AUDIT TRAIL & OBSERVER</strong>
+                <span id="haroldObserverStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">LOGGING</span>
+              </div>
+              <div id="haroldObserverOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:350px;">
+                <span style="color:#888;">Click "View Security Audit Trail" or "Inspect Ambient Context" to view immutable activity log...</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== FLOATING HUD OVERLAY (SUPER+SPACE) ==================== -->
     <div id="hudOverlay">
       <div class="hud-input-row">
