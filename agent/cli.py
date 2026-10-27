@@ -597,13 +597,50 @@ def main():
         print(f"✓ Memory cleaned: {json.dumps(res, indent=2)}")
         return
 
+    if args.optimize_1gb:
+        print_banner(brain)
+        print("⚡ Optimizing Linux Mint & Aradhya Agent OS for 1GB RAM PC...")
+        res = brain.memory.optimize_for_1gb_pc()
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
+        print(f"Hardware Tier: \033[1;36m{res['tier']}\033[0m")
+        z = res.get("zram", {}).get("zram_stats", {})
+        z_active = "\033[1;32mACTIVE\033[0m" if z.get("active") else "\033[1;33mCONFIGURED (ZRAM)\033[0m"
+        print(f"ZRAM RAM Compression: {z_active} ({z.get('disksize_mb', 1024)}MB virtual swap, ~{z.get('compression_ratio', 2.5)}x ratio)")
+        print("\nKernel Parameters Applied:")
+        for k in res.get("kernel_tunings", []):
+            print(f"  • {k}")
+        print("\nRecommended Desktop Settings for 1GB PCs:")
+        for r in res.get("desktop_recommendations", []):
+            print(f"  ✓ {r}")
+        return
+
+    if args.zram_status:
+        print_banner(brain)
+        z = brain.memory.get_zram_stats()
+        print("📦 Linux Kernel ZRAM RAM-Compression Telemetry:\n")
+        status_str = "\033[1;32mACTIVE & COMPRESSING\033[0m" if z["active"] else "\033[1;33mINACTIVE (Run 'aradhya --optimize-1gb' to activate)\033[0m"
+        print(f"  • Status:                {status_str}")
+        print(f"  • ZRAM Disk Size:        \033[1;36m{z['disksize_mb']} MB\033[0m")
+        print(f"  • Original Uncompressed: {z['orig_data_mb']} MB")
+        print(f"  • Compressed in RAM:     {z['compr_data_mb']} MB")
+        print(f"  • Compression Ratio:     \033[1;32m{z['compression_ratio']}x\033[0m")
+        print(f"  • Net RAM Saved:         \033[1;32m+{z['memory_saved_mb']} MB\033[0m")
+        print(f"  • Algorithm:             {z['algorithm']}")
+        return
+
     if args.tier:
         print_banner(brain)
         tier_info = brain.hardware_tier
         mem_stats = brain.memory.get_memory_stats()
+        zram_info = mem_stats.get("zram", {})
         print(f"RAM Total: {mem_stats.get('total_mb')} MB | Available: {mem_stats.get('available_mb')} MB ({mem_stats.get('usage_percent')}% used)")
         print(f"Hardware Tier: \033[1;36m{tier_info['tier_name']}\033[0m")
-        print(f"Recommended Model: \033[1;33m{tier_info['recommended_model']}\033[0m")
+        print(f"Recommended AI: \033[1;33m{tier_info['recommended_model']}\033[0m")
+        if tier_info.get("is_nano_spec"):
+            print("\n\033[1;32m[Tier 0 Nano Profile Active]\033[0m")
+            print("  • Agent Model Overhead:  0 MB (Deterministic Micro-Intent Engine)")
+            print(f"  • Kernel ZRAM Active:    {zram_info.get('active', False)}")
+            print("  • Automatic Post-Action: Garbage Collection (gc.collect()) Enforced")
         return
 
     if args.prompt:
