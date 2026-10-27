@@ -113,8 +113,9 @@ def main():
     parser.add_argument("--zram-status", action="store_true", help="Display real-time Linux kernel ZRAM RAM-compression swap status and memory savings")
     parser.add_argument("--founder", type=str, nargs="?", const="board", help="Execute Jake Schincariol's Founder Skill suite (board, cfo, consumer, pricing, competitors, offer, brand, marketing, ops, plan, launch, all)")
     parser.add_argument("--replica", type=str, nargs="?", const="recon", help="Execute Jake Schincariol's Replica Clean-Room Reverse Engineering suite (recon, architect, design, build, backend, diff, test, entrepreneur, brand, launch, deploy, all)")
+    parser.add_argument("--harold", "--herald", type=str, nargs="?", const="all", help="Execute Harold OS Agent-Native Workstation suite (crash, filer, undo, tailor, calc, canvas, docs, sheets, slides, audit, observe, all)")
     parser.add_argument("--idea", type=str, help="Custom business idea or product description for Founder skills")
-    parser.add_argument("--target-app", type=str, help="Target application URL or name for Replica skills")
+    parser.add_argument("--target-app", type=str, help="Target application URL or name for Replica or Harold skills")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
