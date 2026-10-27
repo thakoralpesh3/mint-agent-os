@@ -47,9 +47,13 @@ class CrashDiagnostics:
             "timestamp": timestamp,
             "crashes_detected": 0,
             "system_health": "OPTIMAL",
+            "summary": "System integrity verified. Zero crashes or core dumps detected.",
+            "root_cause": "Nominal — Kernel and userland processes running stable.",
             "kernel_status": "Clean — Zero unhandled core dumps or kernel panics detected.",
+            "diagnostics": "Zero unhandled core dumps in systemd-coredump or kernel ring buffer.",
             "diagnostic_summary": "All Linux Mint background services, Cinnamon compositor, and user processes are operating within nominal boundaries with zero active core dumps.",
-            "recommendation": "System integrity verified. No action required."
+            "recommendation": "System integrity verified. No action required.",
+            "recommended_fix": "System is healthy. No remediation required."
         }
 
     def _check_coredumpctl(self, target_app: Optional[str] = None) -> Optional[Dict[str, Any]]:
@@ -78,8 +82,11 @@ class CrashDiagnostics:
                     "crashed_executable": exe,
                     "signal_number": sig,
                     "signal_name": sig_name,
+                    "summary": f"Crash detected in {os.path.basename(exe)} ({sig_name})",
                     "root_cause": sig_desc,
+                    "diagnostics": f"Process {os.path.basename(exe)} terminated with signal {sig} ({sig_name}).",
                     "stack_frame_hint": f"{os.path.basename(exe)} crashed during memory access. Correlated with high memory allocation or missing shared library.",
+                    "recommended_fix": f"Reinstall or verify package: 'sudo apt install --reinstall {os.path.basename(exe)}'.",
                     "remediation": [
                         f"Check if memory exceeded limits (run 'mint-agent --optimize-1gb').",
                         f"Reinstall or verify package integrity: 'sudo apt install --reinstall {os.path.basename(exe)}'.",
@@ -108,7 +115,10 @@ class CrashDiagnostics:
                         "source": "systemd-journal",
                         "raw_log": match_line,
                         "signal_name": sig_name,
+                        "summary": f"System error logged: {sig_name}",
                         "root_cause": root_cause,
+                        "diagnostics": match_line,
+                        "recommended_fix": "Activate ZRAM compressed swap to prevent process memory exhaustion.",
                         "remediation": [
                             "Activate ZRAM compression swap ('mint-agent --optimize-1gb') to prevent OOM kills on 1GB-2GB PCs.",
                             "Check for runaway memory consumption using 'mint-agent --clean-ram'."
