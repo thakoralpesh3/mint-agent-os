@@ -164,12 +164,21 @@ def main():
 
     if args.skills:
         print_banner(brain)
+        print("⚔️  \033[1;36m[1] MARVEL SERIES TACTICAL SKILLS (6 Skills):\033[0m")
         skills = brain.marvel.list_skills()
-        print("⚔️  Marvel Series Specialized Tactical Skills Matrix:\n")
         for s in skills:
             print(f"  • \033[1;36m{s['name']:<42}\033[0m [\033[1;33m{s['agent']}\033[0m]")
             print(f"    \033[1;37m{s['description']}\033[0m\n")
-        print("Run directly: aradhya --fight-pattern | aradhya --drone-strike | aradhya --cad-view")
+
+        print("💼 \033[1;32m[2] THE FOUNDER SUITE (11 Skills - Jake Schincariol):\033[0m")
+        for s in brain.founder.list_skills():
+            print(f"  • \033[1;32m{s['name']:<25}\033[0m \033[1;37m{s['desc']}\033[0m")
+        print("    \033[1;33mUsage:\033[0m mint-agent --founder [board|cfo|consumer|pricing|competitors|offer|brand|marketing|ops|plan|launch]\n")
+
+        print("🧬 \033[1;35m[3] THE REPLICA CLEAN-ROOM SUITE (11 Skills - Jake Schincariol):\033[0m")
+        for s in brain.replica.list_skills():
+            print(f"  • \033[1;35m{s['name']:<25}\033[0m \033[1;37m{s['desc']}\033[0m")
+        print("    \033[1;33mUsage:\033[0m mint-agent --replica [recon|architect|design|build|backend|diff|test|entrepreneur|brand|launch|deploy]\n")
         return
 
     if args.fight_pattern:
