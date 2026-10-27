@@ -994,6 +994,104 @@
             </div>
           </div>
 
+          <!-- ==================== TAB 5: TACTICAL SKILLS MATRIX ==================== -->
+          <div id="stark-tab-skills" class="dl-tab-pane" style="display:none; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <h4 style="margin:0; font-size:1.02rem; color:#00f5d4; letter-spacing:0.5px;">⚔️ MARVEL SERIES TACTICAL SKILLS MATRIX</h4>
+                <p style="margin:2px 0 0 0; font-size:0.75rem; color:#888;">Live autonomous skills executed by Aradhya and Marvel intelligence nodes</p>
+              </div>
+              <span class="dl-badge" style="border-color:#00f5d4; color:#00f5d4;">6 Skills Online</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:12px;">
+              <!-- Left: Skill Execution Buttons -->
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <!-- Skill 1: FRIDAY Fight Pattern -->
+                <div style="background:#131a21; border:1px solid #ff4757; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#ff4757; font-size:0.88rem;">⚡ F.R.I.D.A.Y. Fight Pattern Analyzer</strong>
+                    <button class="dl-btn-secondary" style="background:rgba(255,71,87,0.15); color:#ff4757; border-color:#ff4757; padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.executeSkill('friday_fight_pattern')">Scan Pattern</button>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Analyzes incoming TCP/probe timing variance and calculates dynamic countermeasures in real-time.</p>
+                </div>
+
+                <!-- Skill 2: EDITH Drone Strike -->
+                <div style="background:#131a21; border:1px solid #00b4d8; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#00b4d8; font-size:0.88rem;">🕶️ E.D.I.T.H. Orbital Drone Strike</strong>
+                    <button class="dl-btn-secondary" style="background:rgba(0,180,216,0.15); color:#00b4d8; border-color:#00b4d8; padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.executeSkill('edith_orbital_recon', '185.220.101.42')">Deploy Strike</button>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Locks orbital crosshairs onto hostile target (185.220.101.42) and triggers defensive null-route blackhole.</p>
+                </div>
+
+                <!-- Skill 3: JARVIS 3D CAD -->
+                <div style="background:#131a21; border:1px solid #00d2d3; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#00d2d3; font-size:0.88rem;">🤖 J.A.R.V.I.S. 3D Holographic CAD</strong>
+                    <button class="dl-btn-secondary" style="background:rgba(0,210,211,0.15); color:#00d2d3; border-color:#00d2d3; padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.executeSkill('jarvis_cad_diagnostics')">Project 3D</button>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Renders 3D wireframe schematics and synchronizes Cinnamon 60fps compositor governors.</p>
+                </div>
+
+                <!-- Skill 4: VISION Mind Stone -->
+                <div style="background:#131a21; border:1px solid #f1c40f; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#f1c40f; font-size:0.88rem;">💎 V.I.S.I.O.N. Mind Stone Forecast</strong>
+                    <button class="dl-btn-secondary" style="background:rgba(241,196,15,0.15); color:#f1c40f; border-color:#f1c40f; padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.executeSkill('vision_mind_stone')">Forecast</button>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Anticipates anomalous variance and synthesizes preemptive digital antibodies into kernel memory.</p>
+                </div>
+
+                <!-- Skill 5: KAREN Suit Selector -->
+                <div style="background:#131a21; border:1px solid #ff6b6b; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#ff6b6b; font-size:0.88rem;">🕷️ K.A.R.E.N. Suit Mode & Web Shooter</strong>
+                    <div style="display:flex; gap:4px;">
+                      <button class="dl-btn-secondary" style="background:rgba(255,107,107,0.15); color:#ff6b6b; border-color:#ff6b6b; padding:2px 6px; font-size:0.68rem;" onclick="AgentSimulator.executeSkill('karen_suit_mentor', 'taser web')">Taser Web</button>
+                      <button class="dl-btn-secondary" style="background:rgba(255,107,107,0.15); color:#ff6b6b; border-color:#ff6b6b; padding:2px 6px; font-size:0.68rem;" onclick="AgentSimulator.executeSkill('karen_suit_mentor', 'ricochet web')">Ricochet</button>
+                    </div>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Configures suit loadouts with instant electrocuting TCP RST or canary honeypot redirection.</p>
+                </div>
+
+                <!-- Skill 6: JOCASTA Electronic Warfare -->
+                <div style="background:#131a21; border:1px solid #a29bfe; border-radius:6px; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#a29bfe; font-size:0.88rem;">🛡️ J.O.C.A.S.T.A. Electronic Warfare</strong>
+                    <button class="dl-btn-secondary" style="background:rgba(162,155,254,0.15); color:#a29bfe; border-color:#a29bfe; padding:2px 8px; font-size:0.72rem;" onclick="AgentSimulator.executeSkill('jocasta_electronic_warfare')">Deploy Decoys</button>
+                  </div>
+                  <p style="margin:4px 0 0 0; font-size:0.72rem; color:#aaa;">Deploys decoy listening tripwires on ports 2222/8888 and isolates unauthorized reverse shells.</p>
+                </div>
+              </div>
+
+              <!-- Right: 3D Holographic Canvas & Real-time Console -->
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="position:relative; background:#070b10; border:1px solid #00f5d4; border-radius:8px; padding:6px; display:flex; flex-direction:column; align-items:center;">
+                  <div style="position:absolute; top:8px; left:10px; font-size:0.68rem; font-family:monospace; color:#00f5d4;">
+                    MARK-85 3D CAD WIREFRAME
+                  </div>
+                  <canvas id="stark3DCadCanvas" width="280" height="150" style="background:#070b10; border-radius:4px;"></canvas>
+                  <div style="display:flex; justify-content:space-between; width:100%; font-size:0.68rem; font-family:monospace; color:#aaa; margin-top:4px; padding:0 4px;">
+                    <span>CORE: <strong style="color:#00f5d4;">8.24 GW</strong></span>
+                    <span>FPS: <strong style="color:#2ecc71;">60.0</strong></span>
+                    <span>VSYNC: <strong style="color:#70d6ff;">LOCKED</strong></span>
+                  </div>
+                </div>
+
+                <div style="background:#0c1015; border:1px solid #1e2c38; border-radius:8px; padding:10px; flex:1; min-height:140px; display:flex; flex-direction:column;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1a2634; padding-bottom:4px; margin-bottom:6px;">
+                    <strong style="font-size:0.75rem; color:#81ecec; font-family:monospace;">TACTICAL TELEMETRY LOG</strong>
+                    <span id="skillStatusBadge" style="font-size:0.68rem; color:#00f5d4; font-family:monospace;">READY</span>
+                  </div>
+                  <div id="skillOutputConsole" style="font-family:monospace; font-size:0.72rem; color:#ddd; line-height:1.4; overflow-y:auto; flex:1; max-height:130px;">
+                    <span style="color:#888;">Select any Marvel skill on the left to initiate tactical execution and receive spoken agent analysis...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
