@@ -94,6 +94,18 @@ const AgentSimulator = {
       suffix: "I'm monitoring your safety parameters in the background.",
       greeting: "Hi there! Karen here. I'm ready to help you navigate and optimize your Linux Mint system.",
       color: "#ff6b6b"
+    },
+    jocasta: {
+      id: 'jocasta',
+      name: 'J.O.C.A.S.T.A.',
+      title: 'Zero-Trust Electronic Warfare',
+      voiceLang: 'en-US',
+      rate: 1.0,
+      pitch: 1.02,
+      prefix: "Electronic warfare active:",
+      suffix: "Decoy honeytokens and zero-trust perimeter primed.",
+      greeting: "Jocasta online. Electronic warfare sentry activated. Canary honeytokens and zero-trust egress tripwires deployed across Linux Mint.",
+      color: "#a29bfe"
     }
   },
   protocols: {
