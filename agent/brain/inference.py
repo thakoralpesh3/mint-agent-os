@@ -90,7 +90,7 @@ class AgentBrain:
         p = prompt.strip().lower()
 
         # Step A: Name-based Marvel Agent Invocation (e.g. "Aradhya, scan threats", "Jarvis, status")
-        marvel_prefix_match = re.match(r"^(aradhya|jarvis|friday|edith|vision|karen)[,\s]+(.+)$", p)
+        marvel_prefix_match = re.match(r"^(aradhya|jarvis|friday|edith|vision|karen|jocasta)[,\s]+(.+)$", p)
         if marvel_prefix_match:
             invoked_persona = marvel_prefix_match.group(1)
             self.marvel.set_persona(invoked_persona)
@@ -133,11 +133,15 @@ class AgentBrain:
             res = self.marvel.set_persona("karen")
             return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
 
+        if any(w in p for w in ["switch to jocasta", "activate jocasta", "use jocasta", "load jocasta"]):
+            res = self.marvel.set_persona("jocasta")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
+
         if any(w in p for w in ["list personas", "show personas", "marvel agents", "stark agents", "available agents"]):
             personas = self.marvel.list_personas()
             active = self.marvel.get_active_persona()
             return {
-                "thought": f"Active Agent: {active['name']}. Available Marvel series agents: J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., and K.A.R.E.N.",
+                "thought": f"Active Agent: {active['name']}. Available Marvel series agents: J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., K.A.R.E.N., and J.O.C.A.S.T.A.",
                 "result": {"active_agent": active["name"], "personas": personas}
             }
 
