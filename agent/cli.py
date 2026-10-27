@@ -20,6 +20,11 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from agent.brain.inference import AgentBrain
 
+try:
+    from agent.core.stark_sfx import stark_sfx
+except ImportError:
+    stark_sfx = None
+
 
 def print_banner(brain: AgentBrain):
     mode_color = "\033[1;31m[TURBO]\033[0m" if brain.permissions.is_turbo() else "\033[1;33m[SAFE]\033[0m"
@@ -27,11 +32,11 @@ def print_banner(brain: AgentBrain):
     marvel_p = brain.marvel.get_active_persona()
     voice_str = "\033[1;32mON\033[0m" if istat['voice']['enabled'] else "\033[1;30mOFF\033[0m"
     print(f"""
-\033[1;32m╔═══════════════════════════════════════════════════════════════╗
-║          🍃 MINTPILOT CYBER DEFENSE & AI CONTROLLER           ║
-║       Autonomous Offline Security Guardian for Linux Mint     ║
+\033[1;36m╔═══════════════════════════════════════════════════════════════╗
+║         🌸 ARADHYA AI AGENT OS & CYBER DEFENSE NETWORK        ║
+║   Autonomous Marvel-Class Sovereign Intelligence (Linux Mint) ║
 ╚═══════════════════════════════════════════════════════════════╝\033[0m
-  Marvel Agent: \033[1;36m{marvel_p['name']}\033[0m ({marvel_p['title']})
+  Active Agent: \033[1;32m{marvel_p['name']}\033[0m ({marvel_p['title']})
   Mode: {mode_color} | Hardware Tier: \033[1;36m{brain.hardware_tier['tier_name']}\033[0m
   Interaction: \033[1;35m{istat['modality'].upper()}\033[0m | Style: \033[1;36m{istat['verbosity'].upper()}\033[0m | Voice: {voice_str} | Proactive: \033[1;33m{istat['proactivity'].upper()}\033[0m
 """)
@@ -57,13 +62,13 @@ def run_single(brain: AgentBrain, prompt: str, voice: bool = False, prompt_cli: 
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MintPilot Offline Laptop Controller & Security Guardian")
+    parser = argparse.ArgumentParser(description="Aradhya AI Agent OS - Autonomous Controller & Marvel Cyber Defense Network")
     parser.add_argument("prompt", nargs="*", help="Natural language command")
     parser.add_argument("-i", "--interactive", action="store_true", help="Launch interactive REPL session")
     parser.add_argument("-v", "--voice", action="store_true", help="Enable spoken voice reply")
     parser.add_argument("--turbo", action="store_true", help="Execute in unrestricted Antigravity Turbo Mode (no permission prompts)")
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
-    parser.add_argument("--persona", type=str, choices=["jarvis", "friday", "edith", "vision", "karen"], help="Switch Marvel AI Agent persona (Jarvis, Friday, Edith, Vision, Karen)")
+    parser.add_argument("--persona", type=str, choices=["aradhya", "jarvis", "friday", "edith", "vision", "karen"], help="Switch Marvel AI Agent persona (Aradhya, Jarvis, Friday, Edith, Vision, Karen)")
     parser.add_argument("--protocol", type=str, help="Execute Marvel Stark Protocol (e.g. 'house party', 'clean slate', 'veronica', 'instant kill', 'barn door')")
     parser.add_argument("--house-party", action="store_true", help="Execute House Party Protocol: Multi-agent 5-guardian coordinated cross-talk sweep")
     parser.add_argument("--edith-scan", action="store_true", help="Execute E.D.I.T.H. Orbital Tactical Grid Scan across ports and processes")
@@ -93,6 +98,10 @@ def main():
     parser.add_argument("--immune-status", action="store_true", help="Display Digital Immune Memory, attack fingerprints, active antibodies, and resilience score")
     parser.add_argument("--harden-future", action="store_true", help="Synthesize antibodies and enforce kernel network defenses against future attacks")
     parser.add_argument("--defcon", action="store_true", help="Display active dynamic DEFCON threat escalation posture")
+    parser.add_argument("--theatre", "--house-party-theatre", action="store_true", help="Execute cinematic Coordinated Multi-Agent Theatre mission dialogue")
+    parser.add_argument("--hud", action="store_true", help="Launch Iron Man Visor Tactical HUD with targeting reticle and live telemetry")
+    parser.add_argument("--sfx", type=str, choices=["repulsor", "lock", "chime", "neutralized", "alarm"], help="Play Stark Sound Effect via PulseAudio/PipeWire")
+    parser.add_argument("--proactive-check", action="store_true", help="Run proactive ambient system monitoring for thermal, memory, and socket warnings")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
@@ -167,6 +176,82 @@ def main():
             print(f"    Target: {t['entity']}")
             print(f"    Classification: {t['classification']}\n")
         print(f"\033[1;34m[E.D.I.T.H.]\033[0m {res['thought']}")
+        return
+
+    if args.sfx:
+        if stark_sfx:
+            print(f"\033[1;36m⚡ Playing Stark SFX:\033[0m {args.sfx}...")
+            stark_sfx.play_by_name(args.sfx, async_play=False)
+            print("\033[1;32m✓ Complete.\033[0m")
+        else:
+            print("\033[1;31m✗ Stark SFX Engine unavailable.\033[0m")
+        return
+
+    if args.theatre:
+        print_banner(brain)
+        theatre = brain.marvel.get_coordinated_multi_agent_theatre()
+        print("\033[1;36m╔═══════════════════════════════════════════════════════════════╗\033[0m")
+        print("\033[1;36m║     ⚡ STARK INDUSTRIES: COORDINATED MULTI-AGENT THEATRE     ║\033[0m")
+        print("\033[1;36m║         Live Interactive Defense & Countermeasure Mission     ║\033[0m")
+        print("\033[1;36m╚═══════════════════════════════════════════════════════════════╝\033[0m\n")
+        import time
+        for turn in theatre:
+            if stark_sfx and turn.get("sfx"):
+                stark_sfx.play_by_name(turn["sfx"], async_play=True)
+            print(f"  \033[1;33m[STEP {turn['step']}]\033[0m \033[1;36m{turn['agent']}\033[0m — \033[1;37m{turn['role']}\033[0m")
+            print(f"    \033[1;32mAction:\033[0m {turn['action']}")
+            print(f"    \033[1;37m\"{turn['speech']}\"\033[0m\n")
+            if brain.interaction.voice_settings.get("enabled"):
+                brain.voice.speak(turn['speech'])
+            time.sleep(0.4)
+        print("\033[1;32m✓ Mission Accomplished. All 5 Marvel Series AI Agents deployed in harmony.\033[0m")
+        return
+
+    if args.hud:
+        print_banner(brain)
+        print("""\033[1;36m╔══════════════════════════════════════════════════════════════════════════╗
+║               🕶️  STARK INDUSTRIES IRON MAN VISOR HUD                     ║
+║                       MARK 85 TACTICAL AR MATRIX                         ║
+╚══════════════════════════════════════════════════════════════════════════╝\033[0m
+       \033[1;33m┌─── NORTH 350° ───┐\033[0m             \033[1;32m[TELEMETRY CORE: ONLINE]\033[0m
+  \033[1;36m[ARC REACTOR]\033[0m                       \033[1;36m[TARGET MATRIX]\033[0m
+  Output:  8.24 GW                      Lock: [TARGET-EDITH-01]
+  Temp:    38.4 °C                      Type: Socket 0.0.0.0:8080
+  Status:  100% NOMINAL                 Risk: ELEVATED (78%)
+             \\                             /
+              \\                           /
+               \033[1;31m┌─── RETICLE LOCK-ON ───┐\033[0m
+               │       \033[1;33m+  [+][+]  +\033[0m       │
+               │   \033[1;36m<<  TARGET LOCKED  >>\033[0m  │
+               │       \033[1;33m+  [+][+]  +\033[0m       │
+               \033[1;31m└── RANGE: 0.42 METERS ──┘\033[0m
+              /                           \\
+             /                             \\
+  \033[1;35m[SUIT ARMOR & KERNEL]\033[0m                 \033[1;33m[SATELLITE SENTRY]\033[0m
+  Cinnamon Compositor: 60.0 FPS         Uplink: STARK-ORBITAL-7
+  Swappiness:          10 (Butter-Smooth) Grid:  ACTIVE AR TARGETING
+  Active Defense:      INSTANT KILL READY Mode:  PERIMETER ENFORCEMENT
+
+\033[1;32m✓ Press 'H' in WebUI / Online Simulator for the Fullscreen Animated Visor HUD.\033[0m""")
+        if stark_sfx:
+            stark_sfx.play_target_lock()
+        return
+
+    if args.proactive_check:
+        print_banner(brain)
+        print("🔍 Scanning system telemetry for proactive Stark AI interventions...")
+        interventions = brain.marvel.check_proactive_interventions()
+        if not interventions:
+            print("\033[1;32m✓ All system parameters nominal. No proactive warnings needed.\033[0m")
+        else:
+            print(f"\033[1;33m⚡ {len(interventions)} Proactive Stark Interventions Detected:\033[0m\n")
+            for item in interventions:
+                col = "\033[1;31m" if item["severity"] == "CRITICAL" else "\033[1;33m"
+                print(f"  {col}[{item['severity']}]\033[0m \033[1;36m{item['agent']}\033[0m ({item['type']})")
+                print(f"    \033[1;37m\"{item['speech']}\"\033[0m")
+                print(f"    Recommended Protocol: \033[1;32mmint-agent --protocol {item['recommended_action']}\033[0m\n")
+                if stark_sfx and item.get("sfx"):
+                    stark_sfx.play_by_name(item["sfx"])
         return
 
     if args.interaction:

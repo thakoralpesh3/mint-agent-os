@@ -89,8 +89,8 @@ class AgentBrain:
         """
         p = prompt.strip().lower()
 
-        # Step A: Name-based Marvel Agent Invocation (e.g. "Jarvis, scan threats", "Friday, lockdown")
-        marvel_prefix_match = re.match(r"^(jarvis|friday|edith|vision|karen)[,\s]+(.+)$", p)
+        # Step A: Name-based Marvel Agent Invocation (e.g. "Aradhya, scan threats", "Jarvis, status")
+        marvel_prefix_match = re.match(r"^(aradhya|jarvis|friday|edith|vision|karen)[,\s]+(.+)$", p)
         if marvel_prefix_match:
             invoked_persona = marvel_prefix_match.group(1)
             self.marvel.set_persona(invoked_persona)
@@ -108,6 +108,10 @@ class AgentBrain:
                     "available_agents": [a["name"] for a in self.marvel.list_personas()]
                 }
             }
+
+        if any(w in p for w in ["switch to aradhya", "activate aradhya", "use aradhya", "load aradhya", "call aradhya"]):
+            res = self.marvel.set_persona("aradhya")
+            return {"thought": self.marvel.get_active_persona()["greeting"], "result": res}
 
         if any(w in p for w in ["switch to jarvis", "activate jarvis", "use jarvis", "load jarvis"]):
             res = self.marvel.set_persona("jarvis")

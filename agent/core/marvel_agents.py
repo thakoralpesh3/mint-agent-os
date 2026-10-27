@@ -16,6 +16,14 @@ import time
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
+try:
+    from agent.core.stark_sfx import stark_sfx
+except ImportError:
+    try:
+        from stark_sfx import stark_sfx
+    except ImportError:
+        stark_sfx = None
+
 CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "settings.json"
 
 
@@ -23,6 +31,21 @@ class MarvelAgentManager:
     """Manages Marvel-inspired AI Agent personas, speech cadences, and protocol execution."""
 
     PERSONAS = {
+        "aradhya": {
+            "id": "aradhya",
+            "name": "A.R.A.D.H.Y.A.",
+            "title": "Autonomous Resilient Artificial Defense & Harmonized Yield Architecture",
+            "tagline": "Supreme Sovereign Guardian of Linux Mint. Orchestrating J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., and V.I.S.I.O.N.",
+            "theme_color": "#00f5d4",
+            "voice_pitch": 1.00,
+            "voice_speed": 160,
+            "voice_lang": "en-IN",
+            "prefix": "Aradhya OS initialized: ",
+            "suffix": " System integrity is absolute.",
+            "greeting": "Namaste. I am Aradhya, Supreme Sovereign AI Guardian of your Linux Mint Operating System. All Marvel intelligence nodes—Jarvis, Friday, Edith, and Vision—are harmonized under my command.",
+            "specialty": "Supreme Sovereign Orchestration, Multi-Agent Synthesis, Zero-Latency Threat Defense & Ethical Self-Countering",
+            "personality": "Sovereign, authoritative, serene, supreme protector, highly intelligent"
+        },
         "jarvis": {
             "id": "jarvis",
             "name": "J.A.R.V.I.S.",
@@ -141,7 +164,7 @@ class MarvelAgentManager:
 
     def __init__(self, brain=None):
         self.brain = brain
-        self.active_persona_id = "jarvis"
+        self.active_persona_id = "aradhya"
         self._load_persona_from_config()
 
     def _load_persona_from_config(self):
@@ -150,7 +173,7 @@ class MarvelAgentManager:
             try:
                 with open(CONFIG_PATH, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    persona = data.get("marvel_persona", "jarvis").lower()
+                    persona = data.get("marvel_persona", "aradhya").lower()
                     if persona in self.PERSONAS:
                         self.active_persona_id = persona
             except Exception:
@@ -188,6 +211,9 @@ class MarvelAgentManager:
         self.active_persona_id = pid
         self.save_persona_to_config()
         p = self.get_active_persona()
+
+        if stark_sfx:
+            stark_sfx.play_comms_chime()
 
         # Update voice pitch/speed if interaction manager is attached
         if self.brain and hasattr(self.brain, "interaction"):
@@ -475,4 +501,141 @@ class MarvelAgentManager:
                 "speech": "All safety checks passed! Your Linux Mint system is protected and running butter-smooth."
             }
         ]
+
+    def check_proactive_interventions(self, telemetry: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """
+        Proactively monitors system telemetry and triggers cinematic Marvel AI warnings
+        when thresholds are breached (e.g. RAM > 80%, wildcard ports, battery low, or high CPU).
+        """
+        interventions = []
+        if telemetry is None:
+            telemetry = {}
+
+        # 1. Memory Governor Warning (J.A.R.V.I.S.)
+        ram_percent = telemetry.get("ram_percent", 58.0)
+        if ram_percent > 80.0:
+            interventions.append({
+                "agent": "J.A.R.V.I.S.",
+                "type": "MEMORY_PRESSURE",
+                "severity": "WARNING",
+                "color": "#00d2d3",
+                "accent": "en-GB",
+                "speech": f"Pardon the interruption sir, but memory telemetry indicates utilization at {int(ram_percent)}%. Shall I engage the Veronica Protocol to safeguard 60fps responsiveness?",
+                "recommended_action": "veronica",
+                "sfx": "chime"
+            })
+
+        # 2. Tactical Ingress / Wildcard Socket Warning (F.R.I.D.A.Y.)
+        open_sockets = telemetry.get("open_sockets", ["0.0.0.0:8080"])
+        has_wildcard = any("0.0.0.0" in str(s) for s in open_sockets)
+        if has_wildcard:
+            interventions.append({
+                "agent": "F.R.I.D.A.Y.",
+                "type": "PORT_EXPOSURE",
+                "severity": "CRITICAL",
+                "color": "#ff4757",
+                "accent": "en-IE",
+                "speech": "Boss, heads up! Port 8080 is listening on wildcard 0.0.0.0 without TLS encryption. Combat sentries recommend severing the socket immediately.",
+                "recommended_action": "instant_kill",
+                "sfx": "lock"
+            })
+
+        # 3. Orbital Ingress Threat (E.D.I.T.H.)
+        suspicious_ips = telemetry.get("suspicious_ips", ["185.220.101.42"])
+        if suspicious_ips:
+            interventions.append({
+                "agent": "E.D.I.T.H.",
+                "type": "RECON_PROBE",
+                "severity": "ELEVATED",
+                "color": "#00b4d8",
+                "accent": "en-US",
+                "speech": f"Orbital telemetry locked onto inbound reconnaissance probe from {suspicious_ips[0]}. Perimeter drop rule primed.",
+                "recommended_action": "barn_door",
+                "sfx": "target"
+            })
+
+        # 4. Battery / Power Level (J.A.R.V.I.S.)
+        battery_percent = telemetry.get("battery_percent", 100)
+        if battery_percent < 20:
+            interventions.append({
+                "agent": "J.A.R.V.I.S.",
+                "type": "BATTERY_CRITICAL",
+                "severity": "CAUTION",
+                "color": "#f1c40f",
+                "accent": "en-GB",
+                "speech": f"Sir, auxiliary suit power is at {battery_percent}%. Recommend switching to energy-conservation governor or connecting AC adapter.",
+                "recommended_action": "clean_slate",
+                "sfx": "chime"
+            })
+
+        return interventions
+
+    def get_coordinated_multi_agent_theatre(self) -> List[Dict[str, Any]]:
+        """
+        Returns a cinematic turn-by-turn multi-agent mission script where all 5 agents
+        converse in real-time sequence to analyze, target, and neutralize a threat.
+        """
+        return [
+            {
+                "step": 1,
+                "agent": "J.A.R.V.I.S.",
+                "role": "Operating System Executive Governor",
+                "color": "#00d2d3",
+                "accent": "en-GB",
+                "speech": "Sir, perimeter sensors indicate an unauthorized socket reconnaissance attempt targeting local port 8080. Friday, take combat surveillance.",
+                "sfx": "chime",
+                "action": "TRIAGE_INCIDENT"
+            },
+            {
+                "step": 2,
+                "agent": "F.R.I.D.A.Y.",
+                "role": "Tactical Combat & Socket Watcher",
+                "color": "#ff4757",
+                "accent": "en-IE",
+                "speech": "Right on it, boss! Edith, calibrate orbital satellite grid to inbound IP 185.220.101.42.",
+                "sfx": "target",
+                "action": "DISPATCH_SATELLITE"
+            },
+            {
+                "step": 3,
+                "agent": "E.D.I.T.H.",
+                "role": "Orbital Network & Perimeter Sentry",
+                "color": "#00b4d8",
+                "accent": "en-US",
+                "speech": "Target locked in crosshairs. Inbound probe origin: Tor Exit Node. Threat index: 92%. Awaiting strike authorization.",
+                "sfx": "lock",
+                "action": "LOCK_TARGET"
+            },
+            {
+                "step": 4,
+                "agent": "F.R.I.D.A.Y.",
+                "role": "Tactical Combat & Socket Watcher",
+                "color": "#ff4757",
+                "accent": "en-IE",
+                "speech": "Authorizing Instant Kill Mode! Firing TCP RST frames and severing socket... Target neutralized, boss!",
+                "sfx": "neutralized",
+                "action": "SEVER_AND_DROP"
+            },
+            {
+                "step": 5,
+                "agent": "V.I.S.I.O.N.",
+                "role": "Digital Immune Memory Synthesizer",
+                "color": "#f1c40f",
+                "accent": "en-GB",
+                "speech": "The digital matrix is returning to harmony. Synthesizing antibody into kernel memory to immunize against this signature.",
+                "sfx": "chime",
+                "action": "SYNTHESIZE_ANTIBODY"
+            },
+            {
+                "step": 6,
+                "agent": "K.A.R.E.N.",
+                "role": "Safety Guardrails & User Copilot",
+                "color": "#ff6b6b",
+                "accent": "en-US",
+                "speech": "All clear! Safety perimeter secured and desktop compositor is holding rock-solid at 60fps.",
+                "sfx": "chime",
+                "action": "CONFIRM_60FPS"
+            }
+        ]
+
 

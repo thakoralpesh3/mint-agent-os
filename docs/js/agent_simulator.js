@@ -12,11 +12,29 @@ const AgentSimulator = {
   verbosity: 'normal',
   proactivity: 'balanced',
   modality: 'hybrid',
-  activePersona: 'jarvis',
+  activePersona: 'aradhya',
   isListening: false,
   arcPulseEnergy: 1.0,
   arcAngle: 0,
+  isStarkHUDOpen: false,
+  hudTargetX: 0,
+  hudTargetY: 0,
+  hudCurX: 0,
+  hudCurY: 0,
+  hudReticleAngle: 0,
   personas: {
+    aradhya: {
+      id: 'aradhya',
+      name: 'A.R.A.D.H.Y.A.',
+      title: 'Autonomous Resilient Artificial Defense & Harmonized Yield Architecture',
+      voiceLang: 'en-IN',
+      rate: 1.0,
+      pitch: 1.0,
+      prefix: "Aradhya OS initialized: ",
+      suffix: " System integrity is absolute.",
+      greeting: "Namaste. I am Aradhya, Supreme Sovereign AI Guardian of your Linux Mint Operating System. All Marvel intelligence nodes—Jarvis, Friday, Edith, and Vision—are harmonized under my command.",
+      color: "#00f5d4"
+    },
     jarvis: {
       id: 'jarvis',
       name: 'J.A.R.V.I.S.',
@@ -120,6 +138,7 @@ const AgentSimulator = {
     this.setupHUD();
     this.setupBrowser();
     this.initArcReactorCanvas();
+    this.initStarkHUD();
   },
 
   // ==================== BASH TERMINAL SIMULATION ====================
@@ -129,13 +148,13 @@ const AgentSimulator = {
     if (!input || !term) return;
 
     this.printTermLine("Linux Mint 22.3 (Zena) LTS [Kernel: 6.8.0-45-generic x86_64]");
-    this.printTermLine("🍃 MintPilot Cyber Defense Edition active. Type 'mint-agent --security' or 'help'.\n");
+    this.printTermLine("🌸 Aradhya AI Agent OS (Linux Mint Edition) active. Marvel Intelligence Grid online.\n   Commands: 'aradhya --hud', 'aradhya --theatre', 'aradhya --edith-scan', or 'help'.\n");
 
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const cmd = input.value.trim();
         if (!cmd) return;
-        this.printTermLine(`alpesh@mint-agent-os:~$ ${cmd}`, 'term-prompt-echo');
+        this.printTermLine(`alpesh@aradhya-os:~$ ${cmd}`, 'term-prompt-echo');
         input.value = '';
         this.executeTerminalCommand(cmd);
       }
@@ -153,7 +172,12 @@ const AgentSimulator = {
   },
 
   executeTerminalCommand(cmd) {
-    const c = cmd.toLowerCase().trim();
+    let c = cmd.toLowerCase().trim();
+    if (c.startsWith('aradhya ')) {
+      c = 'mint-agent ' + c.slice(8);
+    } else if (c === 'aradhya') {
+      c = 'mint-agent';
+    }
 
     if (c === 'clear') {
       const term = document.getElementById('termOutput');
@@ -250,15 +274,16 @@ Change Interaction Options On-The-Fly:
 ╚═══════════════════════════════════════════════════════════════╝
 Active Agent: ${p.name} (${p.title})
 
-Available Marvel Agents:
-  ${this.activePersona === 'jarvis' ? '★' : ' '} jarvis   | J.A.R.V.I.S. | en-GB | Suave British butler, system diagnostics & governor
-  ${this.activePersona === 'friday' ? '★' : ' '} friday   | F.R.I.D.A.Y. | en-IE | Irish combat copilot, rapid threat neutralization
-  ${this.activePersona === 'edith' ? '★' : ' '} edith    | E.D.I.T.H.   | en-US | Orbital network surveillance, perimeter sentry
-  ${this.activePersona === 'vision' ? '★' : ' '} vision   | V.I.S.I.O.N. | en-GB | Synthezoid digital immune memory, equilibrium
-  ${this.activePersona === 'karen' ? '★' : ' '} karen    | K.A.R.E.N.   | en-US | Friendly neighborhood mentor, tutorial & safe mode
+Available Marvel Agents & Sovereign Commander:
+  ${this.activePersona === 'aradhya' ? '★' : ' '} aradhya  | A.R.A.D.H.Y.A. | en-IN | Supreme Sovereign Guardian & Core Orchestrator
+  ${this.activePersona === 'jarvis' ? '★' : ' '} jarvis   | J.A.R.V.I.S.   | en-GB | Suave British butler, system diagnostics & governor
+  ${this.activePersona === 'friday' ? '★' : ' '} friday   | F.R.I.D.A.Y.   | en-IE | Irish combat copilot, rapid threat neutralization
+  ${this.activePersona === 'edith' ? '★' : ' '} edith    | E.D.I.T.H.     | en-US | Orbital network surveillance, perimeter sentry
+  ${this.activePersona === 'vision' ? '★' : ' '} vision   | V.I.S.I.O.N.   | en-GB | Synthezoid digital immune memory, equilibrium
+  ${this.activePersona === 'karen' ? '★' : ' '} karen    | K.A.R.E.N.     | en-US | Friendly neighborhood mentor, tutorial & safe mode
 
-Switch Persona: mint-agent --persona <name>
-Execute Protocol: mint-agent --protocol <name>`);
+Switch Persona: aradhya --persona <name>
+Execute Protocol: aradhya --protocol <name>`);
       return;
     }
 
@@ -371,6 +396,66 @@ Tactical Target Assessment Matrix:
 
 [E.D.I.T.H.] Accessing security matrix: Orbital tactical grid sweep complete. 4 tactical entities identified. Perimeter under continuous surveillance.`);
       this.speak("Accessing security matrix: Orbital tactical grid sweep complete. 4 tactical entities identified.", true);
+      return;
+    }
+
+    if (c === 'mint-agent --theatre' || c === 'mint-agent --house-party-theatre' || c === 'mint-agent -theatre') {
+      this.runMultiAgentTheatreLive();
+      return;
+    }
+
+    if (c === 'mint-agent --hud' || c === 'mint-agent -hud') {
+      this.printTermLine(`
+╔══════════════════════════════════════════════════════════════════════════╗
+║               🕶️  STARK INDUSTRIES IRON MAN VISOR HUD                     ║
+║                       MARK 85 TACTICAL AR MATRIX                         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+       ┌─── NORTH 350° ───┐             [TELEMETRY CORE: ONLINE]
+  [ARC REACTOR]                       [TARGET MATRIX]
+  Output:  8.24 GW                      Lock: [TARGET-EDITH-01]
+  Temp:    38.4 °C                      Type: Socket 0.0.0.0:8080
+  Status:  100% NOMINAL                 Risk: ELEVATED (78%)
+             \\                             /
+              \\                           /
+               ┌─── RETICLE LOCK-ON ───┐
+               │       +  [+][+]  +       │
+               │   <<  TARGET LOCKED  >>  │
+               │       +  [+][+]  +       │
+               └── RANGE: 0.42 METERS ──┘
+              /                           \\
+             /                             \\
+  [SUIT ARMOR & KERNEL]                 [SATELLITE SENTRY]
+  Cinnamon Compositor: 60.0 FPS         Uplink: STARK-ORBITAL-7
+  Swappiness:          10 (Butter-Smooth) Grid:  ACTIVE AR TARGETING
+  Active Defense:      INSTANT KILL READY Mode:  PERIMETER ENFORCEMENT
+
+✓ Visor HUD Overlay launched on screen! Press 'H' or ESC to toggle.`);
+      this.openStarkHUD();
+      return;
+    }
+
+    if (c.startsWith('mint-agent --sfx ') || c.startsWith('mint-agent -sfx ')) {
+      const parts = c.split(' ');
+      const sound = (parts[2] || 'chime').toLowerCase().trim();
+      this.playStarkSFX(sound);
+      this.printTermLine(`⚡ Playing Stark SFX: ${sound}...`);
+      return;
+    }
+
+    if (c === 'mint-agent --proactive-check' || c === 'mint-agent -proactive-check') {
+      this.printTermLine(`
+🔍 Scanning system telemetry for proactive Stark AI interventions...
+⚡ 2 Proactive Stark Interventions Detected:
+
+  [CRITICAL] F.R.I.D.A.Y. (PORT_EXPOSURE)
+    "Boss, heads up! Port 8080 is listening on wildcard 0.0.0.0 without TLS encryption. Combat sentries recommend severing the socket immediately."
+    Recommended Protocol: mint-agent --protocol instant_kill
+
+  [ELEVATED] E.D.I.T.H. (RECON_PROBE)
+    "Orbital telemetry locked onto inbound reconnaissance probe from 185.220.101.42. Perimeter drop rule primed."
+    Recommended Protocol: mint-agent --protocol barn_door`);
+      this.playStarkSFX('lock');
+      this.speak("Boss, heads up! Port 8080 is listening on wildcard 0.0.0.0. Combat sentries recommend severing the socket immediately.", true);
       return;
     }
 
@@ -693,9 +778,12 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
   processAgentIntent(prompt) {
     let p = prompt.toLowerCase().trim();
 
-    // Check for Marvel agent name prefix: "jarvis, ...", "friday, ...", "edith, ...", etc.
+    // Check for Marvel / Aradhya agent name prefix: "aradhya, ...", "jarvis, ...", "friday, ...", etc.
     let invokedPersona = null;
-    if (p.startsWith('jarvis,') || p.startsWith('jarvis ')) {
+    if (p.startsWith('aradhya,') || p.startsWith('aradhya ')) {
+      invokedPersona = 'aradhya';
+      p = p.replace(/^aradhya[, ]+/, '').trim();
+    } else if (p.startsWith('jarvis,') || p.startsWith('jarvis ')) {
       invokedPersona = 'jarvis';
       p = p.replace(/^jarvis[, ]+/, '').trim();
     } else if (p.startsWith('friday,') || p.startsWith('friday ')) {
@@ -728,7 +816,42 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       }
     }
 
-    const activeP = this.personas[this.activePersona] || this.personas.jarvis;
+    const activeP = this.personas[this.activePersona] || this.personas.aradhya || this.personas.jarvis;
+
+    // Who are you / Identity Intent
+    if (p.includes('who are you') || p.includes('what is your name') || p.includes('identify yourself') || p.includes('about aradhya')) {
+      const text = activeP.greeting;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}"`,
+        result: { active_persona: activeP.name, title: activeP.title, role: activeP.prefix },
+        latency_ms: 1.0
+      };
+    }
+
+    // Visor HUD Intent
+    if (p.includes('visor hud') || p.includes('open hud') || p.includes('iron man hud') || p.includes('hud mode') || p.includes('heads up display') || p.includes('tactical hud')) {
+      setTimeout(() => this.openStarkHUD(), 300);
+      const text = `${activeP.prefix} Activating Mark-85 Iron Man Visor HUD. Reticle targeting and satellite sentries engaged.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { hud_state: "ACTIVE", telemetry: "MARK-85", reactor_power: "8.24 GW", status: "ONLINE" },
+        latency_ms: 1.0
+      };
+    }
+
+    // Coordinated Multi-Agent Theatre Intent
+    if (p.includes('theatre') || p.includes('multi agent theatre') || p.includes('agent cross talk') || p.includes('cross talk')) {
+      setTimeout(() => this.runMultiAgentTheatreLive(), 300);
+      const text = `${activeP.prefix} Initializing Coordinated Multi-Agent Theatre mission. All 5 Marvel Series agents deployed for live mission.`;
+      this.speak(text);
+      return {
+        thought: `${activeP.name}: "${text}" ${activeP.suffix}`,
+        result: { protocol: "theatre", status: "DEPLOYED" },
+        latency_ms: 1.1
+      };
+    }
 
     // Stark Headquarters Modal
     if (p.includes('stark headquarters') || p.includes('marvel agents') || p.includes('stark ai') || p.includes('open marvel') || p.includes('marvel hub')) {
@@ -1931,6 +2054,312 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     }
 
     this.printTermLine(`[${persona.name}] "${text}"`);
+  },
+
+  // ==================== STARK WEB AUDIO SFX ENGINE ====================
+  playStarkSFX(type) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      if (type === 'repulsor' || type === 'charge') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(1900, now + 0.45);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(600, now);
+        filter.frequency.exponentialRampToValueAtTime(3200, now + 0.45);
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.52);
+      } else if (type === 'lock' || type === 'target') {
+        [0, 0.1].forEach((delay, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          const freq = idx === 0 ? 2600 : 3400;
+          osc.frequency.setValueAtTime(freq, now + delay);
+          gain.gain.setValueAtTime(0.2, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.09);
+        });
+      } else if (type === 'neutralized' || type === 'kill') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1400, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.25);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.36);
+      } else if (type === 'chime' || type === 'comms') {
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+          gain.gain.setValueAtTime(0.18, now + (idx * 0.08));
+          gain.gain.exponentialRampToValueAtTime(0.005, now + (idx * 0.08) + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + (idx * 0.08));
+          osc.stop(now + (idx * 0.08) + 0.25);
+        });
+      }
+    } catch (e) {
+      // AudioContext could be blocked by browser policy until interaction
+    }
+  },
+
+  // ==================== IRON MAN VISOR TACTICAL HUD ====================
+  initStarkHUD() {
+    window.addEventListener('keydown', (e) => {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea') return;
+
+      if (e.key === 'h' || e.key === 'H') {
+        this.toggleStarkHUD();
+      } else if (e.key === 'Escape' && this.isStarkHUDOpen) {
+        this.closeStarkHUD();
+      }
+    });
+
+    const overlay = document.getElementById('stark-hud-overlay');
+    if (overlay) {
+      overlay.addEventListener('mousemove', (e) => {
+        const rect = overlay.getBoundingClientRect();
+        this.hudTargetX = e.clientX - rect.left;
+        this.hudTargetY = e.clientY - rect.top;
+      });
+    }
+
+    const hudLoop = () => {
+      if (this.isStarkHUDOpen) {
+        this.renderHUDCanvases();
+      }
+      requestAnimationFrame(hudLoop);
+    };
+    requestAnimationFrame(hudLoop);
+  },
+
+  toggleStarkHUD() {
+    if (this.isStarkHUDOpen) {
+      this.closeStarkHUD();
+    } else {
+      this.openStarkHUD();
+    }
+  },
+
+  openStarkHUD() {
+    const overlay = document.getElementById('stark-hud-overlay');
+    if (!overlay) return;
+    overlay.style.display = 'block';
+    this.isStarkHUDOpen = true;
+    this.hudCurX = window.innerWidth / 2;
+    this.hudCurY = window.innerHeight / 2;
+    this.hudTargetX = this.hudCurX;
+    this.hudTargetY = this.hudCurY;
+
+    const p = this.personas[this.activePersona] || this.personas.aradhya || this.personas.jarvis;
+    const callout = document.getElementById('hudActivePersonaCallout');
+    if (callout) {
+      callout.innerText = `[ ${p.name} INTERCOM ONLINE ]`;
+      callout.style.color = p.color;
+      callout.style.textShadow = `0 0 8px ${p.color}`;
+    }
+
+    const transcript = document.getElementById('hudLiveTranscript');
+    if (transcript) {
+      transcript.innerText = `"${p.prefix} Mark-85 Visor HUD active. All targeting reticles, orbital satellite sentries, and Stark emergency protocols are primed."`;
+    }
+
+    this.playStarkSFX('repulsor');
+    this.speak(`${p.prefix} Mark 85 Visor HUD active. Ready for targeting.`, true);
+  },
+
+  closeStarkHUD() {
+    const overlay = document.getElementById('stark-hud-overlay');
+    if (overlay) overlay.style.display = 'none';
+    this.isStarkHUDOpen = false;
+  },
+
+  renderHUDCanvases() {
+    // 1. Render Mouse Reticle Canvas
+    const canvas = document.getElementById('starkReticleCanvas');
+    if (canvas) {
+      if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        this.hudCurX += (this.hudTargetX - this.hudCurX) * 0.15;
+        this.hudCurY += (this.hudTargetY - this.hudCurY) * 0.15;
+        this.hudReticleAngle += 0.02;
+
+        const cx = this.hudCurX;
+        const cy = this.hudCurY;
+        const p = this.personas[this.activePersona] || this.personas.aradhya || this.personas.jarvis;
+        const col = p.color || '#00f5d4';
+
+        // Outer rotating dashed targeting ring
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.hudReticleAngle);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([8, 8]);
+        ctx.beginPath();
+        ctx.arc(0, 0, 48, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner counter-rotating brackets
+        ctx.rotate(-this.hudReticleAngle * 2.5);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([12, 18]);
+        ctx.beginPath();
+        ctx.arc(0, 0, 32, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // Crosshairs
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx - 20, cy);
+        ctx.lineTo(cx - 8, cy);
+        ctx.moveTo(cx + 8, cy);
+        ctx.lineTo(cx + 20, cy);
+        ctx.moveTo(cx, cy - 20);
+        ctx.lineTo(cx, cy - 8);
+        ctx.moveTo(cx, cy + 8);
+        ctx.lineTo(cx, cy + 20);
+        ctx.stroke();
+
+        // Telemetry text beside reticle
+        ctx.fillStyle = col;
+        ctx.font = '10px monospace';
+        ctx.fillText(`X: ${Math.round(cx)}  Y: ${Math.round(cy)}`, cx + 55, cy - 12);
+        ctx.fillStyle = '#f1c40f';
+        ctx.fillText(`RNG: 0.42m [LOCKED]`, cx + 55, cy + 4);
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.fillText(`TARGET: [EDITH-01]`, cx + 55, cy + 18);
+      }
+    }
+
+    // 2. Render Audio Spectrum Canvas
+    const audioCanvas = document.getElementById('starkAudioSpectrumCanvas');
+    if (audioCanvas) {
+      const actx = audioCanvas.getContext('2d');
+      if (actx) {
+        actx.clearRect(0, 0, audioCanvas.width, audioCanvas.height);
+        const numBars = 16;
+        const barWidth = audioCanvas.width / numBars - 2;
+        const isSpeaking = window.speechSynthesis && window.speechSynthesis.speaking;
+
+        for (let i = 0; i < numBars; i++) {
+          const h = isSpeaking ? (4 + Math.random() * 18) : (2 + Math.sin(Date.now() * 0.005 + i) * 2);
+          const x = i * (barWidth + 2);
+          const y = audioCanvas.height - h;
+          actx.fillStyle = isSpeaking ? '#00f5d4' : 'rgba(0,245,212,0.3)';
+          actx.fillRect(x, y, barWidth, h);
+        }
+      }
+    }
+  },
+
+  // ==================== MULTI-AGENT THEATRE LIVE ====================
+  runMultiAgentTheatreLive() {
+    this.playStarkSFX('repulsor');
+    const theatre = [
+      {
+        agent: "A.R.A.D.H.Y.A.",
+        color: "#00f5d4",
+        speech: "Sovereign perimeter sensors triggered. Inbound reconnaissance vector identified. Jarvis, take diagnostic telemetry.",
+        sfx: "chime"
+      },
+      {
+        agent: "J.A.R.V.I.S.",
+        color: "#00d2d3",
+        speech: "Right away, Aradhya. Wildcard listener detected on local port 8080. Friday, take combat surveillance.",
+        sfx: "chime"
+      },
+      {
+        agent: "F.R.I.D.A.Y.",
+        color: "#ff4757",
+        speech: "Right on it, boss! Edith, calibrate orbital satellite grid to inbound IP 185.220.101.42.",
+        sfx: "target"
+      },
+      {
+        agent: "E.D.I.T.H.",
+        color: "#00b4d8",
+        speech: "Target locked in crosshairs. Inbound probe origin: Tor Exit Node. Threat index: 92%. Awaiting strike authorization.",
+        sfx: "lock"
+      },
+      {
+        agent: "F.R.I.D.A.Y.",
+        color: "#ff4757",
+        speech: "Authorizing Instant Kill Mode! Firing TCP RST frames and severing socket... Target neutralized, boss!",
+        sfx: "neutralized"
+      },
+      {
+        agent: "V.I.S.I.O.N.",
+        color: "#f1c40f",
+        speech: "The digital matrix is returning to harmony. Synthesizing antibody into kernel memory to immunize against this signature.",
+        sfx: "chime"
+      },
+      {
+        agent: "K.A.R.E.N.",
+        color: "#ff6b6b",
+        speech: "All clear! Safety perimeter secured and desktop compositor is holding rock-solid at 60fps.",
+        sfx: "chime"
+      }
+    ];
+
+    let step = 0;
+    const transcript = document.getElementById('hudLiveTranscript');
+
+    const nextStep = () => {
+      if (step >= theatre.length) {
+        if (transcript) {
+          transcript.innerHTML = `<strong style="color:#2ecc71;">✓ Multi-Agent Mission Accomplished. Aradhya & all Marvel intelligence nodes deployed in harmony.</strong>`;
+        }
+        return;
+      }
+      const item = theatre[step];
+      if (transcript) {
+        transcript.innerHTML = `<strong style="color:${item.color};">[${item.agent}]</strong> "${item.speech}"`;
+      }
+      this.playStarkSFX(item.sfx);
+      this.printTermLine(`[${item.agent}] "${item.speech}"`);
+
+      const key = item.agent.toLowerCase().replace(/[\.\s]/g, '');
+      this.speakMultiAgentReport(key, item.speech);
+
+      step++;
+      setTimeout(nextStep, 2800);
+    };
+
+    nextStep();
   }
 };
 
