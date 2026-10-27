@@ -880,6 +880,103 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       };
     }
 
+    // Tactical Skills Intent: Fight Pattern Scanner
+    if (p.includes('fight pattern') || p.includes('scan fight') || p.includes('combat scan') || p.includes('countermeasure')) {
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('friday_fight_pattern');
+      }, 300);
+      const text = "Boss, scanning incoming fight pattern! Calculating dynamic TCP RST and SYN cookie countermeasures.";
+      this.speak(text);
+      return {
+        thought: `F.R.I.D.A.Y.: "${text}"`,
+        result: { skill: "friday_fight_pattern", status: "COUNTERMEASURES_ARMED" },
+        latency_ms: 1.2
+      };
+    }
+
+    // Tactical Skills Intent: Drone Defense Strike
+    if (p.includes('drone strike') || p.includes('orbital strike') || p.includes('launch drone')) {
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('edith_orbital_recon', '185.220.101.42');
+      }, 300);
+      const text = "Target locked in crosshairs. Authorizing tactical orbital drone defense strike on 185.220.101.42.";
+      this.speak(text);
+      return {
+        thought: `E.D.I.T.H.: "${text}"`,
+        result: { skill: "edith_orbital_recon", action: "DRONE_STRIKE", target: "185.220.101.42" },
+        latency_ms: 1.2
+      };
+    }
+
+    // Tactical Skills Intent: 3D CAD Schematics
+    if (p.includes('cad') || p.includes('3d schematic') || p.includes('project 3d') || p.includes('hologram schematic')) {
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('jarvis_cad_diagnostics');
+      }, 300);
+      const text = "Right away, sir. Projecting Mark-85 3D holographic wireframe CAD schematics and hardware telemetry.";
+      this.speak(text);
+      return {
+        thought: `J.A.R.V.I.S.: "${text}"`,
+        result: { skill: "jarvis_cad_diagnostics", fps: 60.0, arc_power: "8.24 GW" },
+        latency_ms: 1.1
+      };
+    }
+
+    // Tactical Skills Intent: Mind Stone Anomaly Forecast
+    if (p.includes('mind stone') || p.includes('forecast anomal') || p.includes('predict attack')) {
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('vision_mind_stone');
+      }, 300);
+      const text = "Synthesizing predictive foresight from the Mind Stone. Anticipating anomalous threat vectors to preserve equilibrium.";
+      this.speak(text);
+      return {
+        thought: `V.I.S.I.O.N.: "${text}"`,
+        result: { skill: "vision_mind_stone", entropy: "LOW", preemptions: 3 },
+        latency_ms: 1.1
+      };
+    }
+
+    // Tactical Skills Intent: Suit Mode & Web Shooter
+    if (p.includes('suit mode') || p.includes('taser web') || p.includes('ricochet web') || p.includes('web shooter')) {
+      const mode = p.includes('taser') ? 'taser web' : (p.includes('ricochet') ? 'ricochet web' : 'baby monitor');
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('karen_suit_mentor', mode);
+      }, 300);
+      const text = `Suit mode updated to ${mode.toUpperCase()}. Safety and tactical loadouts engaged!`;
+      this.speak(text);
+      return {
+        thought: `K.A.R.E.N.: "${text}"`,
+        result: { skill: "karen_suit_mentor", active_mode: mode },
+        latency_ms: 1.1
+      };
+    }
+
+    // Tactical Skills Intent: Electronic Warfare
+    if (p.includes('electronic warfare') || p.includes('deploy honeytoken') || p.includes('zero trust egress')) {
+      setTimeout(() => {
+        WindowManager.openApp('marvel');
+        this.switchStarkTab('stark-tab-skills', document.querySelectorAll('#win-marvel .dl-tab-btn')[4]);
+        this.executeSkill('jocasta_electronic_warfare');
+      }, 300);
+      const text = "Jocasta electronic warfare sentry active. Decoy honeytokens deployed on ports 2222 and 8888.";
+      this.speak(text);
+      return {
+        thought: `J.O.C.A.S.T.A.: "${text}"`,
+        result: { skill: "jocasta_electronic_warfare", honeytokens: 3 },
+        latency_ms: 1.1
+      };
+    }
+
     // Persona Switching Intent
     for (const [key, pers] of Object.entries(this.personas)) {
       if (p.includes(`switch to ${key}`) || p.includes(`activate ${key}`) || p.includes(`become ${key}`) || p.includes(`call ${key}`)) {
