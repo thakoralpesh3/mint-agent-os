@@ -1,105 +1,99 @@
-# Implementation Plan: Marvel Series Skills Architecture & Tactical Node Expansion
+# Implementation Plan: 1GB RAM PC Native Compatibility & Tier 0 Nano Governor
 
-Equip the **Aradhya AI Agent OS** with deep Marvel Series agent skills and specialized execution modules, allowing **E.D.I.T.H.**, **F.R.I.D.A.Y.**, **J.A.R.V.I.S.**, **V.I.S.I.O.N.**, **K.A.R.E.N.**, and **J.O.C.A.S.T.A.** to operate authentically like their cinematic Marvel counterparts with actionable capabilities on Linux Mint and in the 24/7 web simulator.
+Ensure **Aradhya Agent OS** natively runs butter-smooth, without freezing or OOM-crashing, on ultra-low-spec **1GB RAM PCs** (vintage x86_64 PCs, netbooks, thin clients, or minimal VMs) through dedicated Tier 0 kernel tuning, ZRAM RAM-compression swap, microscopic agent memory footprinting, and zero-RAM AI routing.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - All new skills are 100% self-contained and run zero-dependency on standard Linux Mint (Python 3.10+, ALSA/PulseAudio) and in the browser (HTML5 Canvas + Web Audio API).
-> - New CLI commands (`--fight-pattern`, `--drone-strike`, `--cad-view`, `--mind-stone-forecast`, `--suit-mode`) will be accessible via both `aradhya` and `mint-agent`.
-> - A dedicated **Tab 5: ⚔️ Tactical Skills Matrix** and an interactive **3D Holographic CAD Schematics Canvas** will be added to the Marvel Headquarters in the WebUI and online simulator.
+> **Technical Reality on 1GB RAM PCs**:
+> - **Standard Linux Mint Cinnamon** natively consumes ~750MB-900MB RAM out-of-the-box, leaving only ~100MB headroom on a 1GB machine without customization.
+> - **Aradhya Agent OS itself** consumes only **~28MB - 35MB RAM**, making it remarkably lightweight.
+> - However, running a 400MB+ local GGUF neural model alongside a desktop environment on 1GB physical RAM will trigger OOM killer freezes unless:
+>   1. **ZRAM compressed RAM swap (lz4/zstd)** is enabled, expanding 1GB physical RAM to an effective **1.8GB - 2.2GB virtual RAM**.
+>   2. **Tier 0: Nano Mode** is engaged: using the **Micro-Deterministic Fast Intent Engine** (0MB model RAM overhead) with optional Cloud API fallback (Gemini/OpenAI/Groq).
+>   3. Kernel swappiness is tuned (`vm.swappiness = 100` for zram or `10` for spinning disk).
+>   4. `MemoryGuard` accepts 1GB RAM as **PASS (Tier 0: Nano Low-RAM Profile)** instead of penalizing or failing.
 
 ---
 
 ## Proposed Changes
 
-### Core Agent Skills Architecture
+### Core Memory & Performance Governor
 
-#### [NEW] [`agent/skills/__init__.py`](file:///home/alpesh/mint-agent-os/agent/skills/__init__.py)
-- Package initializer exporting the `MarvelSkillsRegistry`.
-
-#### [NEW] [`agent/skills/marvel_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/marvel_skills.py)
-Implements 6 specialized Marvel Skills:
-1. **`FridayFightPatternSkill` (F.R.I.D.A.Y.)**:
-   - Real-time combat analysis: analyzes timing variance, packet bursts, and brute-force sequences of incoming threats.
-   - Countermeasure calculation: generates instant TCP RST injection frames, socket clamps, and defensive counter-strikes (*"Scanning fight pattern... Countermeasures ready, boss!"*).
-2. **`EdithOrbitalReconSkill` (E.D.I.T.H.)**:
-   - Orbital AR reconnaissance: deep network entity inspection (ARP, sockets, geolocation, Tor/proxy detection, threat risk scoring).
-   - Drone Strike Tactical Protocol: coordinates defensive perimeter containment and dynamic firewall null-routing.
-3. **`JarvisCadDiagnosticsSkill` (J.A.R.V.I.S.)**:
-   - 3D Wireframe Holographic Diagnostics: Arc Reactor telemetry (output, core temperature, power routing), Cinnamon compositor 60fps governor, Linux Mint thermal throttling, and swappiness locks.
-4. **`VisionMindStoneSkill` (V.I.S.I.O.N.)**:
-   - Mind Stone Anomaly Forecasting: predicts multi-stage attack vectors before execution using statistical entropy and threat clustering.
-   - Ethical Circuit Breaker: autonomous self-governance balancing system availability against lockdown security.
-5. **`KarenSuitMentorSkill` (K.A.R.E.N.)**:
-   - Suit Selector & Web Configuration: unlocks and switches configurations (Baby Monitor Mode, Taser Web Sentry, Ricochet Web Redirect, Instant Interrogation).
-   - User coaching and plain-language action explanations.
-6. **`JocastaElectronicWarfareSkill` (J.O.C.A.S.T.A.)**:
-   - Autonomous Electronic Warfare: honeytoken canary deployment, decoy fake ports, zero-trust egress monitoring.
+#### [MODIFY] [`agent/core/memory_guard.py`](file:///home/alpesh/mint-agent-os/agent/core/memory_guard.py)
+- Introduce **Tier 0: Nano / Ultra-Low RAM (512MB - 1250MB)** profile.
+- Add `setup_zram_swap(disk_size_mb=1024)`:
+  - Automates kernel zram module loading (`modprobe zram num_devices=1`).
+  - Sets compression algorithm (`zstd` or `lz4`).
+  - Initializes `/dev/zram0` as swap with priority 32767.
+- Add `optimize_for_1gb_pc()`:
+  - Sets `vm.swappiness = 100` when zram is active (prioritizes compressing RAM pages over dropping file buffers).
+  - Sets `vm.vfs_cache_pressure = 100` (rapid dentry reclaim on low RAM).
+  - Sets `vm.watermark_boost_factor = 0` (prevents memory compaction spikes).
+  - Disables heavy background telemetry polling intervals.
+- Update `verify_mint_compatibility()`:
+  - Recognize systems with 750MB - 1250MB RAM as **Tier 0 (1GB Ultra-Low Spec)**.
+  - If ZRAM is detected: score = 95+ (`PASS (Tier 0: 1GB Low-Spec with Active ZRAM Compression)`).
+  - If ZRAM is missing: prompt running `aradhya --optimize-1gb` without failing the host.
+- Enhance `clean_memory()` with aggressive Python runtime garbage collection and immediate page cache trimming (`vm.drop_caches = 3`).
 
 ---
 
-### Marvel Agent Core & CLI Expansion
+### Central Brain & AI Model Tiering
 
-#### [MODIFY] [`agent/core/marvel_agents.py`](file:///home/alpesh/mint-agent-os/agent/core/marvel_agents.py)
-- Add **J.O.C.A.S.T.A.** (`#a29bfe`, Electronic Warfare) to personas dictionary.
-- Wire `MarvelSkillsRegistry` directly into `MarvelAgentManager`.
-- Add skill execution dispatchers (`execute_skill(skill_name, params)`).
-- Enhance proactive interventions with fight pattern triggers and orbital lock alerts.
+#### [MODIFY] [`agent/brain/inference.py`](file:///home/alpesh/mint-agent-os/agent/brain/inference.py)
+- Update `_detect_hardware_tier()`:
+  - Detect `ram_mb <= 1250`: classify as **Tier 0: Nano / Ultra-Low RAM (1GB PC)**.
+  - Set recommended AI model to: `"Deterministic Micro-Intent Router + Cloud API Fallback (0MB Local Model RAM)"`.
+  - Enforce `low_memory_mode = True` across the brain.
+  - Auto-run `gc.collect()` after every completed user prompt or security remediation cycle.
+
+#### [MODIFY] [`agent/brain/model_manager.py`](file:///home/alpesh/mint-agent-os/agent/brain/model_manager.py)
+- Add Tier 0 catalog entry:
+  - `deterministic-nano`: Zero-RAM footprint, <0.8ms latency, micro-regex and rule engine.
+- Update model selection warning: if a user on a 1GB RAM PC attempts to load a 1.5B or 3B model, issue an alert recommending Tier 0 or Gemini Cloud API to avoid kernel freezing.
+
+---
+
+### CLI Interface & 1-Click Low-RAM Optimizer
 
 #### [MODIFY] [`agent/cli.py`](file:///home/alpesh/mint-agent-os/agent/cli.py)
-- Add CLI flags:
-  - `--skills`: List all active Marvel skills and their tactical capabilities.
-  - `--fight-pattern`: Execute Friday's combat fight pattern scan and countermeasure calculation.
-  - `--drone-strike [TARGET]`: Execute Edith's orbital target lock and drone containment.
-  - `--cad-view`: Render Jarvis's 3D wireframe telemetry diagnostics in ASCII.
-  - `--mind-stone`: Execute Vision's Mind Stone anomaly forecast.
-  - `--suit-mode [MODE]`: Switch Karen's suit protocol configuration.
+- Add new CLI commands:
+  - `--optimize-1gb`: One-click command to optimize Linux Mint and Aradhya for 1GB RAM (configures zram swap, sets kernel parameters, lowers agent memory consumption, disables compositor effects recommendations).
+  - `--zram-status`: Inspect real-time zram compression ratio, original data size, and memory saved.
+  - Update `--tier`: Clearly displays Tier 0 (Nano / 1GB PC) specifications.
+  - Update `--benchmark-smoothness`: Validates 60fps responsiveness and zero-OOM execution under 1GB RAM constraints.
 
 ---
 
-### Web Simulator & Generative UI Expansion
+### WebUI & Simulator Updates
 
 #### [MODIFY] [`docs/index.html`](file:///home/alpesh/mint-agent-os/docs/index.html)
-- Add **Tab 5: ⚔️ Tactical Skills Matrix** in Window 8 (`#win-marvel`):
-  - Interactive cards to trigger:
-    - ⚡ *F.R.I.D.A.Y. Fight Pattern Scanner & Countermeasure Calculator*
-    - 🕶️ *E.D.I.T.H. Orbital Target Lock & Drone Defense Strike*
-    - 🤖 *J.A.R.V.I.S. 3D Holographic CAD Schematics (with rotating 3D canvas!)*
-    - 💎 *V.I.S.I.O.N. Mind Stone Anomaly Forecast*
-    - 🕷️ *K.A.R.E.N. Web Shooter & Suit Mode Selector*
-    - 🛡️ *J.O.C.A.S.T.A. Zero-Trust Electronic Warfare*
-- Add 3D Wireframe Canvas in Window 8 and Visor HUD.
+- Add **1GB RAM PC Compatibility** badge and configuration guide in:
+  - Window 3: *System Health & Butter-Smooth Governor*.
+  - Window 5: *Download Bootable ISO & GitHub Releases* (includes 1GB RAM ISO tuning notes, XFCE recommendations, and ZRAM flag).
+  - Window 8: *Marvel Agent Headquarters* (shows how Jarvis & Friday operate in Tier 0 Nano Mode with 0MB model overhead).
 
 #### [MODIFY] [`docs/js/agent_simulator.js`](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
-- Add skill registry and live execution methods:
-  - `scanFightPattern()`: Animated combat calculation with audio SFX.
-  - `launchDroneStrike(target)`: Targeting crosshair animation, target lock sound, and perimeter drop.
-  - `render3DHologram()`: Rotating 3D wireframe Iron Man Mark-85 armor and laptop chassis canvas loop.
-  - `forecastMindStoneAnomalies()`: Variance entropy chart and antibody synthesis.
-  - `switchSuitMode(mode)`: Web shooter selector with audio feedback.
-- Add voice/text intent routing for skill phrases:
-  - *"Friday, scan fight pattern"* / *"analyze combat"*
-  - *"Edith, lock drone strike on port 8080"*
-  - *"Jarvis, project 3D schematics"*
-  - *"Vision, forecast anomalies"*
-  - *"Karen, activate taser web"*
+- Add Tier 0 (1GB RAM) simulation preset to the specs switcher.
+- Allow users to toggle between **1GB RAM (Tier 0 Nano)**, **2GB-4GB RAM (Tier 1)**, and **8GB+ RAM (Tier 2/3)**.
+- Display live simulated metrics: 1024MB Total RAM, 28MB Agent Footprint, ZRAM 2.4x compression ratio, and 0.6ms deterministic response time.
 
 ---
 
 ## Verification Plan
 
 ### Automated Tests
-1. **CLI Commands Execution**:
-   - `aradhya --skills`
-   - `aradhya --fight-pattern`
-   - `aradhya --drone-strike 185.220.101.42`
-   - `aradhya --cad-view`
-   - `aradhya --mind-stone`
-   - `aradhya --suit-mode "taser web"`
-2. **JavaScript Syntax Verification**:
-   - Accurate character-by-character JS parser to guarantee 0 bracket mismatches.
-3. **GitHub Sync**:
-   - Commit and push to `origin/main` and verify HTTP 200 on `https://thakoralpesh3.github.io/mint-agent-os/`.
+1. **Memory & Tier 0 Validation**:
+   - `python3 -c "from agent.core.memory_guard import MemoryGuard; mg = MemoryGuard(); print(mg.verify_mint_compatibility())"`
+   - `python3 -c "from agent.brain.inference import AgentBrain; b = AgentBrain(); print(b.hardware_tier)"`
+2. **1GB Optimizer CLI Execution**:
+   - `python3 -m agent.cli --tier`
+   - `python3 -m agent.cli --benchmark-smoothness`
+   - `python3 -m agent.cli --zram-status`
+3. **Web Simulator Syntax Verification**:
+   - Verify character-by-character syntax on `docs/js/agent_simulator.js`.
+4. **Live Web Page Check**:
+   - Verify GitHub Pages deployment at `https://thakoralpesh3.github.io/mint-agent-os/`.
