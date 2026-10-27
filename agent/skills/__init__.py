@@ -19,6 +19,14 @@ from .marvel_skills import (
     JocastaElectronicWarfareSkill,
     marvel_skills
 )
+from .founder_skills import (
+    FounderSkillsRegistry,
+    founder_skills
+)
+from .replica_skills import (
+    ReplicaSkillsRegistry,
+    replica_skills
+)
 
 __all__ = [
     "MarvelSkillsRegistry",
@@ -28,5 +36,10 @@ __all__ = [
     "VisionMindStoneSkill",
     "KarenSuitMentorSkill",
     "JocastaElectronicWarfareSkill",
-    "marvel_skills"
+    "marvel_skills",
+    "FounderSkillsRegistry",
+    "founder_skills",
+    "ReplicaSkillsRegistry",
+    "replica_skills"
 ]
+
