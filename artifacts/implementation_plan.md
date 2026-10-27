@@ -1,109 +1,105 @@
-# Implementation Plan: Cinematic Marvel AI Agent Series Upgrade (Iron Man Visor HUD, Stark SFX, Proactive Voice Intercom & Autonomous Multi-Agent Theatre)
+# Implementation Plan: Marvel Series Skills Architecture & Tactical Node Expansion
 
-Deepen the Marvel Cinematic Universe AI experience across Linux Mint OS, the Python backend CLI, WebUI, and the 24/7 online simulator to fully embody J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., and K.A.R.E.N. with authentic audio-visual and autonomous behaviors:
-1. **Iron Man Visor HUD (Heads-Up Display)**: An interactive tactical AR Visor with tracking reticles, audio frequency spectrum bars, lock-on target brackets, and real-time telemetry.
-2. **Stark Audio FX Synthesizer**: Programmatic sound generator (Web Audio API in browser & zero-dependency Python `wave` in Linux Mint) generating repulsor charges, lock-on beeps, comms chimes, and tactical confirmation tones.
-3. **Proactive Cinematic Interventions**: Jarvis and Friday proactively interrupt with vocal warnings when thermal/battery levels fluctuate or rogue sockets appear.
-4. **Coordinated Multi-Agent Theatre Protocol**: Interactive multi-agent dialogue sequence where Jarvis, Friday, Edith, Vision, and Karen converse back-and-forth in real-time to neutralize threats.
-5. **Linux Mint Cinnamon Desktop Integration**: `Super+J` (Jarvis), `Super+F` (Friday), `Super+E` (Edith), `Super+H` (Stark HUD) keybindings and Arc Reactor desktop applets.
+Equip the **Aradhya AI Agent OS** with deep Marvel Series agent skills and specialized execution modules, allowing **E.D.I.T.H.**, **F.R.I.D.A.Y.**, **J.A.R.V.I.S.**, **V.I.S.I.O.N.**, **K.A.R.E.N.**, and **J.O.C.A.S.T.A.** to operate authentically like their cinematic Marvel counterparts with actionable capabilities on Linux Mint and in the 24/7 web simulator.
+
+---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> The Iron Man Visor HUD can be run inside a windowed application or as a fullscreen tactical AR glass overlay over the desktop. In the online simulator, users can open it from the desktop icon, the Marvel window, or by pressing `H`.
-
-> [!NOTE]
-> All sound effects are generated programmatically (zero external MP3/WAV files required). In Linux Mint, a pure-Python PCM audio synthesizer outputs tones directly through PulseAudio/PipeWire (`paplay`/`aplay`). In the browser, the Web Audio API generates authentic sci-fi synthesizers.
+> - All new skills are 100% self-contained and run zero-dependency on standard Linux Mint (Python 3.10+, ALSA/PulseAudio) and in the browser (HTML5 Canvas + Web Audio API).
+> - New CLI commands (`--fight-pattern`, `--drone-strike`, `--cad-view`, `--mind-stone-forecast`, `--suit-mode`) will be accessible via both `aradhya` and `mint-agent`.
+> - A dedicated **Tab 5: ⚔️ Tactical Skills Matrix** and an interactive **3D Holographic CAD Schematics Canvas** will be added to the Marvel Headquarters in the WebUI and online simulator.
 
 ---
 
 ## Proposed Changes
 
-### Component 1: Stark Sound FX Synthesizer (Python & Browser)
+### Core Agent Skills Architecture
 
-#### [NEW] [`agent/core/stark_sfx.py`](file:///home/alpesh/mint-agent-os/agent/core/stark_sfx.py)
-- Zero-dependency pure Python audio synthesizer utilizing `wave`, `math`, and `struct`.
-- Synthesizes 5 signature Stark sound effects:
-  - `play_repulsor_charge()`: 300Hz -> 1800Hz rising frequency sweep with resonant harmonics.
-  - `play_target_lock()`: Dual-tone 2400Hz/3200Hz military targeting chirp.
-  - `play_comms_chime()`: Jarvis/Friday 3-chord major arpeggio chime (C5-E5-G5).
-  - `play_threat_neutralized()`: Descending tactical confirmation sweep (1200Hz -> 400Hz).
-  - `play_alarm_klaxon()`: DEFCON emergency pulse warning.
-- Automatically routes output through `paplay` (PulseAudio), `pw-play` (PipeWire), or `aplay` (ALSA). Gracefully bypasses if in headless mode.
+#### [NEW] [`agent/skills/__init__.py`](file:///home/alpesh/mint-agent-os/agent/skills/__init__.py)
+- Package initializer exporting the `MarvelSkillsRegistry`.
 
----
-
-### Component 2: Iron Man Visor Tactical HUD Overlay
-
-#### [MODIFY] [`docs/index.html`](file:///home/alpesh/mint-agent-os/docs/index.html)
-- Add full-screen / windowed **Stark Visor Tactical HUD Overlay** (`#stark-hud-overlay`):
-  - HUD curved viewport vignette with futuristic cyan and gold edge meters.
-  - Center dynamic mouse-tracking targeting reticle with live Cartesian coordinates and range telemetry.
-  - Real-time animated audio spectrum visualizer (16 vibrating equalizer bars responding dynamically when speech is active).
-  - Suit / OS Telemetry modules:
-    - **Mark 85 Reactor Core**: 8.24 GW • Core Temp: 38°C • Power: 100%
-    - **Vocal Intercom**: Active persona wave indicator & live transcript
-    - **Tactical Lock-On Brackets**: Hovering over desktop icons and windows renders animated lock-on corners with entity classification (`SYSTEM_CRITICAL`, `NETWORK_GATEWAY`, `WORKSTATION_FILES`)
-    - **Stark Protocols Quick Bar**: 1-click execution for Veronica, Instant Kill, House Party, and Clean Slate
-  - Top action bar: Toggle Fullscreen HUD, Switch Persona, Trigger Voice Intercom, Exit HUD.
-
-#### [MODIFY] [`docs/js/agent_simulator.js`](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
-- Implement `StarkHUD` subsystem inside `AgentSimulator`:
-  - `openStarkHUD()` / `closeStarkHUD()` / `toggleStarkHUD()`
-  - `initHUDCanvas()`: Renders interactive HUD reticle, tracking crosshairs, and rotating circular compass bearings.
-  - `renderAudioSpectrum()`: Dynamic equalizer canvas showing audio frequency bars when speaking.
-  - `playStarkSFX(type)`: Web Audio API programmatic oscillator generator for repulsor, target lock, comms chime, and neutralization tones.
-  - Mousemove tracking on HUD canvas for fluid targeting reticle physics.
+#### [NEW] [`agent/skills/marvel_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/marvel_skills.py)
+Implements 6 specialized Marvel Skills:
+1. **`FridayFightPatternSkill` (F.R.I.D.A.Y.)**:
+   - Real-time combat analysis: analyzes timing variance, packet bursts, and brute-force sequences of incoming threats.
+   - Countermeasure calculation: generates instant TCP RST injection frames, socket clamps, and defensive counter-strikes (*"Scanning fight pattern... Countermeasures ready, boss!"*).
+2. **`EdithOrbitalReconSkill` (E.D.I.T.H.)**:
+   - Orbital AR reconnaissance: deep network entity inspection (ARP, sockets, geolocation, Tor/proxy detection, threat risk scoring).
+   - Drone Strike Tactical Protocol: coordinates defensive perimeter containment and dynamic firewall null-routing.
+3. **`JarvisCadDiagnosticsSkill` (J.A.R.V.I.S.)**:
+   - 3D Wireframe Holographic Diagnostics: Arc Reactor telemetry (output, core temperature, power routing), Cinnamon compositor 60fps governor, Linux Mint thermal throttling, and swappiness locks.
+4. **`VisionMindStoneSkill` (V.I.S.I.O.N.)**:
+   - Mind Stone Anomaly Forecasting: predicts multi-stage attack vectors before execution using statistical entropy and threat clustering.
+   - Ethical Circuit Breaker: autonomous self-governance balancing system availability against lockdown security.
+5. **`KarenSuitMentorSkill` (K.A.R.E.N.)**:
+   - Suit Selector & Web Configuration: unlocks and switches configurations (Baby Monitor Mode, Taser Web Sentry, Ricochet Web Redirect, Instant Interrogation).
+   - User coaching and plain-language action explanations.
+6. **`JocastaElectronicWarfareSkill` (J.O.C.A.S.T.A.)**:
+   - Autonomous Electronic Warfare: honeytoken canary deployment, decoy fake ports, zero-trust egress monitoring.
 
 ---
 
-### Component 3: Proactive Autonomous Interventions & Vocal Warnings
+### Marvel Agent Core & CLI Expansion
 
 #### [MODIFY] [`agent/core/marvel_agents.py`](file:///home/alpesh/mint-agent-os/agent/core/marvel_agents.py)
-- Add `check_proactive_interventions(system_telemetry)`:
-  - High Memory (>80%): Jarvis warns Tony and recommends `veronica` or `clean_slate`.
-  - Wildcard Listening Sockets: Friday issues tactical warning and locks on target.
-  - Critical Ingress Probes: Edith reports orbital satellite lock on hostile IP.
-  - Unbalanced Resource Allocation: Vision offers philosophical balance analysis.
-- Add `get_coordinated_multi_agent_theatre()`:
-  - Generates a cinematic 6-step multi-agent dialogue script where Jarvis, Friday, Edith, Vision, and Karen pass context between each other to neutralize an intrusion in real time.
+- Add **J.O.C.A.S.T.A.** (`#a29bfe`, Electronic Warfare) to personas dictionary.
+- Wire `MarvelSkillsRegistry` directly into `MarvelAgentManager`.
+- Add skill execution dispatchers (`execute_skill(skill_name, params)`).
+- Enhance proactive interventions with fight pattern triggers and orbital lock alerts.
 
 #### [MODIFY] [`agent/cli.py`](file:///home/alpesh/mint-agent-os/agent/cli.py)
-- Add `--hud`: Launches terminal Stark Visor HUD with live ASCII reticle and telemetry.
-- Add `--theatre` / `--house-party-theatre`: Runs the cinematic multi-agent coordinated live dialogue with authentic spoken voices and sound effects.
-- Add `--sfx <sound>`: Plays sound effects from terminal (`repulsor`, `lock`, `chime`, `neutralized`).
+- Add CLI flags:
+  - `--skills`: List all active Marvel skills and their tactical capabilities.
+  - `--fight-pattern`: Execute Friday's combat fight pattern scan and countermeasure calculation.
+  - `--drone-strike [TARGET]`: Execute Edith's orbital target lock and drone containment.
+  - `--cad-view`: Render Jarvis's 3D wireframe telemetry diagnostics in ASCII.
+  - `--mind-stone`: Execute Vision's Mind Stone anomaly forecast.
+  - `--suit-mode [MODE]`: Switch Karen's suit protocol configuration.
 
 ---
 
-### Component 4: Linux Mint Cinnamon Desktop Shortcuts & Hotkeys
+### Web Simulator & Generative UI Expansion
 
-#### [NEW] [`setup_marvel_desktop.sh`](file:///home/alpesh/mint-agent-os/setup_marvel_desktop.sh)
-- Configures Linux Mint Cinnamon desktop hotkeys via `gsettings`:
-  - `Super+J` -> Launches J.A.R.V.I.S. Voice / Terminal Governor
-  - `Super+F` -> Launches F.R.I.D.A.Y. Tactical Combat Sentries
-  - `Super+E` -> Launches E.D.I.T.H. Orbital Tactical Scan
-  - `Super+H` -> Launches Stark Visor HUD
-- Creates `/usr/share/applications/stark-agents.desktop` with custom category and Stark Industries branding.
+#### [MODIFY] [`docs/index.html`](file:///home/alpesh/mint-agent-os/docs/index.html)
+- Add **Tab 5: ⚔️ Tactical Skills Matrix** in Window 8 (`#win-marvel`):
+  - Interactive cards to trigger:
+    - ⚡ *F.R.I.D.A.Y. Fight Pattern Scanner & Countermeasure Calculator*
+    - 🕶️ *E.D.I.T.H. Orbital Target Lock & Drone Defense Strike*
+    - 🤖 *J.A.R.V.I.S. 3D Holographic CAD Schematics (with rotating 3D canvas!)*
+    - 💎 *V.I.S.I.O.N. Mind Stone Anomaly Forecast*
+    - 🕷️ *K.A.R.E.N. Web Shooter & Suit Mode Selector*
+    - 🛡️ *J.O.C.A.S.T.A. Zero-Trust Electronic Warfare*
+- Add 3D Wireframe Canvas in Window 8 and Visor HUD.
+
+#### [MODIFY] [`docs/js/agent_simulator.js`](file:///home/alpesh/mint-agent-os/docs/js/agent_simulator.js)
+- Add skill registry and live execution methods:
+  - `scanFightPattern()`: Animated combat calculation with audio SFX.
+  - `launchDroneStrike(target)`: Targeting crosshair animation, target lock sound, and perimeter drop.
+  - `render3DHologram()`: Rotating 3D wireframe Iron Man Mark-85 armor and laptop chassis canvas loop.
+  - `forecastMindStoneAnomalies()`: Variance entropy chart and antibody synthesis.
+  - `switchSuitMode(mode)`: Web shooter selector with audio feedback.
+- Add voice/text intent routing for skill phrases:
+  - *"Friday, scan fight pattern"* / *"analyze combat"*
+  - *"Edith, lock drone strike on port 8080"*
+  - *"Jarvis, project 3D schematics"*
+  - *"Vision, forecast anomalies"*
+  - *"Karen, activate taser web"*
 
 ---
 
 ## Verification Plan
 
 ### Automated Tests
-1. **Python SFX Synthesizer Test**:
-   - Run `python3 agent/core/stark_sfx.py --test` to verify in-memory WAV buffer generation and non-blocking playback.
-2. **Coordinated Multi-Agent Theatre Test**:
-   - Run `python3 agent/cli.py --theatre` to verify that all 5 agents generate dialogue sequentially with correct accents.
-3. **JS Syntax & Bracket Balance Test**:
-   - Run python bracket scanner on `docs/js/agent_simulator.js` to ensure zero syntax errors.
-4. **Git Sync Verification**:
-   - Verify `sync_daemon.py` pushes to GitHub repository.
-5. **24/7 Simulator Deployment**:
-   - Verify `curl -sI https://thakoralpesh3.github.io/mint-agent-os/` returns HTTP 200.
-
-### Manual Verification
-- Open [https://thakoralpesh3.github.io/mint-agent-os/](https://thakoralpesh3.github.io/mint-agent-os/).
-- Click the new **`🕶️ Visor HUD`** button or press `H` to enter the full Iron Man HUD.
-- Move mouse to test fluid targeting reticle tracking and lock-on brackets.
-- Click **"Engage Multi-Agent Theatre"** to hear Jarvis, Friday, Edith, Vision, and Karen converse back-and-forth.
-- Click **"Repulsor Charge"** and **"Target Lock"** to hear programmatic Web Audio SFX.
+1. **CLI Commands Execution**:
+   - `aradhya --skills`
+   - `aradhya --fight-pattern`
+   - `aradhya --drone-strike 185.220.101.42`
+   - `aradhya --cad-view`
+   - `aradhya --mind-stone`
+   - `aradhya --suit-mode "taser web"`
+2. **JavaScript Syntax Verification**:
+   - Accurate character-by-character JS parser to guarantee 0 bracket mismatches.
+3. **GitHub Sync**:
+   - Commit and push to `origin/main` and verify HTTP 200 on `https://thakoralpesh3.github.io/mint-agent-os/`.
