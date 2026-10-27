@@ -348,19 +348,19 @@ class AgentBrain:
                 return {"thought": f"Harold OS Desktop Tailor: {res.get('message', 'Theme updated.')}", "result": res}
             elif any(w in p for w in ["calc", "math", "percentage", "currency"]):
                 res = self.harold.run_calc(prompt=p)
-                return {"thought": f"Harold Exact Calculator: {res.get('input_expression')} = {res.get('result')}", "result": res}
+                return {"thought": f"Harold Exact Calculator: {res.get('expression')} = {res.get('result')}", "result": res}
             elif any(w in p for w in ["canvas", "diagram", "flowchart", "wireframe", "draw"]):
                 res = self.harold.run_canvas(prompt=p)
-                return {"thought": f"Harold Canvas: Visual system architecture diagram generated ({res.get('diagram_type')}).", "result": res}
+                return {"thought": f"Harold Canvas: Visual system architecture diagram generated for '{res.get('topic')}'.", "result": res}
             elif any(w in p for w in ["docs", "document", "memo", "whitepaper", "spec"]):
                 res = self.harold.run_docs(prompt=p)
                 return {"thought": f"Harold Docs: Structured markdown document generated ({res.get('word_count')} words).", "result": res}
             elif any(w in p for w in ["sheet", "spreadsheet", "csv", "table"]):
                 res = self.harold.run_sheets(prompt=p)
-                return {"thought": f"Harold Sheets: Tabular spreadsheet model compiled ({res.get('rows')} rows, {res.get('columns')} columns).", "result": res}
+                return {"thought": f"Harold Sheets: Tabular spreadsheet model compiled ({len(res.get('table', {}).get('rows', []))} rows).", "result": res}
             elif any(w in p for w in ["slide", "presentation", "deck", "pitch"]):
                 res = self.harold.run_slides(prompt=p)
-                return {"thought": f"Harold Slides: Presentation deck designed ({res.get('slides_count')} slides, Mint-Y theme).", "result": res}
+                return {"thought": f"Harold Slides: Presentation deck designed ({res.get('slide_count', 4)} slides, Mint-Y theme).", "result": res}
             elif any(w in p for w in ["audit", "audit trail", "audit log"]):
                 res = self.harold.run_audit()
                 return {"thought": f"Harold OS Security Audit Trail: {res.get('total_entries', 0)} immutable records tracked.", "result": res}
