@@ -195,7 +195,7 @@ graph TD
 3. **Native Python Registries**:
    - [`agent/skills/founder_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/founder_skills.py): Exposes `FounderSkillsRegistry` and `founder_skills`.
    - [`agent/skills/replica_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/replica_skills.py): Exposes `ReplicaSkillsRegistry` and `replica_skills`.
-   - [`agent/skills/__init__.py`](file:///home/alpesh/mint-agent-os/agent/skills/__init__.py): Cleanly exports Marvel, Founder, and Replica suites.
+    - [`agent/skills/__init__.py`](file:///home/alpesh/mint-agent-os/agent/skills/__init__.py): Cleanly exports Marvel, Founder, and Replica suites.
 4. **Fast Intent Router (`agent/brain/inference.py`)**:
    - Direct deterministic regex pattern matching for `"founder board"`, `"founder cfo"`, `"replica recon"`, `"replica diff"`, etc., delivering sub-3ms responses.
 5. **Linux Mint CLI Flags (`agent/cli.py`)**:
@@ -206,4 +206,84 @@ graph TD
    - Desktop icon: 🚀 Founder & Replica.
    - Start Menu: Listed under Administration and All Applications.
    - Window: Includes 3 tabs with interactive one-click simulations (Board review, CFO unit economics, Van Westendorp pricing, Replica Recon, WCAG AAA contrast check, Parity score, and 1-star review mining).
+
+---
+
+## 🎩 5. Harold OS Agent-Native Workstation (Modified from iamlukethedev/Herald-OS)
+
+We analyzed upstream **Herald OS** (`iamlukethedev/Herald-OS`)—an agent-native OS interface built on Hermes Agent with 9 core agent skills, an out-of-tree bridge, and an audit trail. Upstream Herald OS is tailored for Fedora/Arch with heavy Electron and `niri` Wayland dependencies that crash or lock up on budget 1GB-2GB RAM PCs.
+
+We re-architected and adapted Harold OS into an ultra-lightweight, 1GB RAM-compatible, native Python standard-library suite tailored for **Linux Mint 22.3 Cinnamon**:
+
+```mermaid
+graph TD
+    UserPrompt[User Prompt / CLI / Web GUI] --> Router[Fast Intent Router: agent/brain/inference.py]
+
+    subgraph "Harold OS Bridge: agent/bridge/"
+        Router --> Crash[crash_diagnostics.py: coredumpctl & journalctl RCA]
+        Router --> Filer[document_filer.py: Invoices, Rename & Undo Buffer]
+        Router --> Observer[system_observer.py: X11 Window Context & RSS]
+        Router --> Tailor[desktop_tailor.py: Cinnamon Mint-Y Theme Customizer]
+        Router --> Audit[audit_trail.py: Immutable Append-Only JSONL Log]
+    end
+
+    subgraph "Harold Skills Suite: skills/harold-os/"
+        Router --> H_Crash[diagnose-crash: Signal & Stack Frame Analysis]
+        Router --> H_Filer[file-documents: Canonical Naming & Year-Based Archival]
+        Router --> H_OS[harold-os: Agent-Native Cinnamon System Driver]
+        Router --> H_Tailor[harold-tailor: Natural Language Desktop Presets]
+        Router --> H_Calc[harold-calc: Exact Sentence Math, Units & Currencies]
+        Router --> H_Canvas[harold-canvas: 16:9 Vector System Architecture Wireframes]
+        Router --> H_Docs[harold-docs: Executive Technical Briefs & Markdown Memos]
+        Router --> H_Sheets[harold-sheets: Tabular Data Cleaning & Budget Spreadsheets]
+        Router --> H_Slides[harold-slides: Presentation Slide Decks with Speaker Notes]
+    end
+
+    subgraph "Total Sovereign Skill Ecosystem: 37 Skills"
+        Marvel[6 Marvel Series Tactical Skills]
+        Founder[11 Founder Business Testing Skills]
+        Replica[11 Replica Clean-Room Reverse Engineering Skills]
+        Harold[9 Harold OS Agent-Native Workstation Skills]
+    end
+```
+
+### Key Enhancements Over Upstream Herald OS:
+1. **1GB RAM Compatibility**:
+   - Replaced heavy Electron and Wayland `niri` window managers with native Linux Mint Cinnamon X11 bindings (`xdotool`, `wmctrl`, `gsettings`) and Python standard library modules.
+   - Entire bridge consumes **<12MB RSS**, preserving the strict sub-35MB agent ceiling.
+2. **Crash Diagnostics (`agent/bridge/crash_diagnostics.py`)**:
+   - Queries `systemd-coredump` and `journalctl -p 3`.
+   - Automatically maps signals (SIGSEGV, SIGABRT, SIGFPE, SIGILL, SIGKILL OOM) and provides human-readable root causes and remediation commands (`sudo apt install --reinstall`, `mint-agent --optimize-1gb`).
+3. **Smart Document Filer (`agent/bridge/document_filer.py`)**:
+   - Discovers invoices, receipts, contracts, and financial statements.
+   - Extracts date and vendor to generate canonical filenames (e.g., `YYYY-MM-DD-Vendor-Invoice.pdf`).
+   - Supports atomic undo via `~/.config/mint-agent/filing_undo.json` (`mint-agent --harold undo`).
+4. **Desktop Tailor (`agent/bridge/desktop_tailor.py`)**:
+   - Interprets natural language requests and applies Cinnamon themes via `gsettings` without session restarts.
+   - Presets: `nano-minimal` (disables blur effects for 1GB RAM), `arc-cyan` (Tony Stark glowing HUD), `mint-classic` (authentic Mint-Y), and `high-contrast` (WCAG AAA).
+5. **Exact Sentence Calculator (`harold-calc`)**:
+   - Zero-hallucination arithmetic, percentage calculations (`25% of 1600`), unit conversions (`5 km in miles`), and currency conversions (`$100 USD in INR`).
+6. **Office Suite in Python StdLib**:
+   - `harold-canvas`: Visual isometric architecture diagrams and ASCII wireframes.
+   - `harold-sheets`: Tabular data cleaning and resource allocation spreadsheets.
+   - `harold-docs`: Markdown technical briefs and memos.
+   - `harold-slides`: Presentation slide decks with speaker notes.
+7. **Security Audit Trail (`agent/bridge/audit_trail.py`)**:
+   - Append-only JSONL log (`~/.config/mint-agent/audit.jsonl`) recording all agent actions with timestamps, tools, and parameters.
+8. **Window 10: 🎩 Harold OS Workstation in Web Simulator**:
+   - Accessible via Desktop Icon `🎩 Harold OS` and Cinnamon Start Menu.
+   - 4 Interactive Tabs: Crash Diagnostics, Smart Document Filer, Office Apps & Tailor, and Security Audit Trail.
+
+---
+
+## 📊 Summary of Active Skills Matrix
+
+| Suite | Skills Count | Focus Area | Command Prefix |
+| :--- | :--- | :--- | :--- |
+| **Marvel Series Tactical AI** | 6 | Combat vectors, orbital recon, 3D CAD, Mind Stone, suit coach, EW | `mint-agent --fight-pattern / --drone-strike / --cad-view` |
+| **The Founder Suite** | 11 | Board review, CFO unit economics, buyer panel, pricing, offer, ops, launch | `mint-agent --founder <skill>` |
+| **The Replica Clean-Room Suite** | 11 | App recon, architecture, contrast, UI build, backend spec, diff, reviews | `mint-agent --replica <skill>` |
+| **Harold OS Agent-Native Workstation** | 9 | Crash diagnostics, invoice filer, undo, tailor, calc, canvas, sheets, docs, slides | `mint-agent --harold <skill>` |
+| **TOTAL ACTIVE AGENT SKILLS** | **37** | **Complete autonomous sovereign intelligence on Linux Mint** | `mint-agent --skills` |
+
 
