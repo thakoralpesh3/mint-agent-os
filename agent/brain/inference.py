@@ -29,6 +29,7 @@ from agent.controllers.screen_vision import ScreenVisionController
 from agent.controllers.voice_engine import VoiceEngine
 from agent.controllers.browser_control import BrowserController
 from agent.controllers.program_control import ProgramController
+from agent.skills import founder_skills, replica_skills
 
 
 class AgentBrain:
@@ -39,6 +40,8 @@ class AgentBrain:
         self.permissions = PermissionManager(mode=mode)
         self.interaction = InteractionManager()
         self.marvel = MarvelAgentManager(self)
+        self.founder = founder_skills
+        self.replica = replica_skills
         self.memory = MemoryGuard()
         self.security = SecurityGuardian(self.permissions)
         self.models = ModelManager()
