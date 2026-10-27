@@ -412,6 +412,125 @@ def main():
             print(json.dumps(res, indent=2))
         return
 
+    if args.harold is not None:
+        print_banner(brain)
+        cmd = args.harold.lower().strip()
+        print(f"\033[1;34m🎩 HAROLD OS AGENT-NATIVE SUITE: {cmd.upper()}\033[0m")
+
+        if cmd in ("crash", "diagnose-crash", "diagnose_crash"):
+            app_target = args.target_app
+            res = brain.harold.run_crash(target_app=app_target)
+            print(f"  Summary:     \033[1;36m{res.get('summary')}\033[0m")
+            print(f"  Root Cause:  \033[1;31m{res.get('root_cause')}\033[0m")
+            print(f"  Diagnostics: {res.get('diagnostics')}")
+            print(f"  Remediation: \033[1;32m{res.get('recommended_fix')}\033[0m")
+            if "coredump_entry" in res and res["coredump_entry"]:
+                cd = res["coredump_entry"]
+                print(f"  Signal:      {cd.get('signal')} | PID: {cd.get('pid')} | Exec: {cd.get('executable')}")
+        elif cmd in ("filer", "file-documents", "documents", "invoices"):
+            res = brain.harold.run_filer(directory=args.target_app)
+            print(f"  Scan Directory: \033[1;36m{res.get('directory')}\033[0m")
+            print(f"  Total Scanned:  {res.get('total_scanned')} documents")
+            print(f"  Filing Planned: \033[1;32m{res.get('matched_count')} items matched\033[0m\n")
+            print("  Canonical Rename & Organization Plan:")
+            for p in res.get("filing_plan", []):
+                print(f"  📄 \033[1;33m{p['original']}\033[0m -> \033[1;32m{p['new_name']}\033[0m ({p['vendor']}, {p['date']})")
+                print(f"     Target Directory: {p['dest_dir']}")
+            print(f"\n  Undo History: \033[1;36m{'Available' if res.get('undo_available') else 'None'}\033[0m (Use: mint-agent --harold undo)")
+        elif cmd in ("undo", "undo-filing"):
+            res = brain.harold.execute_skill("undo")
+            print(f"  Status:         \033[1;32m{res.get('status')}\033[0m")
+            print(f"  Restored Files: {res.get('restored_count', 0)}")
+            print(f"  Message:        {res.get('message')}")
+        elif cmd in ("tailor", "theme", "themes"):
+            inst = args.idea or "mint classic"
+            res = brain.harold.run_tailor(instruction=inst)
+            print(f"  Applied Preset: \033[1;32m{res.get('applied_preset', 'Custom')}\033[0m")
+            print(f"  Message:        {res.get('message')}")
+            cfg = res.get("config", {})
+            print(f"  Cinnamon Theme: {cfg.get('theme')}")
+            print(f"  Mint-Y Icons:   {cfg.get('icons')}")
+            print(f"  Font Scale:     {cfg.get('font_scale')}")
+            print(f"  Compositor:     {cfg.get('compositor_effects')}")
+        elif cmd in ("calc", "calculator", "math"):
+            expr = args.idea or "20% of 450"
+            res = brain.harold.run_calc(expression=expr)
+            print(f"  Expression: \033[1;36m{res.get('expression')}\033[0m")
+            print(f"  Result:     \033[1;32m{res.get('result')}\033[0m")
+            print(f"  Working:    \033[1;33m{res.get('working')}\033[0m")
+        elif cmd in ("canvas", "diagram", "draw"):
+            top = args.idea or "Aradhya OS Architecture"
+            res = brain.harold.run_canvas(topic=top)
+            print(f"  Canvas Title: \033[1;36m{res.get('topic')}\033[0m")
+            print(f"  Dimensions:   {res.get('canvas_spec', {}).get('dimensions')}\n")
+            print("  ASCII System Architecture Wireframe:")
+            print(res.get("canvas_spec", {}).get("ascii_preview", ""))
+        elif cmd in ("docs", "document", "memo"):
+            top = args.idea or "Linux Mint Sovereign OS Whitepaper"
+            res = brain.harold.run_docs(title=top)
+            print(f"  Document Title: \033[1;36m{res.get('title')}\033[0m")
+            print(f"  Template:       {res.get('template')}")
+            print(f"  Word Count:     \033[1;32m{res.get('word_count')} words\033[0m\n")
+            print("  Table of Contents & Structure:")
+            for s in res.get("sections", []):
+                print(f"  • \033[1;33m{s['heading']}\033[0m: {s['content']}")
+        elif cmd in ("sheets", "spreadsheet", "csv"):
+            top = args.idea or "Budget Resource Allocation"
+            res = brain.harold.run_sheets(task=top)
+            t = res.get("table", {})
+            print(f"  Sheet: \033[1;36m{t.get('sheet_name')}\033[0m\n")
+            cols = t.get("columns", [])
+            header = " | ".join(f"{c:<22}" for c in cols)
+            print(f"  \033[1;37m{header}\033[0m")
+            print("  " + "-" * len(header))
+            for row in t.get("rows", []):
+                row_str = " | ".join(f"{str(v):<22}" for v in row)
+                print(f"  {row_str}")
+            print("\n  Summary Metrics:")
+            for k, v in t.get("summary_metrics", {}).items():
+                print(f"  • {k.replace('_', ' ').title()}: \033[1;32m{v}\033[0m")
+        elif cmd in ("slides", "presentation", "deck"):
+            top = args.idea or "Aradhya Agent OS Pitch Deck"
+            res = brain.harold.run_slides(topic=top)
+            print(f"  Topic:        \033[1;36m{res.get('topic')}\033[0m")
+            print(f"  Slide Count:  \033[1;32m{res.get('slide_count')} slides\033[0m\n")
+            for s in res.get("deck", []):
+                print(f"  📽️  \033[1;33mSlide {s['slide']}: {s['title']}\033[0m")
+                if "subtitle" in s:
+                    print(f"     \033[1;30m{s['subtitle']}\033[0m")
+                for b in s.get("bullets", []):
+                    print(f"     • {b}")
+                print(f"     \033[1;36mSpeaker Note:\033[0m {s.get('notes')}\n")
+        elif cmd in ("audit", "audit-trail", "audit_log"):
+            res = brain.harold.run_audit()
+            print(f"  Audit Log Path: \033[1;36m{res.get('audit_log_path')}\033[0m")
+            print(f"  Total Records:  \033[1;32m{res.get('total_entries')}\033[0m\n")
+            print("  Recent Immutable Audit Entries:")
+            for e in res.get("recent_entries", []):
+                print(f"  • [\033[1;30m{e.get('timestamp')}\033[0m] \033[1;33m{e.get('action')}\033[0m via {e.get('tool')}")
+                if "details" in e and e["details"]:
+                    print(f"    Details: {json.dumps(e['details'])}")
+        elif cmd in ("observe", "observer", "context"):
+            res = brain.harold.run_observe()
+            print(f"  Timestamp:     {res.get('timestamp')}")
+            print(f"  Cinnamon DE:   \033[1;32m{res.get('desktop_environment')}\033[0m")
+            win = res.get("active_window", {})
+            print(f"  Active Window: \033[1;36m{win.get('title')}\033[0m (PID: {win.get('pid')}, Class: {win.get('class')})")
+            print(f"  Compositor:    \033[1;32m{res.get('compositor')}\033[0m\n")
+            print("  Top Memory Consumers (Linux Mint):")
+            for p in res.get("top_processes", []):
+                print(f"  • PID {p.get('pid', 'N/A'):<6} {p.get('name', 'N/A'):<22} RSS: \033[1;33m{p.get('rss_mb', 0)} MB\033[0m ({p.get('cpu_pct', 0)}% CPU)")
+        elif cmd == "all":
+            print("  Listing all 9 Harold OS Agent-Native Skills:")
+            for s in brain.harold.list_skills():
+                print(f"  • \033[1;34m{s['name']:<25}\033[0m {s['desc']}")
+            print("\n  Use: mint-agent --harold <skill_id> (e.g. mint-agent --harold crash)")
+        else:
+            res = brain.harold.execute_skill(cmd, prompt=args.idea)
+            print(json.dumps(res, indent=2))
+        return
+
+
 
     if args.sfx:
         if stark_sfx:
