@@ -810,6 +810,9 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     } else if (p.startsWith('karen,') || p.startsWith('karen ')) {
       invokedPersona = 'karen';
       p = p.replace(/^karen[, ]+/, '').trim();
+    } else if (p.startsWith('jocasta,') || p.startsWith('jocasta ')) {
+      invokedPersona = 'jocasta';
+      p = p.replace(/^jocasta[, ]+/, '').trim();
     }
 
     if (invokedPersona && this.personas[invokedPersona]) {
