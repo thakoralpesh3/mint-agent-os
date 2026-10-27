@@ -1,23 +1,27 @@
-/* Linux Mint Cinnamon 22.3 Desktop Simulator Styles */
+/* Linux Mint Cinnamon 22.3 Desktop Simulator Styles (Mint-Y Authentic Theme) */
 :root {
-  --mint-green: #87cf3e;
+  --mint-green: #87bd5c;
+  --mint-green-light: #9ad46f;
+  --mint-green-dark: #6e9f47;
+  --mint-green-glow: rgba(135, 189, 92, 0.35);
   --mint-accent: #2ecc71;
-  --cinnamon-dark: #1b1e20;
-  --cinnamon-panel: rgba(28, 32, 34, 0.95);
-  --window-bg: #23272a;
-  --window-title: #1a1c1e;
-  --window-border: #33393d;
+  --cinnamon-panel: #262a30;
+  --cinnamon-panel-dark: #1e2126;
+  --window-bg: #202428;
+  --window-title: #2b3036;
+  --window-border: #383f47;
   --text-main: #f0f3f5;
   --text-muted: #9aa0a6;
   --danger: #e74c3c;
   --warning: #f39c12;
+  --mint-y-btn-hover: rgba(255, 255, 255, 0.12);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Ubuntu", "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Ubuntu", "Noto Sans", "Segoe UI", Roboto, sans-serif;
   user-select: none;
 }
 
@@ -28,36 +32,79 @@ body, html {
   background-color: #0c0e10;
 }
 
-/* Desktop Canvas */
+/* ==================== DESKTOP CANVAS & AUTHENTIC MINT WALLPAPER ==================== */
 #desktop {
   width: 100vw;
   height: calc(100vh - 42px);
   position: relative;
-  background: radial-gradient(circle at 50% 40%, #1f2722 0%, #0d1210 100%);
+  background: radial-gradient(circle at 50% 45%, #242c26 0%, #151b18 55%, #0b0e0d 100%);
   background-size: cover;
   background-position: center;
   overflow: hidden;
 }
 
-/* Background watermark */
+/* Authentic Centered Embossed Linux Mint Wallpaper Emblem */
+.mint-desktop-center-logo {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0.22;
+  transition: opacity 0.3s;
+}
+
+.mint-desktop-center-logo svg {
+  width: 220px;
+  height: 220px;
+  filter: drop-shadow(0 14px 40px rgba(0, 0, 0, 0.85));
+}
+
+.mint-desktop-center-logo h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2.5px;
+  margin-top: 14px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+}
+
+.mint-desktop-center-logo p {
+  font-size: 0.92rem;
+  color: var(--mint-green);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Bottom-Right OS Watermark */
 .os-watermark {
   position: absolute;
-  right: 32px;
-  bottom: 24px;
+  right: 28px;
+  bottom: 20px;
   text-align: right;
-  opacity: 0.18;
+  opacity: 0.35;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
+
 .os-watermark h2 {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   color: var(--mint-green);
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
 }
+
 .os-watermark p {
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 600;
+  color: #d1d8df;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 /* Desktop Icons Grid */
@@ -67,18 +114,18 @@ body, html {
   left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   z-index: 10;
 }
 
 .desktop-icon {
-  width: 82px;
+  width: 86px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  padding: 6px 4px;
+  padding: 8px 6px;
   border-radius: 6px;
   transition: all 0.15s ease;
 }
@@ -88,31 +135,31 @@ body, html {
 }
 
 .desktop-icon:active, .desktop-icon.selected {
-  background: rgba(135, 207, 62, 0.25);
+  background: rgba(135, 189, 92, 0.28);
   outline: 1px solid var(--mint-green);
 }
 
 .desktop-icon .icon-img {
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   margin-bottom: 4px;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
 }
 
 .desktop-icon .icon-label {
   color: #fff;
   font-size: 0.78rem;
   font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.95);
   word-break: break-word;
 }
 
-/* Windows System */
+/* ==================== MINT-Y WINDOW SYSTEM ==================== */
 .window {
   position: absolute;
   background: var(--window-bg);
   border: 1px solid var(--window-border);
-  border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06);
+  border-radius: 6px 6px 4px 4px;
+  box-shadow: 0 14px 44px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -122,21 +169,21 @@ body, html {
 }
 
 .window.active {
-  box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(135, 207, 62, 0.4);
+  box-shadow: 0 18px 52px rgba(0,0,0,0.85), 0 0 0 1px var(--mint-green);
 }
 
 .window.minimized {
   display: none !important;
 }
 
-/* Window Titlebar */
+/* Mint-Y Window Titlebar */
 .window-titlebar {
   background: var(--window-title);
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 0 10px 0 14px;
   cursor: move;
   border-bottom: 1px solid var(--window-border);
 }
@@ -146,44 +193,60 @@ body, html {
   align-items: center;
   gap: 8px;
   color: var(--text-main);
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/* Right-aligned Mint-Y Window Controls */
 .window-controls {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
 }
 
 .win-btn {
-  width: 14px;
-  height: 14px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
-  color: transparent;
-  transition: all 0.15s;
+  font-size: 13px;
+  font-weight: 700;
+  background: transparent;
+  color: #c0c8d0;
+  transition: all 0.15s ease;
 }
 
-.win-btn:hover { color: rgba(0,0,0,0.7); }
-.win-close { background: #e74c3c; }
-.win-minimize { background: #f1c40f; }
-.win-maximize { background: #2ecc71; }
+.win-btn:hover {
+  background: var(--mint-y-btn-hover);
+  color: #fff;
+}
+
+.win-minimize { font-size: 14px; line-height: 10px; }
+.win-maximize { font-size: 12px; }
+.win-close { font-size: 14px; }
+
+.win-close:hover {
+  background: #e74c3c !important;
+  color: #fff !important;
+}
 
 /* Window Body */
 .window-body {
   flex: 1;
   overflow: auto;
   position: relative;
-  background: #181b1d;
+  background: #191c20;
   color: #fff;
 }
 
-/* Bottom Cinnamon Panel */
+/* ==================== BOTTOM CINNAMON PANEL ==================== */
 #panel {
   position: fixed;
   bottom: 0;
@@ -191,55 +254,77 @@ body, html {
   width: 100%;
   height: 42px;
   background: var(--cinnamon-panel);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 4px 0 6px;
   z-index: 1000;
 }
 
-/* Start Menu Button */
+/* Cinnamon Start Menu Button (Mint Leaf) */
 .menu-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   background: transparent;
   border: none;
   color: #fff;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 4px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .menu-btn:hover, .menu-btn.active {
-  background: rgba(135, 207, 62, 0.2);
+  background: rgba(135, 189, 92, 0.2);
   color: var(--mint-green);
 }
 
-.menu-icon {
-  width: 20px;
-  height: 20px;
-  background: var(--mint-green);
-  border-radius: 4px;
+.menu-icon-svg {
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1a1c1e;
-  font-weight: 900;
-  font-size: 0.75rem;
 }
 
-/* Panel Tasks (Open Window Buttons) */
+/* Quick Launch Dock Icons */
+.panel-quick-launch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  margin-left: 4px;
+}
+
+.quick-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.quick-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Panel Tasks (Window List) */
 .panel-tasks {
   display: flex;
   gap: 4px;
   flex: 1;
-  margin-left: 12px;
+  margin-left: 10px;
   overflow-x: auto;
 }
 
@@ -254,7 +339,7 @@ body, html {
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  max-width: 180px;
+  max-width: 190px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -266,17 +351,18 @@ body, html {
 }
 
 .task-item.active {
-  background: rgba(135, 207, 62, 0.18);
+  background: rgba(135, 189, 92, 0.18);
   border-color: var(--mint-green);
   border-bottom: 2px solid var(--mint-green);
+  color: #fff;
+  font-weight: 600;
 }
 
 /* System Tray */
 .system-tray {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding-right: 8px;
+  gap: 8px;
   color: var(--text-main);
   font-size: 0.82rem;
 }
@@ -295,33 +381,63 @@ body, html {
   background: rgba(255,255,255,0.1);
 }
 
-.tray-pill {
-  background: rgba(46, 204, 113, 0.2);
-  color: var(--mint-accent);
-  padding: 2px 7px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  border: 1px solid var(--mint-accent);
+/* Linux Mint Update Shield Tray Applet */
+.tray-update-shield {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(135, 189, 92, 0.18);
+  border: 1px solid var(--mint-green);
+  color: var(--mint-green);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tray-update-shield:hover {
+  background: rgba(135, 189, 92, 0.32);
 }
 
 .tray-clock {
   font-weight: 600;
-  padding-left: 4px;
+  padding: 0 6px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-/* Start Menu Popup */
+.tray-clock:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Cinnamon Show Desktop Sliver Button */
+.show-desktop-btn {
+  width: 6px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  margin-left: 4px;
+  cursor: pointer;
+  border-radius: 1px;
+}
+
+.show-desktop-btn:hover {
+  background: var(--mint-green);
+}
+
+/* ==================== CINNAMON START MENU (MINTMENU 3-PANE) ==================== */
 #startMenu {
   position: fixed;
   bottom: 46px;
-  left: 8px;
-  width: 480px;
-  height: 520px;
-  background: rgba(26, 30, 32, 0.98);
-  backdrop-filter: blur(16px);
+  left: 6px;
+  width: 580px;
+  height: 540px;
+  background: rgba(28, 32, 36, 0.98);
+  backdrop-filter: blur(18px);
   border: 1px solid var(--window-border);
-  border-radius: 8px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.8);
+  border-radius: 6px;
+  box-shadow: 0 18px 54px rgba(0,0,0,0.85), 0 0 0 1px rgba(135, 189, 92, 0.3);
   display: none;
   flex-direction: column;
   z-index: 10000;
@@ -329,19 +445,24 @@ body, html {
 }
 
 .menu-search-box {
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--window-border);
+  background: #23272c;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .menu-search-box input {
   width: 100%;
   background: rgba(0,0,0,0.3);
   border: 1px solid var(--window-border);
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 8px 12px;
   color: #fff;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  transition: border-color 0.15s;
 }
 
 .menu-search-box input:focus {
@@ -354,10 +475,53 @@ body, html {
   overflow: hidden;
 }
 
-.menu-categories {
-  width: 150px;
+/* Left System Bar (User & Quick System Actions) */
+.menu-system-sidebar {
+  width: 48px;
+  background: #181b1e;
   border-right: 1px solid var(--window-border);
-  background: rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.menu-sys-icons-top, .menu-sys-icons-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.menu-sys-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #adb5bd;
+  transition: all 0.15s;
+}
+
+.menu-sys-btn:hover {
+  background: rgba(135, 189, 92, 0.2);
+  color: var(--mint-green);
+}
+
+.menu-sys-btn.danger:hover {
+  background: rgba(231, 76, 60, 0.25);
+  color: #ff6b6b;
+}
+
+/* Middle Categories Column */
+.menu-categories {
+  width: 175px;
+  border-right: 1px solid var(--window-border);
+  background: rgba(0,0,0,0.18);
   padding: 8px 0;
   display: flex;
   flex-direction: column;
@@ -376,10 +540,13 @@ body, html {
 }
 
 .cat-item:hover, .cat-item.active {
-  background: rgba(135, 207, 62, 0.15);
+  background: rgba(135, 189, 92, 0.18);
   color: #fff;
+  font-weight: 600;
+  border-left: 3px solid var(--mint-green);
 }
 
+/* Right Applications Grid */
 .menu-apps {
   flex: 1;
   padding: 8px;
@@ -391,9 +558,9 @@ body, html {
 
 .app-item {
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: 5px;
   color: var(--text-main);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -402,14 +569,143 @@ body, html {
 }
 
 .app-item:hover {
-  background: rgba(135, 207, 62, 0.2);
+  background: rgba(135, 189, 92, 0.22);
 }
 
 .app-item .app-icon {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
 }
 
-/* Floating HUD Overlay */
+/* ==================== LINUX MINT WELCOME SCREEN (MINTWELCOME) ==================== */
+.welcome-container {
+  display: flex;
+  height: 100%;
+  background: #181b1e;
+  color: #fff;
+}
+
+.welcome-sidebar {
+  width: 200px;
+  background: #131618;
+  border-right: 1px solid #282d33;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.welcome-nav-item {
+  padding: 10px 18px;
+  color: #9aa0a6;
+  font-size: 0.84rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.15s;
+}
+
+.welcome-nav-item:hover, .welcome-nav-item.active {
+  background: rgba(135, 189, 92, 0.18);
+  color: #fff;
+  font-weight: 600;
+  border-left: 3px solid var(--mint-green);
+}
+
+.welcome-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.welcome-hero {
+  background: linear-gradient(135deg, #1b3823 0%, #112015 100%);
+  border: 1px solid #2d5a37;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.welcome-hero-logo {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.welcome-hero h3 {
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.welcome-hero p {
+  font-size: 0.85rem;
+  color: #c0dec8;
+  line-height: 1.45;
+}
+
+.welcome-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.welcome-card {
+  background: #1f2428;
+  border: 1px solid #2d343b;
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.welcome-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--mint-green);
+}
+
+.welcome-card h4 {
+  font-size: 0.9rem;
+  color: var(--mint-green);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.welcome-card p {
+  font-size: 0.78rem;
+  color: #9aa0a6;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.welcome-btn {
+  background: #283038;
+  border: 1px solid #3c4854;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.welcome-btn:hover {
+  background: var(--mint-green);
+  color: #121513;
+  border-color: var(--mint-green);
+}
+
+/* ==================== FLOATING HUD OVERLAY ==================== */
 #hudOverlay {
   position: fixed;
   top: 18%;
@@ -453,17 +749,17 @@ body, html {
   min-height: 24px;
 }
 
-/* Terminal Styling */
+/* ==================== TERMINAL STYLING ==================== */
 .term-body {
   background: #0d1117;
   color: #58a6ff;
-  font-family: "Fira Code", monospace;
-  padding: 12px;
+  font-family: "Ubuntu Mono", "Fira Code", monospace;
+  padding: 14px;
   height: 100%;
   overflow-y: auto;
   user-select: text;
-  font-size: 0.85rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.48;
 }
 
 .term-output {
