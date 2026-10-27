@@ -27,6 +27,10 @@ from .replica_skills import (
     ReplicaSkillsRegistry,
     replica_skills
 )
+from .harold_skills import (
+    HaroldSkillsRegistry,
+    harold_skills
+)
 
 __all__ = [
     "MarvelSkillsRegistry",
@@ -40,6 +44,9 @@ __all__ = [
     "FounderSkillsRegistry",
     "founder_skills",
     "ReplicaSkillsRegistry",
-    "replica_skills"
+    "replica_skills",
+    "HaroldSkillsRegistry",
+    "harold_skills"
 ]
+
 
