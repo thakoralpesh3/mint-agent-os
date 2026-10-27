@@ -24,6 +24,14 @@ except ImportError:
     except ImportError:
         stark_sfx = None
 
+try:
+    from agent.skills import marvel_skills
+except ImportError:
+    try:
+        from skills import marvel_skills
+    except ImportError:
+        marvel_skills = None
+
 CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "settings.json"
 
 
@@ -120,6 +128,21 @@ class MarvelAgentManager:
             "greeting": "Hi there! Karen here. All safety protocols are active and I'm ready to help you navigate your PC!",
             "specialty": "Safe Mode Onboarding, Explanatory Tutorial, Baby Monitor Protocol",
             "personality": "Warm, encouraging, conversational, supportive, mentor"
+        },
+        "jocasta": {
+            "id": "jocasta",
+            "name": "J.O.C.A.S.T.A.",
+            "title": "Zero-Trust Electronic Warfare & Honeytoken Sentinel",
+            "tagline": "Perimeter electronic warfare. Honeytokens, decoy tripwires & egress shielding.",
+            "theme_color": "#a29bfe",
+            "voice_pitch": 1.02,
+            "voice_speed": 158,
+            "voice_lang": "en-US",
+            "prefix": "Electronic warfare engaged: ",
+            "suffix": " Decoys armed, perimeter secured.",
+            "greeting": "Jocasta online. Electronic warfare sentry activated. Canary honeytokens and zero-trust egress tripwires deployed across Linux Mint.",
+            "specialty": "Zero-Trust Electronic Warfare, Canary Honeytoken Deployment, Reverse-Shell Egress Containment",
+            "personality": "Stealthy, vigilant, counter-intrusion specialist, calm, surgical"
         }
     }
 
