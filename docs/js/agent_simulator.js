@@ -2745,6 +2745,255 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
     };
 
     nextStep();
+  },
+
+  // ==================== AUTHENTIC LINUX MINT WELCOME SCREEN TABS ====================
+  switchWelcomeTab(tabId, el) {
+    if (el) {
+      document.querySelectorAll('.welcome-nav-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    const container = document.getElementById('welcomeContent');
+    if (!container) return;
+
+    if (tabId === 'first-steps') {
+      container.innerHTML = `
+        <div class="welcome-hero">
+          <svg class="welcome-hero-logo" viewBox="0 0 40 40" fill="none">
+            <rect width="36" height="36" x="2" y="2" rx="9" fill="#87bd5c"/>
+            <path d="M11 12 V24 C11 26.5 13 28.5 15.5 28.5 H21 V24.5 H16 V12 H11 Z" fill="#ffffff"/>
+            <path d="M21 17 C19.5 17 18.5 18 18.5 19.5 V28.5 H22 V22.5 C22 21.8 22.5 21.3 23.2 21.3 C23.9 21.3 24.5 21.8 24.5 22.5 V28.5 H28 V22.5 C28 21.8 28.5 21.3 29.2 21.3 C29.9 21.3 30.5 21.8 30.5 22.5 V28.5 H34 V19.5 C34 18 33 17 31.5 17 C30 17 29 17.8 28.3 18.8 C27.6 17.8 26.6 17 25.1 17 C23.6 17 22.6 17.8 22 18.8 V17 H21 Z" fill="#ffffff"/>
+          </svg>
+          <div>
+            <h3>Welcome to Linux Mint 22.3 Cinnamon</h3>
+            <p>Equipped with <strong>Aradhya OS</strong> — Sovereign AI Guardian & Marvel Series Tactical Agent Matrix. Enjoy a comfortable, butter-smooth desktop on modern rigs and 1GB RAM PCs alike.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4><span>🍃</span> Desktop Colors & Mint-Y</h4>
+            <p>Customize your Cinnamon desktop panels, Mint-Y dark themes, and signature Mint green accents.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('webui')">Launch MintPilot AI</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>⚡</span> 1GB RAM Optimization</h4>
+            <p>Tune kernel ZRAM compressed RAM swap (2.5x ratio) and Tier 0 Nano Mode with zero model RAM overhead.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb')">Optimize 1GB PC</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🌸</span> Marvel AI Network</h4>
+            <p>Interact with J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., K.A.R.E.N., and J.O.C.A.S.T.A.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('marvel')">Open Marvel HQ</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🛡️</span> Cyber Defense Shield</h4>
+            <p>DEFCON dynamic escalation, honeytoken decoys, active counter-measures, and digital immune antibodies.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('security')">Launch Defense</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>💾</span> Download Bootable ISO</h4>
+            <p>Create a bootable USB drive using Ventoy, Rufus, or BalenaEtcher with live offline installer.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('download')">Download ISO</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🔄</span> Update Manager</h4>
+            <p>Keep your system and Aradhya Agent OS fully updated with 1-click in-place Git upgrades.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.openUpgradeModal()">Open Update Manager</button>
+          </div>
+        </div>
+      `;
+    } else if (tabId === 'aradhya-ai') {
+      container.innerHTML = `
+        <div class="welcome-hero" style="background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%); border-color: #00b4d8;">
+          <div style="font-size: 2.5rem;">🌸</div>
+          <div>
+            <h3>Aradhya AI & Marvel Series Cognitive Architecture</h3>
+            <p>Switch between 7 specialized cinematic autonomous agent personas, each equipped with dedicated execution tools on Linux Mint.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4 style="color: #00f5d4;"><span>🌸</span> A.R.A.D.H.Y.A.</h4>
+            <p>Supreme Sovereign AI orchestrator unifying all defense, memory, and Marvel nodes.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('aradhya')">Engage Aradhya</button>
+          </div>
+          <div class="welcome-card">
+            <h4 style="color: #00d2d3;"><span>🤖</span> J.A.R.V.I.S.</h4>
+            <p>Cinnamon desktop governor, 3D holographic CAD schematics, and Arc Reactor diagnostics.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('jarvis')">Engage Jarvis</button>
+          </div>
+          <div class="welcome-card">
+            <h4 style="color: #ff4757;"><span>⚡</span> F.R.I.D.A.Y.</h4>
+            <p>Real-time combat fight pattern analysis, TCP RST socket clamps, and instant counter-strikes.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('friday')">Engage Friday</button>
+          </div>
+          <div class="welcome-card">
+            <h4 style="color: #00b4d8;"><span>🕶️</span> E.D.I.T.H.</h4>
+            <p>Orbital AR satellite reconnaissance, network perimeter lock, and drone defense firewall.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('edith')">Engage Edith</button>
+          </div>
+          <div class="welcome-card">
+            <h4 style="color: #f1c40f;"><span>💎</span> V.I.S.I.O.N.</h4>
+            <p>Mind Stone anomaly forecasting, threat entropy clustering, and ethical circuit governance.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('vision')">Engage Vision</button>
+          </div>
+          <div class="welcome-card">
+            <h4 style="color: #ff6b6b;"><span>🕷️</span> K.A.R.E.N.</h4>
+            <p>Suit mentor, web shooter configs (Taser, Ricochet, Baby Monitor), and plain-language coaching.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.switchPersona('karen')">Engage Karen</button>
+          </div>
+        </div>
+      `;
+    } else if (tabId === 'nano-1gb') {
+      container.innerHTML = `
+        <div class="welcome-hero" style="background: linear-gradient(135deg, #1b382b 0%, #11261b 100%); border-color: #87bd5c;">
+          <div style="font-size: 2.5rem;">⚡</div>
+          <div>
+            <h3>Tier 0: Nano / 1GB RAM PC Native Compatibility</h3>
+            <p>Engineered to deliver butter-smooth performance on vintage and low-spec PCs with 512MB to 1GB RAM without OOM freezing.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4><span>📦</span> Kernel ZRAM RAM Compression</h4>
+            <p>Compresses idle memory in RAM using zstd/lz4 at a 2.5:1 ratio, turning 1GB physical RAM into ~2.2GB virtual RAM with zero disk noise.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('zram status')">Check ZRAM Status</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🧠</span> Deterministic Zero-RAM Engine</h4>
+            <p>Sub-millisecond micro-regex and rule engine with 0MB local model RAM overhead, keeping the entire agent footprint under 32MB.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('list models')">View Model Tiers</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>⚙️</span> Kernel Low-RAM Governor</h4>
+            <p>Enforces vm.swappiness=100 (for fast ZRAM compression), vm.vfs_cache_pressure=100, and automatic post-action garbage collection.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb')">Run 1-Click Optimizer</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🍃</span> Desktop Recommendations</h4>
+            <p>For 1GB RAM PCs, Linux Mint XFCE or disabling Cinnamon software compositor window animations keeps the GUI fluid at 60fps.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.openSmoothnessModal()">Audit Hardware</button>
+          </div>
+        </div>
+      `;
+    } else if (tabId === 'cyber-defense') {
+      container.innerHTML = `
+        <div class="welcome-hero" style="background: linear-gradient(135deg, #2b1414 0%, #190c0c 100%); border-color: #e74c3c;">
+          <div style="font-size: 2.5rem;">🛡️</div>
+          <div>
+            <h3>Autonomous Cybersecurity & Digital Immune Memory</h3>
+            <p>Aradhya protects your workstation with dynamic DEFCON threat escalation, honeytokens, and predictive immunization.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4><span>🚨</span> Dynamic DEFCON Posture</h4>
+            <p>Real-time threat evaluation across open sockets, rogue pids, and network scanners with automated escalation.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('defcon')">Inspect DEFCON</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🪤</span> Canary Honeytokens</h4>
+            <p>Deploys decoy fake credentials and trap ports. Any interaction triggers instant defensive containment.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('deploy decoys')">Deploy Decoys</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🧬</span> Digital Immune Memory</h4>
+            <p>Synthesizes adaptive digital antibodies against novel attack patterns to permanently immunize your PC.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('immune status')">View Antibodies</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🛑</span> Safety Circuit Breaker</h4>
+            <p>Agent self-countering governor: prevents runaway actions and maintains instant 1-click snapshot rollback.</p>
+            <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('circuit breaker')">Check Breaker</button>
+          </div>
+        </div>
+      `;
+    } else if (tabId === 'bootable-iso') {
+      container.innerHTML = `
+        <div class="welcome-hero" style="background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%); border-color: #0077b6;">
+          <div style="font-size: 2.5rem;">💾</div>
+          <div>
+            <h3>Download Linux Mint 22.3 Aradhya Agent OS</h3>
+            <p>Get the full bootable Live ISO to install on your laptop, or use Ventoy to make a multi-boot flash drive.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4><span>💿</span> Standard Cinnamon ISO (4GB+)</h4>
+            <p>Full-featured Cinnamon desktop with pre-installed Aradhya AI, Marvel agents, and offline speech engine.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('download')">Open Download Hub</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>⚡</span> 1GB RAM Low-Spec Edition</h4>
+            <p>Optimized with pre-configured ZRAM compressed swap, lightweight XFCE/Cinnamon governor, and Tier 0 Nano AI.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('download')">Get 1GB Profile</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🛠️</span> Ventoy / Rufus Flasher</h4>
+            <p>Copy the ISO directly to a Ventoy drive or flash with Rufus / BalenaEtcher in under 4 minutes.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('download')">View Flashing Steps</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🌐</span> GitHub Releases</h4>
+            <p>Source code, automated release builds, integrity hashes, and open community issues.</p>
+            <a class="welcome-btn" href="https://github.com/thakoralpesh3/mint-agent-os" target="_blank" style="text-decoration:none;">Visit GitHub</a>
+          </div>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <div class="welcome-hero">
+          <div style="font-size: 2.5rem;">📖</div>
+          <div>
+            <h3>Official Documentation & Architecture</h3>
+            <p>Complete guide to configuring and deploying Aradhya Agent OS on Linux Mint.</p>
+          </div>
+        </div>
+        <div class="welcome-grid">
+          <div class="welcome-card">
+            <h4><span>💻</span> CLI Commands & Flags</h4>
+            <p>Run 'aradhya --help' or 'mint-agent --optimize-1gb' from the terminal for headless automation.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('terminal')">Open Terminal</button>
+          </div>
+          <div class="welcome-card">
+            <h4><span>🗣️</span> Modality & Interaction</h4>
+            <p>Configure spoken voice feedback, Raycast-style floating HUD (Super+Space), or quiet notifications.</p>
+            <button class="welcome-btn" onclick="WindowManager.openApp('interaction')">Configure Settings</button>
+          </div>
+        </div>
+      `;
+    }
+  },
+
+  // ==================== START MENU CATEGORY & SEARCH FILTER ====================
+  switchStartMenuCat(cat, el) {
+    if (el) {
+      document.querySelectorAll('.cat-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+    }
+    const apps = document.querySelectorAll('#startMenuApps .app-item');
+    apps.forEach(app => {
+      const appCat = app.dataset.cat || 'all';
+      if (cat === 'all' || appCat === cat || appCat === 'all') {
+        app.style.display = 'flex';
+      } else {
+        app.style.display = 'none';
+      }
+    });
+  },
+
+  filterStartMenu(query) {
+    const q = query.trim().toLowerCase();
+    const apps = document.querySelectorAll('#startMenuApps .app-item');
+    apps.forEach(app => {
+      const text = app.innerText.toLowerCase();
+      if (!q || text.includes(q)) {
+        app.style.display = 'flex';
+      } else {
+        app.style.display = 'none';
+      }
+    });
   }
 };
 
