@@ -156,6 +156,94 @@ def main():
             print(f"\033[1;34m[{res['agent']}]\033[0m {res['thought']}")
         return
 
+    if args.skills:
+        print_banner(brain)
+        skills = brain.marvel.list_skills()
+        print("⚔️  Marvel Series Specialized Tactical Skills Matrix:\n")
+        for s in skills:
+            print(f"  • \033[1;36m{s['name']:<42}\033[0m [\033[1;33m{s['agent']}\033[0m]")
+            print(f"    \033[1;37m{s['description']}\033[0m\n")
+        print("Run directly: aradhya --fight-pattern | aradhya --drone-strike | aradhya --cad-view")
+        return
+
+    if args.fight_pattern:
+        print_banner(brain)
+        res = brain.marvel.execute_skill("friday_fight_pattern")
+        print("\033[1;31m⚡ F.R.I.D.A.Y.: COMBAT THREAT PATTERN ANALYZER\033[0m")
+        print(f"  • Status: \033[1;32m{res['status']}\033[0m | Readiness: \033[1;36m{res['counter_readiness']}\033[0m\n")
+        p = res["pattern_analysis"]
+        print(f"  Target Signature:   \033[1;33m{p['threat_signature']}\033[0m ({p['threat_severity']})")
+        print(f"  Origin / Target:    {p['origin']} -> {p['target']}")
+        print(f"  Trajectory Vector:  {p['trajectory_vector']} (Burst Rate: {p['burst_rate_pps']} pps)")
+        print(f"  Pattern Class:      \033[1;35m{p['fight_pattern_classification']}\033[0m\n")
+        print("Calculated Dynamic Countermeasures:")
+        for cm in res["countermeasures"]:
+            print(f"  ⚔️  [\033[1;32m{cm['status']}\033[0m] \033[1;36m{cm['counter_strike']:<26}\033[0m -> {cm['effect']}")
+        print(f"\n\033[1;31m[F.R.I.D.A.Y.]\033[0m \"{res['combat_speech']}\"")
+        return
+
+    if args.drone_strike is not None:
+        print_banner(brain)
+        target = args.drone_strike or "185.220.101.42"
+        res = brain.marvel.execute_skill("edith_orbital_recon", action="drone_strike", target=target)
+        print(f"\033[1;36m🕶️  E.D.I.T.H.: TACTICAL DRONE DEFENSE STRIKE ENGAGED\033[0m")
+        print(f"  Target Locked: \033[1;31m{res['target']}\033[0m | Strike Status: \033[1;32m{res['strike_status']}\033[0m\n")
+        print("Tactical Deployments Executed:")
+        for d in res["defenses_deployed"]:
+            print(f"  ✓ \033[1;32m{d}\033[0m")
+        print(f"\n\033[1;36m[E.D.I.T.H.]\033[0m \"{res['speech']}\"")
+        return
+
+    if args.cad_view:
+        print_banner(brain)
+        res = brain.marvel.execute_skill("jarvis_cad_diagnostics")
+        print("\033[1;36m🤖 J.A.R.V.I.S.: 3D HOLOGRAPHIC CAD & HARDWARE TELEMETRY\033[0m\n")
+        print(res["ascii_cad_schematic"])
+        arc = res["arc_reactor"]
+        mint = res["linux_mint_telemetry"]
+        print(f"  Arc Output:   \033[1;32m{arc['power_output_gw']} GW\033[0m | Temp: \033[1;32m{arc['core_temp_c']} °C\033[0m | Core Efficiency: {arc['reactor_efficiency_pct']}%")
+        print(f"  Compositor:   \033[1;36m{mint['compositor_fps']} FPS\033[0m ({mint['compositor_status']})")
+        print(f"  Swappiness:   \033[1;33m{mint['swappiness']}\033[0m | Priority: {mint['ram_governor']}")
+        print(f"\n\033[1;36m[J.A.R.V.I.S.]\033[0m \"{res['speech']}\"")
+        return
+
+    if args.mind_stone:
+        print_banner(brain)
+        res = brain.marvel.execute_skill("vision_mind_stone")
+        print("\033[1;33m💎 V.I.S.I.O.N.: MIND STONE ANOMALY FORECAST & ETHICAL EQUILIBRIUM\033[0m")
+        print(f"  Consciousness: \033[1;32m{res['mind_stone_status']}\033[0m | Entropy Score: {res['entropy_score']}")
+        print(f"  Active Antibodies Synthesized: \033[1;36m{res['antibodies_active']}\033[0m\n")
+        print("Forecasted Predictive Threat Vectors:")
+        for fc in res["forecasted_threats"]:
+            print(f"  🔮 [{fc['forecast_id']}] \033[1;33m{fc['anticipated_vector']:<36}\033[0m (Prob: {fc['probability']})")
+            print(f"     Preemption: \033[1;32m{fc['preemptive_defense']}\033[0m")
+        print(f"\n\033[1;33m[V.I.S.I.O.N.]\033[0m \"{res['speech']}\"")
+        return
+
+    if args.suit_mode:
+        print_banner(brain)
+        res = brain.marvel.execute_skill("karen_suit_mentor", mode=args.suit_mode)
+        if "error" in res:
+            print(f"\033[1;31m✗ Error:\033[0m {res['error']}")
+        else:
+            print(f"\033[1;35m🕷️  K.A.R.E.N.: SUIT MODE CONFIGURED\033[0m")
+            print(f"  Active Loadout: \033[1;32m{res['active_mode']}\033[0m ({res['category']})")
+            print(f"  Description:    {res['description']}")
+            print(f"\n\033[1;35m[K.A.R.E.N.]\033[0m \"{res['speech']}\"")
+        return
+
+    if args.electronic_warfare:
+        print_banner(brain)
+        res = brain.marvel.execute_skill("jocasta_electronic_warfare")
+        print(f"\033[1;34m🛡️  J.O.C.A.S.T.A.: ZERO-TRUST ELECTRONIC WARFARE ACTIVATED\033[0m")
+        print(f"  Egress Guard: \033[1;32m{res['egress_shield']}\033[0m\n")
+        print("Honeytoken Decoys Deployed:")
+        for ht in res["honeytokens_deployed"]:
+            target_desc = f"Port {ht.get('port')}" if "port" in ht else f"File {ht.get('file')}"
+            print(f"  🪤 {target_desc:<20} | Type: \033[1;33m{ht['type']:<22}\033[0m | Status: \033[1;32m{ht['status']}\033[0m")
+        print(f"\n\033[1;34m[J.O.C.A.S.T.A.]\033[0m \"{res['speech']}\"")
+        return
+
     if args.house_party:
         print_banner(brain)
         res = brain.marvel.execute_protocol("house party")
