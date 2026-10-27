@@ -2060,7 +2060,280 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
 
     if (tabId === 'stark-tab-holo') {
       this.pulseArcReactor();
+    } else if (tabId === 'stark-tab-skills') {
+      if (target) target.style.display = 'flex';
+      this.init3DCadCanvas();
     }
+  },
+
+  // ==================== MARVEL TACTICAL SKILLS ENGINE ====================
+  executeSkill(skillId, param) {
+    const consoleEl = document.getElementById('skillOutputConsole');
+    const badgeEl = document.getElementById('skillStatusBadge');
+
+    if (skillId === 'friday_fight_pattern') {
+      this.playStarkSFX('lock');
+      setTimeout(() => this.playStarkSFX('repulsor'), 250);
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: F.R.I.D.A.Y.";
+        badgeEl.style.color = "#ff4757";
+      }
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #ff4757; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#ff4757;">⚡ F.R.I.D.A.Y.: COMBAT THREAT PATTERN SCAN</strong><br>
+            <span style="color:#aaa;">Target Signature:</span> <span style="color:#ff6b6b;">TCP_SYN_FLOOD_PROBE</span> (DEFCON 2)<br>
+            <span style="color:#aaa;">Source / Target:</span> 185.220.101.42 -> 0.0.0.0:8080 (1280 pps)<br>
+            <span style="color:#aaa;">Trajectory:</span> Inbound External Reconnaissance Sweep
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(255,71,87,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#2ecc71;">Countermeasures Calculated & Armed:</strong><br>
+            • <span style="color:#70d6ff;">TCP_RST_INJECTION</span>: Force-sever hostile handshake (&lt;0.5ms)<br>
+            • <span style="color:#f1c40f;">SYN_COOKIE_CLAMP</span>: sysctl net.ipv4.tcp_syncookies=1<br>
+            • <span style="color:#ff4757;">INGRESS_DROP</span>: Dynamic firewall blackhole for 185.220.101.42
+          </div>
+        `;
+      }
+      const line = "Boss, I've scanned their fight pattern! It's an asymmetric SYN flood probe from 185.220.101.42. Countermeasures calculated and ready to fire—let's kick their ass!";
+      this.speak(line, true);
+      this.printTermLine(`[F.R.I.D.A.Y.] "${line}"`);
+
+    } else if (skillId === 'edith_orbital_recon') {
+      const target = param || "185.220.101.42";
+      this.playStarkSFX('lock');
+      setTimeout(() => this.playStarkSFX('neutralized'), 300);
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: E.D.I.T.H.";
+        badgeEl.style.color = "#00b4d8";
+      }
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #00b4d8; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#00b4d8;">🕶️ E.D.I.T.H.: TACTICAL DRONE DEFENSE STRIKE</strong><br>
+            <span style="color:#aaa;">Target Locked:</span> <span style="color:#ff4757;">${target}</span><br>
+            <span style="color:#aaa;">Satellite Uplink:</span> STARK-ORBITAL-7 (AR Tracking Active)<br>
+            <span style="color:#aaa;">Status:</span> <strong style="color:#2ecc71;">TARGET NEUTRALIZED</strong>
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(0,180,216,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#2ecc71;">Deployments Executed:</strong><br>
+            • Orbital drone swarm locked and redirected to blackhole ${target}<br>
+            • Null-route rule injected into Linux Mint iptables ingress filter<br>
+            • Connection severed with TCP RST frames; antibody synthesized
+          </div>
+        `;
+      }
+      const line = `Target ${target} locked in crosshairs. Tactical defensive strike executed. Hostile connection neutralized.`;
+      this.speak(line, true);
+      this.printTermLine(`[E.D.I.T.H.] "${line}"`);
+
+    } else if (skillId === 'jarvis_cad_diagnostics') {
+      this.playStarkSFX('chime');
+      this.init3DCadCanvas();
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: J.A.R.V.I.S.";
+        badgeEl.style.color = "#00d2d3";
+      }
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #00d2d3; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#00d2d3;">🤖 J.A.R.V.I.S.: 3D HOLOGRAPHIC CAD TELEMETRY</strong><br>
+            <span style="color:#aaa;">Mark 85 Reactor:</span> <span style="color:#2ecc71;">8.24 GW (100% Efficiency)</span><br>
+            <span style="color:#aaa;">Core Temp:</span> 38.4 °C | <span style="color:#aaa;">Swappiness:</span> 10 (Locked)<br>
+            <span style="color:#aaa;">Cinnamon Compositor:</span> <strong style="color:#70d6ff;">60.0 FPS Butter-Smooth</strong>
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(0,210,211,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#00d2d3;">Hardware Governors Online:</strong><br>
+            • Cinnamon compositor VSync active; zero desktop stutter<br>
+            • Background Nice (+10) priority applied to agent daemon<br>
+            • 3D wireframe mesh projected on CAD viewport
+          </div>
+        `;
+      }
+      const line = "Right away, sir. All Linux Mint kernel parameters, Cinnamon compositor frames, and Arc Reactor diagnostics are holding at pristine baseline.";
+      this.speak(line, true);
+      this.printTermLine(`[J.A.R.V.I.S.] "${line}"`);
+
+    } else if (skillId === 'vision_mind_stone') {
+      this.playStarkSFX('chime');
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: V.I.S.I.O.N.";
+        badgeEl.style.color = "#f1c40f";
+      }
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #f1c40f; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#f1c40f;">💎 V.I.S.I.O.N.: MIND STONE ANOMALY FORECAST</strong><br>
+            <span style="color:#aaa;">Consciousness:</span> <span style="color:#2ecc71;">ALIGNED</span> | Entropy: 0.12 (Order)<br>
+            <span style="color:#aaa;">Synthesized Antibodies:</span> 16 Active Rules in Kernel
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(241,196,15,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#f1c40f;">Forecasted Threat Preemptions:</strong><br>
+            • <span style="color:#fff;">Port Scan Sweep</span> (89% prob): SYN cookies armed<br>
+            • <span style="color:#fff;">Payload in /tmp</span> (74% prob): inotify write watchdog active<br>
+            • <span style="color:#fff;">Credential Probe</span> (62% prob): Canary decoys primed
+          </div>
+        `;
+      }
+      const line = "I perceive the flow of data across the network. By anticipating anomalous variance before it manifests, we preserve equilibrium without malice.";
+      this.speak(line, true);
+      this.printTermLine(`[V.I.S.I.O.N.] "${line}"`);
+
+    } else if (skillId === 'karen_suit_mentor') {
+      const mode = param || "taser web";
+      this.playStarkSFX('chime');
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: K.A.R.E.N.";
+        badgeEl.style.color = "#ff6b6b";
+      }
+      const descText = mode.includes('taser') ? '• Electrifies & terminates unauthorized inbound sockets with TCP RST frames' :
+             (mode.includes('ricochet') ? '• Redirects unauthorized scanners into canary honeypot ports' :
+              '• Guarded Safe Mode with human confirmation on all bash executions');
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #ff6b6b; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#ff6b6b;">🕷️ K.A.R.E.N.: SUIT MODE CONFIGURED</strong><br>
+            <span style="color:#aaa;">Active Loadout:</span> <span style="color:#fff; font-weight:bold;">${mode.toUpperCase()}</span><br>
+            <span style="color:#aaa;">Category:</span> Tactical Combat & User Protection
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(255,107,107,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#ff6b6b;">Mode Capabilities:</strong><br>
+            ${descText}
+          </div>
+        `;
+      }
+      const line = `You got it! I've activated the ${mode.toUpperCase()} loadout. Safety parameters are active and ready!`;
+      this.speak(line, true);
+      this.printTermLine(`[K.A.R.E.N.] "${line}"`);
+
+    } else if (skillId === 'jocasta_electronic_warfare') {
+      this.playStarkSFX('repulsor');
+      if (badgeEl) {
+        badgeEl.innerText = "ACTIVE: J.O.C.A.S.T.A.";
+        badgeEl.style.color = "#a29bfe";
+      }
+      if (consoleEl) {
+        consoleEl.innerHTML = `
+          <div style="border-left: 3px solid #a29bfe; padding-left: 8px; margin-bottom: 6px;">
+            <strong style="color:#a29bfe;">🛡️ J.O.C.A.S.T.A.: ZERO-TRUST ELECTRONIC WARFARE</strong><br>
+            <span style="color:#aaa;">Egress Shield:</span> <span style="color:#2ecc71;">ZERO-TRUST ACTIVE</span><br>
+            <span style="color:#aaa;">Honeytoken Status:</span> 3 Decoys Armed & Listening
+          </div>
+          <div style="background:#090d12; border:1px solid rgba(162,155,254,0.3); border-radius:4px; padding:6px; margin-top:4px;">
+            <strong style="color:#a29bfe;">Deployed Canary Tripwires:</strong><br>
+            • Port 2222: Decoy SSH Honeypot (Listening)<br>
+            • Port 8888: Decoy Web Admin Console (Tripwire)<br>
+            • /tmp/.canary_aws_keys: Bait Canary Token (Inotify Armed)
+          </div>
+        `;
+      }
+      const line = "Jocasta electronic warfare grid engaged. Honeytoken decoys deployed on perimeter ports. Any hostile touch triggers instant quarantine.";
+      this.speak(line, true);
+      this.printTermLine(`[J.O.C.A.S.T.A.] "${line}"`);
+    }
+  },
+
+  // ==================== 3D HOLOGRAPHIC CAD WIREFRAME CANVAS ====================
+  init3DCadCanvas() {
+    if (this._3dCadRunning) return;
+    const canvas = document.getElementById('stark3DCadCanvas');
+    if (!canvas) return;
+    this._3dCadRunning = true;
+
+    const ctx = canvas.getContext('2d');
+    let rotX = 15;
+    let rotY = 0;
+
+    // 3D Wireframe Vertices of an Iron Man Mark-85 Armor Helmet / Cube Mesh
+    const nodes = [
+      [-35, -45, -35], [35, -45, -35], [35, 35, -35], [-35, 35, -35], // back
+      [-45, -45,  35], [45, -45,  35], [45, 45,  35], [-45, 45,  35], // front
+      [-18, -18,  40], [-4, -18,  40], [-4, -8,  40], [-18, -8,  40], // left eye
+      [ 18, -18,  40], [ 4, -18,  40], [ 4, -8,  40], [ 18, -8,  40], // right eye
+      [  0,  12,  42], [ -12, 30, 40], [ 12, 30, 40]                  // mouth
+    ];
+
+    const edges = [
+      [0,1],[1,2],[2,3],[3,0], // back
+      [4,5],[5,6],[6,7],[7,4], // front
+      [0,4],[1,5],[2,6],[3,7], // connecting
+      [8,9],[9,10],[10,11],[11,8], // eye L
+      [12,13],[13,14],[14,15],[15,12], // eye R
+      [16,17],[17,18],[18,16] // chin
+    ];
+
+    const render = () => {
+      const c = document.getElementById('stark3DCadCanvas');
+      if (!c) {
+        this._3dCadRunning = false;
+        return;
+      }
+      rotY += 1.2;
+      rotX = 15 + Math.sin(rotY * 0.02) * 10;
+
+      ctx.fillStyle = '#070b10';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Radar grid background
+      ctx.strokeStyle = 'rgba(0, 245, 212, 0.06)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      const radX = rotX * Math.PI / 180;
+      const radY = rotY * Math.PI / 180;
+      const cosX = Math.cos(radX), sinX = Math.sin(radX);
+      const cosY = Math.cos(radY), sinY = Math.sin(radY);
+
+      const proj = [];
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2 + 10;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const x = nodes[i][0];
+        const y = nodes[i][1];
+        const z = nodes[i][2];
+
+        // Rotate Y
+        const x1 = x * cosY + z * sinY;
+        const z1 = -x * sinY + z * cosY;
+
+        // Rotate X
+        const y2 = y * cosX - z1 * sinX;
+        const z2 = y * sinX + z1 * cosX;
+
+        // Perspective projection
+        const fov = 200;
+        const scale = fov / (fov + z2 + 90);
+        proj.push([cx + x1 * scale, cy + y2 * scale]);
+      }
+
+      // Draw Edges
+      const p = this.personas[this.activePersona] || this.personas.aradhya;
+      ctx.strokeStyle = p.color || '#00f5d4';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < edges.length; i++) {
+        const p1 = proj[edges[i][0]];
+        const p2 = proj[edges[i][1]];
+        ctx.beginPath();
+        ctx.moveTo(p1[0], p1[1]);
+        ctx.lineTo(p2[0], p2[1]);
+        ctx.stroke();
+      }
+
+      // Glowing Vertices
+      ctx.fillStyle = '#fff';
+      for (let i = 0; i < proj.length; i++) {
+        ctx.fillRect(proj[i][0] - 1.5, proj[i][1] - 1.5, 3, 3);
+      }
+
+      requestAnimationFrame(render);
+    };
+
+    render();
   },
 
   // ==================== E.D.I.T.H. TACTICAL AR SCANNER ====================
