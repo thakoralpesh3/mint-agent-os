@@ -1202,6 +1202,238 @@
       </div>
     </div>
 
+    <!-- ==================== WINDOW 9: THE FOUNDER & REPLICA ENTERPRISE SUITE ==================== -->
+    <div id="win-founder-replica" class="window" data-icon="🚀" style="top: 35px; left: 160px; width: 860px; height: 580px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🚀</span> <span>The Founder & Replica Enterprise Suite — Jake Schincariol Skills</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-founder-replica')" title="Minimize">—</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-founder-replica')" title="Maximize">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-founder-replica')" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="interact-hub" style="background:#0b0f14; padding:16px;">
+          
+          <!-- Hero Banner -->
+          <div style="background: linear-gradient(135deg, #1c152b 0%, #0d131a 100%); border: 1px solid #a29bfe; border-radius: 8px; padding: 14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                🚀 THE FOUNDER & REPLICA ENTERPRISE SUITE
+                <span style="font-size:0.7rem; background:#a29bfe; color:#000; padding:1px 6px; border-radius:8px; font-weight:bold;">22 SKILLS LOADED</span>
+              </h3>
+              <p style="margin:2px 0 0 0; font-size:0.78rem; color:#dcdde1;">Jake Schincariol Open-Source Skills • 11 Business Validation & 11 Clean-Room Reverse Engineering Skills</p>
+              <div style="display:flex; gap:6px; margin-top:5px; flex-wrap:wrap;">
+                <span class="dl-badge" style="border-color:#00f5d4; color:#00f5d4;">💼 Founder: 11 Skills</span>
+                <span class="dl-badge" style="border-color:#a29bfe; color:#a29bfe;">🧬 Replica: 11 Skills</span>
+                <span class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">⚡ 100% Offline Python StdLib</span>
+                <span class="dl-badge" style="border-color:#f1c40f; color:#f1c40f;">🛡️ Clean-Room Legal Architecture</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="dl-btn-primary" style="background:#a29bfe; color:#000; font-weight:bold;" onclick="AgentSimulator.runFounderBoard()">
+                ⚖️ Simulate Board
+              </button>
+              <button class="dl-btn-secondary" style="border-color:#00f5d4; color:#00f5d4;" onclick="AgentSimulator.runReplicaRecon()">
+                🧬 Run Recon
+              </button>
+            </div>
+          </div>
+
+          <!-- Navigation Tabs -->
+          <div class="dl-tab-nav" style="margin-top:12px; margin-bottom:12px; display:flex; gap:6px; border-bottom:1px solid #1a2634; padding-bottom:6px; flex-wrap:wrap;">
+            <button class="dl-tab-btn active" onclick="AgentSimulator.switchFounderTab('founder-tab-suite', this)">💼 1. The Founder Suite (11 Skills)</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchFounderTab('replica-tab-suite', this)">🧬 2. The Replica Clean-Room Suite (11 Skills)</button>
+            <button class="dl-tab-btn" onclick="AgentSimulator.switchFounderTab('founder-replica-cli', this)">💻 3. CLI Terminal Cheatsheet</button>
+          </div>
+
+          <!-- ==================== TAB 1: THE FOUNDER SUITE ==================== -->
+          <div id="founder-tab-suite" class="dl-tab-pane active" style="display:flex; gap:12px;">
+            <!-- Controls & Skills List -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+              <div style="background:#13181d; border:1px solid #232c34; border-radius:8px; padding:12px;">
+                <label style="display:block; font-size:0.75rem; color:#888; margin-bottom:4px; font-weight:bold;">BUSINESS IDEA / STARTUP CONCEPT:</label>
+                <input type="text" id="founderIdeaInput" value="Autonomous Linux Mint Sovereign Agent Operating System" style="width:100%; box-sizing:border-box; background:#0b0e12; border:1px solid #33404c; color:#fff; padding:7px 10px; border-radius:5px; font-size:0.8rem;">
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+                  <button class="dl-btn-primary" style="background:#00b894; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runFounderBoard()">
+                    ⚖️ 3-Member Board
+                  </button>
+                  <button class="dl-btn-primary" style="background:#0984e3; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runFounderCFO()">
+                    📊 CFO Unit Economics
+                  </button>
+                  <button class="dl-btn-primary" style="background:#6c5ce7; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runFounderConsumer()">
+                    👥 10-Buyer Panel
+                  </button>
+                  <button class="dl-btn-primary" style="background:#fdcb6e; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runFounderPricing()">
+                    🏷️ Price Sensitivity
+                  </button>
+                </div>
+              </div>
+
+              <!-- 11 Founder Skills Cards -->
+              <div style="background:#13181d; border:1px solid #232c34; border-radius:8px; padding:10px; flex:1; overflow-y:auto; max-height:220px; font-size:0.75rem; display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-board</strong> <span>Hormozi, Thiel, Jobs board vote</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-cfo</strong> <span>unit_economics.py breakeven & payback</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-consumer</strong> <span>10-buyer simulated objection panel</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-pricing</strong> <span>Van Westendorp curve (PMC, PME, OPP, IPP)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-competitors</strong> <span>Moat & asymmetric wedge attack</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-offer</strong> <span>$100M Grand Slam Offer & value equation</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-brand</strong> <span>Positioning, tone, enemy antithesis</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-marketing</strong> <span>Growth loops & organic distribution</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-ops</strong> <span>Minimal headcount SOPs & architecture</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#00f5d4;">/founder-plan</strong> <span>90-day lean execution sprint compiler</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <strong style="color:#00f5d4;">/founder-launch</strong> <span>Product Hunt / Hacker News press kit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output Console -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1f2a36; border-radius:8px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1a2634; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#00f5d4; font-family:monospace;">FOUNDER COGNITIVE TELEMETRY</strong>
+                <span id="founderStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">READY</span>
+              </div>
+              <div id="founderOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:340px;">
+                <span style="color:#888;">Select any of the Founder tools on the left to simulate Board review, CFO unit economics, buyer objections, or Van Westendorp pricing...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 2: THE REPLICA SUITE ==================== -->
+          <div id="replica-tab-suite" class="dl-tab-pane" style="display:none; gap:12px;">
+            <!-- Controls & Skills List -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+              <div style="background:#13181d; border:1px solid #232c34; border-radius:8px; padding:12px;">
+                <label style="display:block; font-size:0.75rem; color:#888; margin-bottom:4px; font-weight:bold;">TARGET APPLICATION OR URL TO REVERSE-ENGINEER:</label>
+                <input type="text" id="replicaTargetUrl" value="https://linear.app" style="width:100%; box-sizing:border-box; background:#0b0e12; border:1px solid #33404c; color:#fff; padding:7px 10px; border-radius:5px; font-size:0.8rem;">
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+                  <button class="dl-btn-primary" style="background:#a29bfe; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runReplicaRecon()">
+                    🧬 Replica Recon
+                  </button>
+                  <button class="dl-btn-primary" style="background:#00cec9; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runReplicaContrast()">
+                    🎨 Token Contrast
+                  </button>
+                  <button class="dl-btn-primary" style="background:#e84393; color:#fff; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runReplicaDiff()">
+                    ⚖️ Parity Score (Diff)
+                  </button>
+                  <button class="dl-btn-primary" style="background:#fd79a8; color:#000; font-weight:bold; font-size:0.76rem; padding:6px 8px; justify-content:center;" onclick="AgentSimulator.runReplicaReviews()">
+                    💎 Mine 1-Star Reviews
+                  </button>
+                </div>
+              </div>
+
+              <!-- 11 Replica Skills Cards -->
+              <div style="background:#13181d; border:1px solid #232c34; border-radius:8px; padding:10px; flex:1; overflow-y:auto; max-height:220px; font-size:0.75rem; display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-recon</strong> <span>Screens, user flows & feature matrix</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-architect</strong> <span>Clean-room schema & API architecture</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-design</strong> <span>contrast.py WCAG AAA token checker</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-build</strong> <span>Accessible frontend component tree</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-backend</strong> <span>SQL migrations, JWT & rate limiters</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-diff</strong> <span>parity.py feature completion (0-100%)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-test</strong> <span>Playwright / Cypress E2E test specs</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-entrepreneur</strong> <span>reviews.py 1-star complaint mining</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-brand</strong> <span>sweep.py upstream trademark purge</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1e2730; padding-bottom:3px;">
+                  <strong style="color:#a29bfe;">/replica-launch</strong> <span>listing.py App Store metadata linter</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <strong style="color:#a29bfe;">/replica-deploy</strong> <span>Zero-downtime preflight checklist</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Output Console -->
+            <div style="flex:1.2; background:#070a0e; border:1px solid #1f2a36; border-radius:8px; padding:12px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1a2634; padding-bottom:6px; margin-bottom:8px;">
+                <strong style="font-size:0.75rem; color:#a29bfe; font-family:monospace;">REPLICA CLEAN-ROOM LOG</strong>
+                <span id="replicaStatusBadge" style="font-size:0.7rem; color:#2ecc71; font-family:monospace; font-weight:bold;">READY</span>
+              </div>
+              <div id="replicaOutputLog" style="font-family:monospace; font-size:0.73rem; color:#e0e0e0; line-height:1.45; overflow-y:auto; flex:1; max-height:340px;">
+                <span style="color:#888;">Enter any target app URL on the left and click 'Replica Recon' to generate an instant clean-room reverse-engineering breakdown...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== TAB 3: CLI CHEATSHEET ==================== -->
+          <div id="founder-replica-cli" class="dl-tab-pane" style="display:none; flex-direction:column; gap:10px;">
+            <div style="background:#13181d; border:1px solid #232c34; border-radius:8px; padding:14px;">
+              <h4 style="margin:0 0 8px 0; color:#00f5d4; font-size:0.95rem;">💻 Native Linux Mint CLI Invocation</h4>
+              <p style="margin:0 0 12px 0; font-size:0.8rem; color:#aaa;">Both skill suites are fully wired into the Aradhya Agent OS CLI, deterministic brain router, and Antigravity progressive disclosure engine:</p>
+              
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                  <strong style="color:#00f5d4; font-size:0.82rem;">The Founder Suite:</strong>
+                  <pre style="background:#080b0f; border:1px solid #1b242e; border-radius:5px; padding:8px; color:#70d6ff; font-size:0.73rem; margin-top:4px; overflow-x:auto;">
+mint-agent --founder board
+mint-agent --founder cfo
+mint-agent --founder consumer
+mint-agent --founder pricing
+mint-agent --founder offer
+mint-agent --founder plan
+mint-agent --founder all --idea "My Startup"</pre>
+                </div>
+                <div>
+                  <strong style="color:#a29bfe; font-size:0.82rem;">The Replica Clean-Room Suite:</strong>
+                  <pre style="background:#080b0f; border:1px solid #1b242e; border-radius:5px; padding:8px; color:#dcdde1; font-size:0.73rem; margin-top:4px; overflow-x:auto;">
+mint-agent --replica recon --target-app "https://linear.app"
+mint-agent --replica architect
+mint-agent --replica design
+mint-agent --replica diff
+mint-agent --replica entrepreneur
+mint-agent --replica deploy
+mint-agent --replica all</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== FLOATING HUD OVERLAY (SUPER+SPACE) ==================== -->
     <div id="hudOverlay">
       <div class="hud-input-row">
