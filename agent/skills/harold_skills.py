@@ -180,10 +180,11 @@ class HaroldSkillsRegistry:
         }
 
     # 5. Harold Canvas
-    def run_canvas(self, topic: str) -> Dict[str, Any]:
+    def run_canvas(self, topic: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Generates visual layout and system architecture canvas."""
+        top = topic or prompt or kwargs.get("title") or "System Architecture"
         canvas_spec = {
-            "title": f"Canvas: {topic}",
+            "title": f"Canvas: {top}",
             "dimensions": "1920x1080 (16:9 4K Vector)",
             "layers": [
                 {"name": "Background", "type": "Radial Gradient", "fill": "#0b0f14 -> #17202a"},
@@ -212,20 +213,21 @@ class HaroldSkillsRegistry:
         }
         return {
             "skill": "harold-canvas",
-            "topic": topic,
+            "topic": top,
             "canvas_spec": canvas_spec,
             "status": "success"
         }
 
     # 6. Harold Docs
-    def run_docs(self, title: str) -> Dict[str, Any]:
+    def run_docs(self, title: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Generates structured documentation and technical memos."""
+        doc_title = title or prompt or kwargs.get("topic") or "Linux Mint Security Whitepaper"
         return {
             "skill": "harold-docs",
-            "title": title,
+            "title": doc_title,
             "template": "Executive Technical Brief",
             "sections": [
-                {"heading": "1. Executive Summary", "content": f"Architectural specification for {title} running on Linux Mint."},
+                {"heading": "1. Executive Summary", "content": f"Architectural specification for {doc_title} running on Linux Mint."},
                 {"heading": "2. Sovereign Offline Infrastructure", "content": "100% local execution with zero cloud telemetry and sub-35MB memory footprint."},
                 {"heading": "3. Security & Safety Gates", "content": "Tiered permissions with explicit user approval on all modifying system commands."},
                 {"heading": "4. Conclusion & Milestones", "content": "Production deployment ready with automated verification."}
@@ -235,8 +237,9 @@ class HaroldSkillsRegistry:
         }
 
     # 7. Harold Sheets
-    def run_sheets(self, task: str) -> Dict[str, Any]:
+    def run_sheets(self, task: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Generates tabular data, cleans CSVs, and computes column summaries."""
+        sheet_task = task or prompt or kwargs.get("query") or "Resource Allocation Model"
         table = {
             "sheet_name": "Resource_Allocation_2026",
             "columns": ["Component", "Memory_Target_MB", "CPU_Ceiling_Pct", "Latency_MS", "Status"],
@@ -256,14 +259,15 @@ class HaroldSkillsRegistry:
         }
         return {
             "skill": "harold-sheets",
-            "task": task,
+            "task": sheet_task,
             "table": table,
             "status": "success"
         }
 
     # 8. Harold Slides
-    def run_slides(self, topic: str) -> Dict[str, Any]:
+    def run_slides(self, topic: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Creates presentation slide deck outlines with speaker notes."""
+        slide_topic = topic or prompt or kwargs.get("title") or "Aradhya Agent OS Pitch Deck"
         slides = [
             {"slide": 1, "title": topic, "subtitle": "Autonomous Sovereign Agent Operating System for Linux Mint", "notes": "Welcome the audience and introduce the paradigm shift to agent-native operating systems."},
             {"slide": 2, "title": "The Problem: Cloud Bloat & Hardware Tax", "bullets": ["Copilot+ and Apple Intelligence require $1,200+ hardware upgrades", "Continuous background screenshotting and privacy loss", "Sluggish performance on budget PCs"], "notes": "Emphasize why users are rejecting bloated cloud surveillance operating systems."},
