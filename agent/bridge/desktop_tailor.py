@@ -82,12 +82,20 @@ class DesktopTailor:
         return {
             "status": "applied",
             "preset_applied": name,
+            "applied_preset": name,
             "theme": chosen["theme"],
             "accent_color": chosen["accent_color"],
             "wallpaper": chosen["wallpaper"],
             "compositor_effects": "Enabled (60fps)" if chosen["compositor_effects"] else "Disabled (Low-RAM Optimization)",
             "description": chosen["description"],
             "applied_gsettings": applied_settings,
+            "message": f"Desktop tailored to '{name}'. Accent: {chosen['accent_color']} | Theme: {chosen['theme']}.",
+            "config": {
+                "theme": chosen["theme"],
+                "icons": chosen["icon_theme"],
+                "font_scale": "1.0",
+                "compositor_effects": "Enabled (60fps)" if chosen["compositor_effects"] else "Disabled (Low-RAM Optimization)"
+            },
             "summary": f"Desktop tailored to '{name}'. Accent: {chosen['accent_color']} | Theme: {chosen['theme']}."
         }
 

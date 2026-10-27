@@ -288,7 +288,10 @@ class HaroldSkillsRegistry:
         records = audit_trail.read_recent(limit=6)
         return {
             "skill": "harold-audit",
+            "audit_log_path": str(audit_trail.log_file),
+            "total_entries": len(records),
             "records_count": len(records),
+            "recent_entries": records,
             "recent_audit_records": records,
             "status": "success"
         }
