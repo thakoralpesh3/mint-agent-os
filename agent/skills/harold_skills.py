@@ -102,16 +102,17 @@ class HaroldSkillsRegistry:
         return res
 
     # 3. Desktop Tailor
-    def run_tailor(self, instruction: str) -> Dict[str, Any]:
+    def run_tailor(self, instruction: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Customizes Linux Mint desktop appearance and theme."""
-        res = desktop_tailor.tailor(instruction)
+        inst = instruction or prompt or kwargs.get("theme") or "mint classic"
+        res = desktop_tailor.tailor(inst)
         res["skill"] = "harold-tailor"
         return res
 
     # 4. Harold Calc
-    def run_calc(self, expression: str) -> Dict[str, Any]:
+    def run_calc(self, expression: Optional[str] = None, prompt: Optional[str] = None, **kwargs) -> Dict[str, Any]:
         """Evaluates sentence math, units, currencies, and percentages."""
-        expr = expression.strip()
+        expr = (expression or prompt or kwargs.get("query") or "20% of 450").strip()
         result_text = ""
         working = ""
 
