@@ -288,6 +288,122 @@ def main():
         print(f"\033[1;34m[E.D.I.T.H.]\033[0m {res['thought']}")
         return
 
+    if args.founder is not None:
+        print_banner(brain)
+        cmd = args.founder.lower().strip()
+        idea = args.idea or "Autonomous Linux Mint Sovereign Agent Operating System"
+        res = brain.founder.execute_skill(cmd, idea=idea)
+
+        print(f"\033[1;32m💼 THE FOUNDER SUITE: {cmd.upper()}\033[0m")
+        if cmd == "board":
+            print(f"  Consensus: \033[1;32m{res['consensus']}\033[0m")
+            print(f"  Target Idea: \"{res['idea']}\"\n")
+            print("  Board of Directors Evaluation:")
+            for m in res["members"]:
+                print(f"  • \033[1;36m{m['lens']}\033[0m — Score: \033[1;33m{m['score']}/100\033[0m | Vote: \033[1;32m{m['vote']}\033[0m")
+                if "fatal_risk" in m:
+                    print(f"    \033[1;31mFatal Risk:\033[0m {m['fatal_risk']}")
+            print("\n  Killer Questions:")
+            for q in res.get("killer_questions", []):
+                print(f"    ❓ {q}")
+        elif cmd == "cfo":
+            print(f"  Summary: \033[1;36m{res.get('summary', '')}\033[0m\n")
+            m = res.get("metrics", {})
+            print(f"  Unit Price:            ${m.get('price', 0):.2f}")
+            print(f"  Variable Cost:         ${m.get('variable_per_unit', 0):.2f}")
+            print(f"  Contribution Margin:   ${m.get('contribution', 0):.2f} ({m.get('contribution_pct', 0)*100:.1f}%)")
+            print(f"  Fixed Monthly Cost:    ${m.get('fixed_monthly', 0):,.2f}")
+            print(f"  Breakeven Required:    {m.get('breakeven_per_day', 0):.1f} units/day")
+            print(f"  Startup Capital:       ${m.get('startup', 0):,.2f}")
+            print(f"  Payback Month:         Month {m.get('payback_month', 'N/A')}")
+            print(f"  Year 1 Net Profit:     ${m.get('year1_profit', 0):,.2f}")
+        elif cmd == "consumer":
+            print(f"  Net Intent Score: \033[1;32m{res.get('net_intent_score')}\033[0m across {res.get('panel_size')} simulated buyers.")
+            print(f"  Consensus: {res.get('primary_consensus')}")
+            print(f"  Top Objection: \033[1;33m{res.get('top_objection')}\033[0m\n")
+            for p in res.get("panel", []):
+                print(f"  • \033[1;36m{p['persona']:<30}\033[0m WTP: \033[1;32m{p['wtp']:<24}\033[0m Intent: \033[1;33m{p['intent']}\033[0m")
+                print(f"    Objection: {p['objection']}")
+        elif cmd == "pricing":
+            vw = res.get("van_westendorp_analysis", {})
+            print(f"  Optimal Price Point (OPP):       \033[1;32m${vw.get('optimal_price_point_opp'):.2f}\033[0m")
+            print(f"  Point of Marginal Cheapness:     ${vw.get('point_of_marginal_cheapness_pmc'):.2f}")
+            print(f"  Indifference Price Point (IPP):  ${vw.get('indifference_price_point_ipp'):.2f}")
+            print(f"  Point of Marginal Expensiveness: ${vw.get('point_of_marginal_expensiveness_pme'):.2f}")
+            print(f"  Acceptable Price Range:          \033[1;36m{vw.get('acceptable_price_range')}\033[0m\n")
+            print("  Recommended Tiers:")
+            for t in vw.get("recommended_tiering", []):
+                print(f"  • \033[1;33m{t['tier']:<28}\033[0m {t['price']:<10} — {t['features']}")
+        elif cmd == "offer":
+            o = res.get("offer", {})
+            print(f"  Headline: \033[1;36m\"{o.get('headline')}\"\033[0m")
+            print(f"  Dream Outcome: {o.get('dream_outcome')}")
+            print(f"  Guarantee:     \033[1;32m{o.get('risk_reversal_guarantee')}\033[0m\n")
+            print("  Grand Slam Bonus Stack:")
+            for b in o.get("bonus_stack", []):
+                print(f"  🎁 \033[1;33m{b['item']:<60}\033[0m [{b['value']}]")
+            print(f"\n  Anchor: {o.get('price_anchor')}")
+        else:
+            print(json.dumps(res, indent=2))
+        return
+
+    if args.replica is not None:
+        print_banner(brain)
+        cmd = args.replica.lower().strip()
+        target = args.target_app or "https://linear.app"
+        res = brain.replica.execute_skill(cmd, target=target)
+
+        print(f"\033[1;35m🧬 THE REPLICA CLEAN-ROOM SUITE: {cmd.upper()}\033[0m")
+        if cmd == "recon":
+            rm = res.get("recon_map", {})
+            print(f"  Target Application: \033[1;36m{res.get('target')}\033[0m")
+            print(f"  Screen Inventory:   \033[1;32m{rm.get('screen_inventory_count')} screens mapped\033[0m\n")
+            print("  Mapped Screen Inventory:")
+            for s in rm.get("screens", []):
+                print(f"  • \033[1;36m{s['screen']:<32}\033[0m [{s['type']}] — {s['purpose']}")
+            print("\n  Core User Flows:")
+            for f in rm.get("core_flows", []):
+                print(f"  ➔  {f}")
+            print("\n  Inferred Data Models:")
+            for d in rm.get("inferred_data_model", []):
+                print(f"  🗄️  {d}")
+        elif cmd == "architect":
+            arch = res.get("architecture", {})
+            print(f"  Target:            \033[1;36m{res.get('target')}\033[0m")
+            print(f"  Frontend Stack:    \033[1;32m{arch.get('frontend_stack')}\033[0m")
+            print(f"  Backend Stack:     \033[1;32m{arch.get('backend_stack')}\033[0m")
+            print(f"  Database Layer:    \033[1;33m{arch.get('database')}\033[0m")
+            print(f"  Offline Sync:      {arch.get('offline_first_engine')}\n")
+            print("  Core API Endpoints:")
+            for ep in arch.get("api_endpoints", []):
+                print(f"  ⚡ {ep}")
+        elif cmd == "design":
+            print(f"  Contrast Ratio: \033[1;32m{res.get('ratio')}:1\033[0m")
+            print(f"  WCAG AA Pass:   \033[1;32m{res.get('wcag_aa')}\033[0m")
+            print(f"  WCAG AAA Pass:  \033[1;32m{res.get('wcag_aaa')}\033[0m")
+        elif cmd in ("diff", "parity"):
+            print(f"  Parity Score:     \033[1;32m{res.get('parity_score')}\033[0m")
+            print(f"  Tracked Features: {res.get('counted_features')}")
+            print(f"  Missing Features: \033[1;33m{res.get('missing_count')}\033[0m\n")
+            print("  Area Completion:")
+            for a in res.get("areas_breakdown", []):
+                print(f"  • {a['area']:<20} Completion: {a['score']*100:.1f}% ({a['features']} features)")
+        elif cmd in ("entrepreneur", "reviews"):
+            print(f"  Winning Differentiator: \033[1;32m{res.get('top_differentiator')}\033[0m\n")
+            print("  Competitor 1-Star Flaws Mined:")
+            for f in res.get("competitor_mined_flaws", []):
+                print(f"  ⚠️  \033[1;31m{f['pain_point']}\033[0m ({f['frequency']})")
+                print(f"     Countermeasure: \033[1;32m{f['countermeasure']}\033[0m\n")
+        elif cmd in ("deploy", "preflight"):
+            print(f"  Production Ready: \033[1;32m{res.get('ready_for_production')}\033[0m\n")
+            print("  Deployment Preflight Checklist:")
+            for c in res.get("preflight_checks", []):
+                print(f"  ✓ [\033[1;32m{c['status']}\033[0m] \033[1;36m{c['item']:<35}\033[0m -> {c['detail']}")
+        else:
+            print(json.dumps(res, indent=2))
+        return
+
+
     if args.sfx:
         if stark_sfx:
             print(f"\033[1;36m⚡ Playing Stark SFX:\033[0m {args.sfx}...")
