@@ -62,7 +62,10 @@ class AgentBrain:
         ram_mb = mem_stats.get("total_mb", 4000)
         has_gpu = shutil.which("nvidia-smi") is not None
 
-        if ram_mb <= 4500:
+        if ram_mb <= 1250:
+            tier = "Tier 0: Nano / Ultra-Low RAM (1GB PC)"
+            recommended_model = "Deterministic Micro-Intent Engine + Cloud Fallback (0MB Local Model RAM)"
+        elif ram_mb <= 4500:
             tier = "Tier 1: Ultra-Light (0.5B - 1.5B Q4 GGUF)"
             recommended_model = "qwen2.5-0.5b-instruct.Q4_K_M.gguf"
         elif ram_mb <= 12000:
@@ -72,12 +75,17 @@ class AgentBrain:
             tier = "Tier 3: High-Performance (7B/8B Q4 GGUF)"
             recommended_model = "qwen2.5-7b-instruct.Q4_K_M.gguf"
 
+        is_nano = ram_mb <= 1250
+        zram_active = mem_stats.get("zram", {}).get("active", False)
+
         return {
             "ram_total_mb": ram_mb,
             "has_gpu": has_gpu,
             "tier_name": tier,
             "recommended_model": recommended_model,
-            "is_low_ram": mem_stats.get("is_low_ram_system", True)
+            "is_low_ram": mem_stats.get("is_low_ram_system", True),
+            "is_nano_spec": is_nano,
+            "zram_active": zram_active
         }
 
     # ==================== FAST INTENT ROUTER (<2ms) ====================
