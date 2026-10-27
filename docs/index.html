@@ -79,17 +79,33 @@
   <!-- Desktop Canvas -->
   <div id="desktop">
 
+    <!-- Authentic Centered Linux Mint Wallpaper Emblem -->
+    <div class="mint-desktop-center-logo">
+      <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="120" cy="120" r="108" fill="#18201a" stroke="#87bd5c" stroke-width="4" stroke-opacity="0.6"/>
+        <rect x="52" y="52" width="136" height="136" rx="32" fill="#87bd5c"/>
+        <path d="M78 82 V142 C78 152 86 160 96 160 H124 V138 H102 V82 H78 Z" fill="#ffffff"/>
+        <path d="M124 104 C116 104 110 110 110 118 V160 H132 V124 C132 120 135 117 139 117 C143 117 146 120 146 124 V160 H168 V124 C168 120 171 117 175 117 C179 117 182 120 182 124 V160 H204 V118 C204 110 198 104 190 104 C182 104 176 108 172 114 C168 108 162 104 154 104 C146 104 140 108 136 114 V104 H124 Z" fill="#ffffff"/>
+      </svg>
+      <h1>Linux Mint</h1>
+      <p>22.3 Cinnamon • Aradhya Sovereign Agent OS</p>
+    </div>
+
     <!-- OS Watermark -->
     <div class="os-watermark">
-      <h2>Linux Mint 22.3 • ARADHYA OS</h2>
-      <p>Autonomous Sovereign AI Guardian & Marvel Defense Matrix • 24/7 Simulator</p>
+      <h2>Linux Mint 22.3</h2>
+      <p>Cinnamon Edition • <strong>ARADHYA OS</strong> Sovereign AI Agent</p>
     </div>
 
     <!-- Desktop Icons Grid -->
     <div class="desktop-icons">
-      <div class="desktop-icon" data-app="webui">
+      <div class="desktop-icon" data-app="welcome">
         <div class="icon-img">🍃</div>
-        <div class="icon-label">MintPilot WebUI</div>
+        <div class="icon-label">Welcome Screen</div>
+      </div>
+      <div class="desktop-icon" data-app="webui">
+        <div class="icon-img">🤖</div>
+        <div class="icon-label">MintPilot AI</div>
       </div>
       <div class="desktop-icon" data-app="security">
         <div class="icon-img">🛡️</div>
@@ -117,7 +133,7 @@
       </div>
       <div class="desktop-icon" data-app="marvel">
         <div class="icon-img">🌸</div>
-        <div class="icon-label">Aradhya & Marvel</div>
+        <div class="icon-label">Marvel HQ</div>
       </div>
       <div class="desktop-icon" onclick="AgentSimulator.toggleStarkHUD()" title="Press 'H' to launch Iron Man Visor HUD">
         <div class="icon-img">🕶️</div>
@@ -125,16 +141,102 @@
       </div>
     </div>
 
-    <!-- ==================== WINDOW 1: OPEN WEBUI ==================== -->
-    <div id="win-webui" class="window active" data-icon="🍃" style="top: 30px; left: 140px; width: 720px; height: 500px; display: flex;">
+    <!-- ==================== WINDOW 0: WELCOME TO LINUX MINT ==================== -->
+    <div id="win-welcome" class="window active" data-icon="🍃" style="top: 25px; left: 160px; width: 800px; height: 530px; display: flex;">
       <div class="window-titlebar">
         <div class="window-title">
-          <span>🍃</span> <span>MintPilot Open WebUI & Defense</span>
+          <span>🍃</span> <span>Welcome to Linux Mint 22.3 (Aradhya Agent Edition)</span>
         </div>
         <div class="window-controls">
-          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-webui')">−</button>
-          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-webui')">□</button>
-          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-webui')">×</button>
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-welcome')" title="Minimize">—</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-welcome')" title="Maximize">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-welcome')" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="welcome-container">
+          <div class="welcome-sidebar">
+            <div class="welcome-nav-item active" onclick="AgentSimulator.switchWelcomeTab('first-steps', this)">
+              <span>⭐</span> First Steps
+            </div>
+            <div class="welcome-nav-item" onclick="AgentSimulator.switchWelcomeTab('aradhya-ai', this)">
+              <span>🌸</span> Aradhya & Marvel AI
+            </div>
+            <div class="welcome-nav-item" onclick="AgentSimulator.switchWelcomeTab('nano-1gb', this)">
+              <span>⚡</span> 1GB Low-RAM Governor
+            </div>
+            <div class="welcome-nav-item" onclick="AgentSimulator.switchWelcomeTab('cyber-defense', this)">
+              <span>🛡️</span> Cyber Defense Matrix
+            </div>
+            <div class="welcome-nav-item" onclick="AgentSimulator.switchWelcomeTab('bootable-iso', this)">
+              <span>💾</span> Bootable ISO & USB
+            </div>
+            <div class="welcome-nav-item" onclick="AgentSimulator.switchWelcomeTab('documentation', this)">
+              <span>📖</span> Documentation
+            </div>
+          </div>
+          <div class="welcome-content" id="welcomeContent">
+            <!-- Hero Banner -->
+            <div class="welcome-hero">
+              <svg class="welcome-hero-logo" viewBox="0 0 40 40" fill="none">
+                <rect width="36" height="36" x="2" y="2" rx="9" fill="#87bd5c"/>
+                <path d="M11 12 V24 C11 26.5 13 28.5 15.5 28.5 H21 V24.5 H16 V12 H11 Z" fill="#ffffff"/>
+                <path d="M21 17 C19.5 17 18.5 18 18.5 19.5 V28.5 H22 V22.5 C22 21.8 22.5 21.3 23.2 21.3 C23.9 21.3 24.5 21.8 24.5 22.5 V28.5 H28 V22.5 C28 21.8 28.5 21.3 29.2 21.3 C29.9 21.3 30.5 21.8 30.5 22.5 V28.5 H34 V19.5 C34 18 33 17 31.5 17 C30 17 29 17.8 28.3 18.8 C27.6 17.8 26.6 17 25.1 17 C23.6 17 22.6 17.8 22 18.8 V17 H21 Z" fill="#ffffff"/>
+              </svg>
+              <div>
+                <h3>Welcome to Linux Mint 22.3 Cinnamon</h3>
+                <p>Equipped with <strong>Aradhya OS</strong> — Sovereign AI Guardian & Marvel Series Tactical Agent Matrix. Enjoy a comfortable, butter-smooth desktop on modern rigs and 1GB RAM PCs alike.</p>
+              </div>
+            </div>
+
+            <!-- Welcome Cards Grid -->
+            <div class="welcome-grid">
+              <div class="welcome-card">
+                <h4><span>🍃</span> Desktop Colors & Mint-Y</h4>
+                <p>Customize your Cinnamon desktop panels, Mint-Y dark themes, and signature Mint green accents.</p>
+                <button class="welcome-btn" onclick="WindowManager.openApp('webui')">Launch MintPilot AI</button>
+              </div>
+              <div class="welcome-card">
+                <h4><span>⚡</span> 1GB RAM Optimization</h4>
+                <p>Tune kernel ZRAM compressed RAM swap (2.5x ratio) and Tier 0 Nano Mode with zero model RAM overhead.</p>
+                <button class="welcome-btn" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb')">Optimize 1GB PC</button>
+              </div>
+              <div class="welcome-card">
+                <h4><span>🌸</span> Marvel AI Network</h4>
+                <p>Interact with J.A.R.V.I.S., F.R.I.D.A.Y., E.D.I.T.H., V.I.S.I.O.N., K.A.R.E.N., and J.O.C.A.S.T.A.</p>
+                <button class="welcome-btn" onclick="WindowManager.openApp('marvel')">Open Marvel HQ</button>
+              </div>
+              <div class="welcome-card">
+                <h4><span>🛡️</span> Cyber Defense Shield</h4>
+                <p>DEFCON dynamic escalation, honeytoken decoys, active counter-measures, and digital immune antibodies.</p>
+                <button class="welcome-btn" onclick="WindowManager.openApp('security')">Launch Defense</button>
+              </div>
+              <div class="welcome-card">
+                <h4><span>💾</span> Download Bootable ISO</h4>
+                <p>Create a bootable USB drive using Ventoy, Rufus, or BalenaEtcher with live offline installer.</p>
+                <button class="welcome-btn" onclick="WindowManager.openApp('download')">Download ISO</button>
+              </div>
+              <div class="welcome-card">
+                <h4><span>🔄</span> Update Manager</h4>
+                <p>Keep your system and Aradhya Agent OS fully updated with 1-click in-place Git upgrades.</p>
+                <button class="welcome-btn" onclick="AgentSimulator.openUpgradeModal()">Open Update Manager</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WINDOW 1: OPEN WEBUI ==================== -->
+    <div id="win-webui" class="window" data-icon="🤖" style="top: 50px; left: 190px; width: 720px; height: 500px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span>🤖</span> <span>MintPilot Open WebUI & Defense</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-webui')" title="Minimize">—</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-webui')" title="Maximize">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-webui')" title="Close">✕</button>
         </div>
       </div>
       <div class="window-body">
