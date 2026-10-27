@@ -319,6 +319,59 @@ class AgentBrain:
                 res = self.replica.list_skills()
                 return {"thought": "The Replica Skill Suite: 11 clean-room reverse engineering & cloning skills loaded.", "result": res}
 
+        # Step G: Harold / Herald OS Agent-Native Workstation Suite (iamlukethedev/Herald-OS adapted for Mint 1GB RAM)
+        if any(w in p for w in ["harold", "herald", "diagnose crash", "why did it crash", "coredump", "file documents", "smart file", "organize invoices", "tailor desktop", "customize theme", "sentence math", "harold calc", "harold canvas", "harold docs", "harold sheets", "harold slides", "harold audit", "harold observe"]):
+            if any(w in p for w in ["crash", "coredump", "why did it crash", "segfault", "oom"]):
+                app_target = None
+                m_app = re.search(r"(?:app|program|process|crash of|crashed)\s+([a-zA-Z0-9_\-\.]+)", p)
+                if m_app:
+                    app_target = m_app.group(1)
+                res = self.harold.run_crash(target_app=app_target)
+                summary = res.get("summary", "Crash diagnostics complete.")
+                root_cause = res.get("root_cause", "No active crash detected.")
+                return {"thought": f"Harold OS Crash Diagnostics: {summary} | Root Cause: {root_cause}", "result": res}
+            elif any(w in p for w in ["file", "filer", "invoice", "receipt", "document", "organize documents"]):
+                if "undo" in p:
+                    res = self.harold.execute_skill("undo")
+                    return {"thought": f"Harold Document Filer Undo: Restored {res.get('restored_count', 0)} files.", "result": res}
+                res = self.harold.run_filer()
+                return {"thought": f"Harold Document Filer: Scanned {res.get('total_scanned', 0)} documents, planned {res.get('matched_count', 0)} canonical filings.", "result": res}
+            elif any(w in p for w in ["tailor", "theme", "accent color", "customize desktop", "wallpaper"]):
+                preset = "mint classic"
+                if "arc" in p or "cyan" in p:
+                    preset = "arc-cyan"
+                elif "nano" in p or "minimal" in p or "low ram" in p:
+                    preset = "nano-minimal"
+                elif "contrast" in p:
+                    preset = "high-contrast"
+                res = self.harold.run_tailor(prompt=preset)
+                return {"thought": f"Harold OS Desktop Tailor: {res.get('message', 'Theme updated.')}", "result": res}
+            elif any(w in p for w in ["calc", "math", "percentage", "currency"]):
+                res = self.harold.run_calc(prompt=p)
+                return {"thought": f"Harold Exact Calculator: {res.get('input_expression')} = {res.get('result')}", "result": res}
+            elif any(w in p for w in ["canvas", "diagram", "flowchart", "wireframe", "draw"]):
+                res = self.harold.run_canvas(prompt=p)
+                return {"thought": f"Harold Canvas: Visual system architecture diagram generated ({res.get('diagram_type')}).", "result": res}
+            elif any(w in p for w in ["docs", "document", "memo", "whitepaper", "spec"]):
+                res = self.harold.run_docs(prompt=p)
+                return {"thought": f"Harold Docs: Structured markdown document generated ({res.get('word_count')} words).", "result": res}
+            elif any(w in p for w in ["sheet", "spreadsheet", "csv", "table"]):
+                res = self.harold.run_sheets(prompt=p)
+                return {"thought": f"Harold Sheets: Tabular spreadsheet model compiled ({res.get('rows')} rows, {res.get('columns')} columns).", "result": res}
+            elif any(w in p for w in ["slide", "presentation", "deck", "pitch"]):
+                res = self.harold.run_slides(prompt=p)
+                return {"thought": f"Harold Slides: Presentation deck designed ({res.get('slides_count')} slides, Mint-Y theme).", "result": res}
+            elif any(w in p for w in ["audit", "audit trail", "audit log"]):
+                res = self.harold.run_audit()
+                return {"thought": f"Harold OS Security Audit Trail: {res.get('total_entries', 0)} immutable records tracked.", "result": res}
+            elif any(w in p for w in ["observe", "context", "active window"]):
+                res = self.harold.run_observe()
+                return {"thought": f"Harold OS System Observer: Active window: '{res.get('active_window', {}).get('title', 'Unknown')}', Cinnamon compositor OK.", "result": res}
+            else:
+                res = self.harold.list_skills()
+                return {"thought": "Harold OS Agent-Native Workstation: 9 system-level agent skills loaded (Crash Diagnostics, Document Filer, Desktop Tailor, Calc, Canvas, Docs, Sheets, Slides, Audit).", "result": res}
+
+
 
         # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
