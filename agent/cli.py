@@ -109,6 +109,8 @@ def main():
     parser.add_argument("--hud", action="store_true", help="Launch Iron Man Visor Tactical HUD with targeting reticle and live telemetry")
     parser.add_argument("--sfx", type=str, choices=["repulsor", "lock", "chime", "neutralized", "alarm"], help="Play Stark Sound Effect via PulseAudio/PipeWire")
     parser.add_argument("--proactive-check", action="store_true", help="Run proactive ambient system monitoring for thermal, memory, and socket warnings")
+    parser.add_argument("--optimize-1gb", action="store_true", help="One-click full system & kernel customization for 1GB RAM PCs (ZRAM compressed swap, swappiness, Tier 0 Nano Governor)")
+    parser.add_argument("--zram-status", action="store_true", help="Display real-time Linux kernel ZRAM RAM-compression swap status and memory savings")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
