@@ -23,6 +23,15 @@ KEYS_FILE = CONFIG_DIR / "keys.json"
 
 OFFLINE_MODELS_CATALOG = [
     {
+        "id": "deterministic-nano",
+        "name": "Deterministic Micro-Intent Engine (Zero-RAM)",
+        "provider": "offline",
+        "ram_required_mb": 0,
+        "recommended_tier": "Tier 0 (512MB - 1GB RAM)",
+        "description": "Sub-millisecond micro-regex pattern and rule engine with 0MB model RAM overhead for 1GB PCs.",
+        "context_length": 4096
+    },
+    {
         "id": "qwen2.5-0.5b-instruct",
         "name": "Qwen2.5 0.5B Instruct (Ultra-Light)",
         "provider": "offline",
