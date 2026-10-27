@@ -139,3 +139,71 @@ python3 -c "from agent.core.memory_guard import MemoryGuard; mg = MemoryGuard();
 - **HTML Tree Validation**: 0 unclosed tags, 0 mismatched tags.
 - **JavaScript Engine**: Validated across all Start Menu, WindowManager, and MintWelcome tab switcher functions.
 - **Live Deployment**: Auto-synced and pushed to GitHub main (`https://thakoralpesh3.github.io/mint-agent-os/`).
+
+---
+
+## 🚀 3. The Founder & Replica Enterprise Suite Integration
+
+We have integrated two open-source skill suites by Jake Schincariol into Aradhya Agent OS, Antigravity, the Python runtime, the CLI, and the Cinnamon Web Simulator:
+1. **`Jakeschincariol/founder-skill`**: 11 business testing & founder skills.
+2. **`Jakeschincariol/replica-skill`**: 11 clean-room reverse engineering & app cloning skills.
+
+```mermaid
+graph TD
+    User([User / Founder]) --> Router{Aradhya Agent OS Router}
+
+    subgraph "💼 The Founder Suite (11 Skills)"
+        Router --> F_Board[founder-board: Hormozi, Thiel, Jobs Board Vote]
+        Router --> F_CFO[founder-cfo: unit_economics.py Breakeven & Payback]
+        Router --> F_Consumer[founder-consumer: 10-Buyer Panel Simulation]
+        Router --> F_Pricing[founder-pricing: Van Westendorp Price Sensitivity]
+        Router --> F_Competitors[founder-competitors: Moat & Asymmetric Wedge]
+        Router --> F_Offer[founder-offer: Hormozi $100M Grand Slam Offer]
+        Router --> F_Brand[founder-brand: Positioning & Enemy Antithesis]
+        Router --> F_Marketing[founder-marketing: Growth Loops & CAC:LTV]
+        Router --> F_Ops[founder-ops: Minimal Headcount Lean SOPs]
+        Router --> F_Plan[founder-plan: 90-Day Execution Sprint Compiler]
+        Router --> F_Launch[founder-launch: Product Hunt & Hacker News Playbook]
+    end
+
+    subgraph "🧬 The Replica Clean-Room Suite (11 Skills)"
+        Router --> R_Recon[replica-recon: Screen Inventory & Inferred Schema]
+        Router --> R_Architect[replica-architect: Clean-Room System Architecture]
+        Router --> R_Design[replica-design: contrast.py WCAG AAA Contrast Check]
+        Router --> R_Build[replica-build: Accessible Frontend Component Tree]
+        Router --> R_Backend[replica-backend: SQL Migrations, JWT & Rate Limits]
+        Router --> R_Diff[replica-diff: parity.py Feature Parity Score 0-100%]
+        Router --> R_Test[replica-test: Playwright & Cypress E2E Test Specs]
+        Router --> R_Entrepreneur[replica-entrepreneur: reviews.py 1-Star Review Mining]
+        Router --> R_Brand[replica-brand: sweep.py Trademark & Asset Purge]
+        Router --> R_Launch[replica-launch: listing.py App Store Metadata Linter]
+        Router --> R_Deploy[replica-deploy: Zero-Downtime Preflight Checklist]
+    end
+
+    subgraph "Execution Surfaces"
+        Router --> CLI[Linux Mint Terminal: mint-agent --founder / --replica]
+        Router --> Antigravity[Antigravity Customizations: ~/.gemini/config/skills/]
+        Router --> WebUI[Cinnamon Desktop: Window 9 #win-founder-replica]
+    end
+```
+
+### Key Components Landed:
+1. **Zero-Dependency Git Tracking**:
+   - Cloned both repositories into `skills/founder-skill` and `skills/replica-skill`, removed internal nested `.git` folders, and tracked all 74 files (6,903 lines of code, tests, and markdown lenses) directly in `mint-agent-os`.
+2. **Antigravity Progressive Disclosure Discovery**:
+   - Symlinked all 11 founder skills and 11 replica skills into `~/.gemini/config/skills/` and `.agents/skills/`, allowing Antigravity to discover each skill's `SKILL.md` frontmatter and instructions.
+3. **Native Python Registries**:
+   - [`agent/skills/founder_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/founder_skills.py): Exposes `FounderSkillsRegistry` and `founder_skills`.
+   - [`agent/skills/replica_skills.py`](file:///home/alpesh/mint-agent-os/agent/skills/replica_skills.py): Exposes `ReplicaSkillsRegistry` and `replica_skills`.
+   - [`agent/skills/__init__.py`](file:///home/alpesh/mint-agent-os/agent/skills/__init__.py): Cleanly exports Marvel, Founder, and Replica suites.
+4. **Fast Intent Router (`agent/brain/inference.py`)**:
+   - Direct deterministic regex pattern matching for `"founder board"`, `"founder cfo"`, `"replica recon"`, `"replica diff"`, etc., delivering sub-3ms responses.
+5. **Linux Mint CLI Flags (`agent/cli.py`)**:
+   - Added `--founder [board|cfo|consumer|pricing|competitors|offer|brand|marketing|ops|plan|launch|all]` and `--idea`.
+   - Added `--replica [recon|architect|design|build|backend|diff|test|entrepreneur|brand|launch|deploy|all]` and `--target-app`.
+   - Updated `--skills` to list all 28 skills across Marvel, Founder, and Replica suites.
+6. **Cinnamon Web Simulator Window 9 (`#win-founder-replica`)**:
+   - Desktop icon: 🚀 Founder & Replica.
+   - Start Menu: Listed under Administration and All Applications.
+   - Window: Includes 3 tabs with interactive one-click simulations (Board review, CFO unit economics, Van Westendorp pricing, Replica Recon, WCAG AAA contrast check, Parity score, and 1-star review mining).
+
