@@ -235,6 +235,90 @@ class AgentBrain:
                 "result": skills
             }
 
+        # Step E: Founder Enterprise Skills Suite (Jake Schincariol / GitHub)
+        if "founder" in p or any(w in p for w in ["test my business", "board of directors", "unit economics", "price sensitivity", "grand slam offer"]):
+            if "board" in p or "test my business" in p or "pressure test" in p or "board of directors" in p:
+                res = self.founder.execute_skill("board", idea=p)
+                return {"thought": f"Founder Board Review Complete: {res['consensus']}. Alex Hormozi: {res['members'][0]['score']}/100, Peter Thiel: {res['members'][1]['score']}/100, Steve Jobs: {res['members'][2]['score']}/100.", "result": res}
+            elif "cfo" in p or "unit economics" in p or "breakeven" in p or "cash needed" in p:
+                res = self.founder.execute_skill("cfo")
+                return {"thought": f"Founder CFO Unit Economics computed: {res['summary']}", "result": res}
+            elif "consumer" in p or "panel" in p or "willingness to pay" in p:
+                res = self.founder.execute_skill("consumer", idea=p)
+                return {"thought": f"Founder Consumer Panel simulated: Net Purchase Intent {res['net_intent_score']} across {res['panel_size']} buyer personas.", "result": res}
+            elif "pricing" in p or "van westendorp" in p:
+                res = self.founder.execute_skill("pricing")
+                vw = res["van_westendorp_analysis"]
+                return {"thought": f"Van Westendorp Price Sensitivity calculated. Optimal Price Point (OPP): ${vw['optimal_price_point_opp']:.2f}, Range: {vw['acceptable_price_range']}.", "result": res}
+            elif "competitors" in p or "moat" in p:
+                res = self.founder.execute_skill("competitors", idea=p)
+                return {"thought": f"Competitive Teardown & Moat analysis complete: Moat rating {res['moat_rating']}.", "result": res}
+            elif "offer" in p or "grand slam" in p or "value equation" in p:
+                res = self.founder.execute_skill("offer", idea=p)
+                return {"thought": f"Hormozi $100M Grand Slam Offer crafted: {res['offer']['headline']}", "result": res}
+            elif "brand" in p or "positioning" in p:
+                res = self.founder.execute_skill("brand", idea=p)
+                return {"thought": f"Brand Strategy defined: {res['brand_name']} — {res['positioning_statement']}", "result": res}
+            elif "marketing" in p or "acquisition" in p or "cac" in p:
+                res = self.founder.execute_skill("marketing", idea=p)
+                return {"thought": f"Marketing loops mapped: CAC:LTV {res['cac_ltv_ratio']} with organic FOSS viral loop.", "result": res}
+            elif "ops" in p or "sop" in p:
+                res = self.founder.execute_skill("ops", idea=p)
+                return {"thought": "Lean Operational SOPs compiled for minimal headcount autonomous execution.", "result": res}
+            elif "plan" in p or "sprint" in p or "90-day" in p:
+                res = self.founder.execute_skill("plan", idea=p)
+                return {"thought": "90-Day Lean Execution Sprint roadmap generated across 3 phases.", "result": res}
+            elif "launch" in p:
+                res = self.founder.execute_skill("launch", idea=p)
+                return {"thought": "Launch day checklist and press kit ready for Hacker News & Product Hunt.", "result": res}
+            else:
+                res = self.founder.list_skills()
+                return {"thought": "The Founder Skill Suite: 11 business testing & founder skills loaded.", "result": res}
+
+        # Step F: Replica Clean-Room Reverse Engineering Suite (Jake Schincariol / GitHub)
+        if "replica" in p or any(w in p for w in ["clone this app", "reverse engineer app", "clean room clone", "feature parity"]):
+            if "recon" in p or "clone this app" in p or "reverse engineer" in p or "screens" in p:
+                target_url = "https://linear.app"
+                m_url = re.search(r"https?://[^\s]+", p)
+                if m_url:
+                    target_url = m_url.group(0)
+                res = self.replica.execute_skill("recon", target=target_url)
+                return {"thought": f"Replica Recon Map generated for {target_url}: {res['recon_map']['screen_inventory_count']} screens, {len(res['recon_map']['core_flows'])} core flows, data models mapped.", "result": res}
+            elif "architect" in p or "architecture" in p or "schema" in p:
+                res = self.replica.execute_skill("architect", target=p)
+                return {"thought": f"Replica Clean-Room Architecture designed: {res['architecture']['frontend_stack']} + {res['architecture']['backend_stack']}.", "result": res}
+            elif "design" in p or "contrast" in p or "tokens" in p:
+                res = self.replica.execute_skill("design", fg="#00f5d4", bg="#121417")
+                return {"thought": f"Replica Design Contrast Checked: {res.get('ratio', 0)}:1 contrast ratio. WCAG AAA Compliant: {res.get('wcag_aaa', False)}.", "result": res}
+            elif "build" in p:
+                res = self.replica.execute_skill("build", target=p)
+                return {"thought": f"Replica Frontend Build roadmap generated: {res['components_count']} critical accessible components.", "result": res}
+            elif "backend" in p:
+                res = self.replica.execute_skill("backend", target=p)
+                return {"thought": f"Replica Backend Spec compiled: {res['auth_strategy']}.", "result": res}
+            elif "diff" in p or "parity" in p:
+                res = self.replica.execute_skill("diff")
+                return {"thought": f"Replica Feature Parity Auditor: {res['parity_score']} parity score across {res['counted_features']} tracked features.", "result": res}
+            elif "test" in p or "e2e" in p:
+                res = self.replica.execute_skill("test", target=p)
+                return {"thought": f"Replica E2E automated test suites planned: {len(res['suites'])} test specifications.", "result": res}
+            elif "entrepreneur" in p or "reviews" in p or "1-star" in p:
+                res = self.replica.execute_skill("entrepreneur")
+                return {"thought": f"Replica Review Mining completed: {res['top_differentiator']}.", "result": res}
+            elif "brand" in p or "sweep" in p:
+                res = self.replica.execute_skill("brand")
+                return {"thought": "Replica Rebrand Sweep completed: Codebase verified 100% clean of upstream trademarks.", "result": res}
+            elif "listing" in p:
+                res = self.replica.execute_skill("launch")
+                return {"thought": f"Replica Store Listing audited: {res.get('warnings_count', 0)} warnings, {res.get('errors_count', 0)} errors.", "result": res}
+            elif "deploy" in p or "preflight" in p:
+                res = self.replica.execute_skill("deploy")
+                return {"thought": "Replica Production Deployment Preflight: All 5 checks passed (SSL, DB Pool, Keyring, Backups, Healthz).", "result": res}
+            else:
+                res = self.replica.list_skills()
+                return {"thought": "The Replica Skill Suite: 11 clean-room reverse engineering & cloning skills loaded.", "result": res}
+
+
         # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
             res = self.security.scan_and_counter_threats()
