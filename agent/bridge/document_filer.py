@@ -50,11 +50,16 @@ class DocumentFiler:
             category_folder = "Invoices" if f["doc_type"] in ("invoice", "receipt") else ("Contracts" if f["doc_type"] == "contract" else "Financial")
             dest_path = dest_base / category_folder / f['date'][:4] / clean_name
             plan.append({
+                "original": f["raw_name"],
                 "source_file": str(target_dir / f["raw_name"]),
                 "detected_type": f["doc_type"],
+                "vendor": f["vendor"],
                 "extracted_vendor": f["vendor"],
+                "date": f["date"],
                 "extracted_amount": f["amount"],
+                "new_name": clean_name,
                 "proposed_name": clean_name,
+                "dest_dir": str(dest_path.parent),
                 "destination_dir": str(dest_path.parent),
                 "destination_file": str(dest_path),
                 "confidence": "96%"
@@ -62,11 +67,15 @@ class DocumentFiler:
 
         return {
             "status": "plan_generated",
+            "directory": str(target_dir),
             "scanned_directory": str(target_dir),
+            "total_scanned": len(plan),
             "files_found": len(plan),
+            "matched_count": len(plan),
             "filing_plan": plan,
             "requires_confirmation": True,
             "undo_supported": True,
+            "undo_available": self.undo_file.exists(),
             "summary": f"Identified {len(plan)} documents in '{target_dir.name}'. Ready to rename and organize into clean year-based folders."
         }
 
