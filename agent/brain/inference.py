@@ -169,6 +169,61 @@ class AgentBrain:
                 "result": scan_res
             }
 
+        # Step D: Marvel Specialized Tactical Skills
+        if any(w in p for w in ["fight pattern", "scan fight", "combat scan", "countermeasures"]):
+            skill_res = self.marvel.execute_skill("friday_fight_pattern")
+            return {
+                "thought": skill_res["combat_speech"],
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["drone strike", "orbital strike"]):
+            target = "185.220.101.42"
+            m_ip = re.search(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", p)
+            if m_ip:
+                target = m_ip.group(0)
+            skill_res = self.marvel.execute_skill("edith_orbital_recon", action="drone_strike", target=target)
+            return {
+                "thought": skill_res["speech"],
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["cad view", "3d schematics", "cad schematics", "holographic cad", "project armor", "hologram schematics"]):
+            skill_res = self.marvel.execute_skill("jarvis_cad_diagnostics")
+            return {
+                "thought": skill_res["speech"],
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["mind stone", "forecast anomalies", "predict attacks", "entropy"]):
+            skill_res = self.marvel.execute_skill("vision_mind_stone")
+            return {
+                "thought": skill_res["speech"],
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["suit mode", "taser web", "ricochet web", "web shooter"]):
+            mode_name = "taser web" if "taser" in p else ("ricochet web" if "ricochet" in p else "baby monitor")
+            skill_res = self.marvel.execute_skill("karen_suit_mentor", mode=mode_name)
+            return {
+                "thought": skill_res.get("speech", "Suit mode updated"),
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["electronic warfare", "deploy honeytoken", "zero trust egress"]):
+            skill_res = self.marvel.execute_skill("jocasta_electronic_warfare")
+            return {
+                "thought": skill_res["speech"],
+                "result": skill_res
+            }
+
+        if any(w in p for w in ["list skills", "marvel skills", "show skills"]):
+            skills = self.marvel.list_skills()
+            return {
+                "thought": "Marvel Series Skills Matrix loaded. 6 specialized tactical skills available.",
+                "result": skills
+            }
+
         # 1. Active Counter-Defense, Future Hardening & Self-Countering
         if any(w in p for w in ["counter threats", "active counter", "counter attack", "sever sockets"]):
             res = self.security.scan_and_counter_threats()
