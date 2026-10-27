@@ -275,6 +275,18 @@ class MarvelAgentManager:
         """Returns list of available Stark / Marvel protocols."""
         return self.PROTOCOLS
 
+    def list_skills(self) -> List[Dict[str, Any]]:
+        """Returns all registered Marvel specialized skills."""
+        if marvel_skills:
+            return marvel_skills.list_skills()
+        return []
+
+    def execute_skill(self, skill_name: str, action: Optional[str] = None, **kwargs) -> Dict[str, Any]:
+        """Dispatches skill execution via MarvelSkillsRegistry."""
+        if marvel_skills:
+            return marvel_skills.execute_skill(skill_name, action=action, **kwargs)
+        return {"error": "MarvelSkillsRegistry unavailable", "status": "failed"}
+
     def execute_protocol(self, protocol_name: str) -> Dict[str, Any]:
         """Executes a Marvel Stark Protocol on Linux Mint."""
         clean_in = protocol_name.lower().replace("protocol", "").replace("_", "").replace(" ", "").strip()
