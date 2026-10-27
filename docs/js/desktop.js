@@ -121,6 +121,19 @@ const WindowManager = {
     }
   },
 
+  minimizeAllWindows() {
+    const allWindows = document.querySelectorAll('.window');
+    const anyVisible = Array.from(allWindows).some(w => w.style.display === 'flex' && !w.classList.contains('minimized'));
+    allWindows.forEach(w => {
+      if (anyVisible) {
+        w.classList.add('minimized');
+      } else if (w.style.display === 'flex') {
+        w.classList.remove('minimized');
+      }
+    });
+    this.updateTaskbar();
+  },
+
   maximizeWindow(winId) {
     const win = document.getElementById(winId);
     if (!win) return;

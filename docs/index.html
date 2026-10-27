@@ -1375,51 +1375,85 @@
 
   </div>
 
-  <!-- ==================== START MENU POPUP ==================== -->
+  <!-- ==================== START MENU POPUP (CINNAMON MINTMENU) ==================== -->
   <div id="startMenu">
     <div class="menu-search-box">
-      <input type="text" placeholder="Type to search applications...">
+      <span style="font-size: 1rem; color: #87bd5c;">🔍</span>
+      <input type="text" id="startMenuSearch" placeholder="Type to search applications, settings, and Marvel AI..." oninput="AgentSimulator.filterStartMenu(this.value)">
     </div>
     <div class="menu-content">
-      <div class="menu-categories">
-        <div class="cat-item active">⭐ All Applications</div>
-        <div class="cat-item">🛡️ Security & Defense</div>
-        <div class="cat-item">🌐 Internet</div>
-        <div class="cat-item">💼 Office</div>
-        <div class="cat-item">⚙️ Administration</div>
+      <!-- Left System Sidebar: User, Lock, Power, Settings -->
+      <div class="menu-system-sidebar">
+        <div class="menu-sys-icons-top">
+          <div class="menu-sys-btn" title="User: alpesh (Linux Mint 22.3)" style="font-size: 1.2rem; color: #87bd5c;">👤</div>
+          <div class="menu-sys-btn" onclick="WindowManager.openApp('welcome'); document.getElementById('startMenu').style.display='none';" title="Welcome Screen">🍃</div>
+          <div class="menu-sys-btn" onclick="WindowManager.openApp('nemo'); document.getElementById('startMenu').style.display='none';" title="Nemo File Manager">📁</div>
+          <div class="menu-sys-btn" onclick="WindowManager.openApp('terminal'); document.getElementById('startMenu').style.display='none';" title="Linux Mint Terminal">💻</div>
+          <div class="menu-sys-btn" onclick="WindowManager.openApp('download'); document.getElementById('startMenu').style.display='none';" title="Software & Bootable USB Hub">📦</div>
+          <div class="menu-sys-btn" onclick="WindowManager.openApp('interaction'); document.getElementById('startMenu').style.display='none';" title="System & Interaction Settings">⚙️</div>
+        </div>
+        <div class="menu-sys-icons-bottom">
+          <div class="menu-sys-btn" onclick="AgentSimulator.sendWebUIMessage('lock'); document.getElementById('startMenu').style.display='none';" title="Lock Screen">🔒</div>
+          <div class="menu-sys-btn danger" onclick="AgentSimulator.sendWebUIMessage('sleep'); document.getElementById('startMenu').style.display='none';" title="Suspend / Sleep">🌙</div>
+          <div class="menu-sys-btn danger" onclick="alert('Linux Mint Session: Safe power-off / reboot handled gracefully.');" title="Shut Down / Power Off">⏻</div>
+        </div>
       </div>
-      <div class="menu-apps">
-        <div class="app-item" onclick="WindowManager.openApp('webui'); document.getElementById('startMenu').style.display='none';">
+
+      <!-- Middle Categories Column -->
+      <div class="menu-categories">
+        <div class="cat-item active" onclick="AgentSimulator.switchStartMenuCat('all', this)">⭐ All Applications</div>
+        <div class="cat-item" onclick="AgentSimulator.switchStartMenuCat('security', this)">🛡️ Security & Defense</div>
+        <div class="cat-item" onclick="AgentSimulator.switchStartMenuCat('marvel', this)">🌸 Marvel AI Network</div>
+        <div class="cat-item" onclick="AgentSimulator.switchStartMenuCat('internet', this)">🌐 Internet & Web</div>
+        <div class="cat-item" onclick="AgentSimulator.switchStartMenuCat('admin', this)">⚙️ Administration & 1GB</div>
+        <div class="cat-item" onclick="AgentSimulator.switchStartMenuCat('files', this)">📁 Files & Storage</div>
+      </div>
+
+      <!-- Right Applications List -->
+      <div class="menu-apps" id="startMenuApps">
+        <div class="app-item" data-cat="all" onclick="WindowManager.openApp('welcome'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🍃</span>
-          <div><strong>MintPilot Open WebUI</strong><br><small style="color:#888;">Autonomous Laptop Controller</small></div>
+          <div><strong>Welcome to Linux Mint</strong><br><small style="color:#888;">Welcome screen, first steps & system tuning</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('security'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="all" onclick="WindowManager.openApp('webui'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🤖</span>
+          <div><strong>MintPilot AI WebUI</strong><br><small style="color:#888;">Autonomous Laptop Controller & Cyber Copilot</small></div>
+        </div>
+        <div class="app-item" data-cat="security" onclick="WindowManager.openApp('security'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🛡️</span>
-          <div><strong>Cyber Defense Guardian</strong><br><small style="color:#888;">PC Self-Defense & Threat Radar</small></div>
+          <div><strong>Cyber Defense Guardian</strong><br><small style="color:#888;">DEFCON Radar, Counter-Measures & Honeypots</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('terminal'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="all" onclick="WindowManager.openApp('terminal'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">💻</span>
-          <div><strong>Terminal</strong><br><small style="color:#888;">Linux Mint Bash Shell</small></div>
+          <div><strong>Terminal</strong><br><small style="color:#888;">Linux Mint Bash Command Prompt</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('browser'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="internet" onclick="WindowManager.openApp('browser'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🦊</span>
-          <div><strong>Firefox Web Browser</strong><br><small style="color:#888;">Surf the Web</small></div>
+          <div><strong>Firefox Web Browser</strong><br><small style="color:#888;">Fast, Private Internet Surfing</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('nemo'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="files" onclick="WindowManager.openApp('nemo'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">📁</span>
-          <div><strong>Nemo Files</strong><br><small style="color:#888;">Explore Folders and Files</small></div>
+          <div><strong>Nemo File Manager</strong><br><small style="color:#888;">Explore Folders, Disks and System Files</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('download'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="admin" onclick="WindowManager.openApp('download'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">💾</span>
-          <div><strong>Download & Make Bootable USB</strong><br><small style="color:#888;">ISO, Ventoy & Automated Flasher</small></div>
+          <div><strong>Download & Make Bootable USB</strong><br><small style="color:#888;">ISO, Ventoy, Rufus & 1GB Flasher</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('interaction'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="admin" onclick="WindowManager.openApp('interaction'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🗣️</span>
-          <div><strong>User Interaction Options</strong><br><small style="color:#888;">Voice, HUD, Concise/Detailed & Proactivity</small></div>
+          <div><strong>User Interaction Options</strong><br><small style="color:#888;">Voice Synthesis, HUD Hotkeys & Proactivity</small></div>
         </div>
-        <div class="app-item" onclick="WindowManager.openApp('marvel'); document.getElementById('startMenu').style.display='none';">
+        <div class="app-item" data-cat="marvel" onclick="WindowManager.openApp('marvel'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🌸</span>
-          <div><strong>Aradhya & Marvel AI Network</strong><br><small style="color:#888;">Aradhya Sovereign, Jarvis, Friday, Edith & Protocols</small></div>
+          <div><strong>Aradhya & Marvel AI Network</strong><br><small style="color:#888;">Jarvis, Friday, Edith, Vision & Stark Protocols</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">⚡</span>
+          <div><strong>1GB RAM Performance Governor</strong><br><small style="color:#888;">ZRAM Compressed Swap & Tier 0 Nano Optimizer</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.openUpgradeModal(); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🔄</span>
+          <div><strong>Update Manager (mintupdate)</strong><br><small style="color:#888;">In-place OS & AI Agent Updates from GitHub</small></div>
         </div>
       </div>
     </div>
@@ -1427,21 +1461,51 @@
 
   <!-- ==================== BOTTOM CINNAMON PANEL ==================== -->
   <footer id="panel">
+    <!-- Cinnamon Menu Button with Authentic Mint Leaf Emblem -->
     <button class="menu-btn" id="startMenuBtn">
-      <div class="menu-icon">LM</div>
+      <div class="menu-icon-svg">
+        <svg viewBox="0 0 36 36" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="#87bd5c"/>
+          <path d="M10 11 V23 C10 25.5 12 27.5 14.5 27.5 H20 V23.5 H15 V11 H10 Z" fill="#ffffff"/>
+          <path d="M20 16 C18.5 16 17.5 17 17.5 18.5 V27.5 H21 V21.5 C21 20.8 21.5 20.3 22.2 20.3 C22.9 20.3 23.5 20.8 23.5 21.5 V27.5 H27 V21.5 C27 20.8 27.5 20.3 28.2 20.3 C28.9 20.3 29.5 20.8 29.5 21.5 V27.5 H33 V18.5 C33 17 32 16 30.5 16 C29 16 28 16.8 27.3 17.8 C26.6 16.8 25.6 16 24.1 16 C22.6 16 21.6 16.8 21 17.8 V16 H20 Z" fill="#ffffff"/>
+        </svg>
+      </div>
       <span>Menu</span>
     </button>
 
+    <!-- Quick Launch Dock (Next to Menu, exactly like real Linux Mint) -->
+    <div class="panel-quick-launch">
+      <div class="quick-icon" onclick="WindowManager.minimizeAllWindows()" title="Show Desktop">🖥️</div>
+      <div class="quick-icon" onclick="WindowManager.openApp('welcome')" title="Welcome to Linux Mint">🍃</div>
+      <div class="quick-icon" onclick="WindowManager.openApp('nemo')" title="Nemo Files">📁</div>
+      <div class="quick-icon" onclick="WindowManager.openApp('terminal')" title="Terminal">💻</div>
+      <div class="quick-icon" onclick="WindowManager.openApp('browser')" title="Firefox Web Browser">🦊</div>
+      <div class="quick-icon" onclick="WindowManager.openApp('security')" title="Cyber Defense Shield">🛡️</div>
+    </div>
+
+    <!-- Grouped Window List (Taskbar) -->
     <div class="panel-tasks" id="panelTasks"></div>
 
+    <!-- System Tray -->
     <div class="system-tray">
-      <div class="tray-icon" title="MintPilot Cyber Defense Active" onclick="WindowManager.openApp('security')">
-        <span class="tray-pill">🛡️ Shield Active</span>
+      <!-- Linux Mint Update Manager Shield (mintupdate) -->
+      <div class="tray-update-shield" onclick="AgentSimulator.openUpgradeModal()" title="Update Manager: Your system is up to date (Linux Mint 22.3)">
+        <span style="font-size:0.85rem;">🛡️</span>
+        <span>Up to Date</span>
       </div>
+
+      <!-- 1GB RAM / Smoothness Indicator -->
+      <div class="tray-icon" title="Hardware Governor: Tier 0 Nano (1GB PC Compatible) / ZRAM Active" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb')">
+        <span style="background:rgba(135,189,92,0.2); color:#87bd5c; border:1px solid #87bd5c; padding:2px 7px; border-radius:10px; font-size:0.7rem; font-weight:bold;">🍃 1GB Ready</span>
+      </div>
+
       <div class="tray-icon" title="Network: Connected (Chamunda-Fiber-5G)">📶</div>
-      <div class="tray-icon" title="Volume: 50%">🔊</div>
-      <div class="tray-icon" title="Battery: 94% Charging">⚡</div>
-      <div class="tray-clock" id="trayClock">18:30</div>
+      <div class="tray-icon" title="Master Volume: 50%">🔊</div>
+      <div class="tray-icon" title="Battery: 94% (Charging via AC)">⚡</div>
+      <div class="tray-clock" id="trayClock" title="Cinnamon Clock & Calendar">18:30</div>
+
+      <!-- Show Desktop Vertical Sliver -->
+      <div class="show-desktop-btn" onclick="WindowManager.minimizeAllWindows()" title="Show Desktop"></div>
     </div>
   </footer>
 
