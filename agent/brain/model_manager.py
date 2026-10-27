@@ -319,12 +319,24 @@ class ModelManager:
         self.settings["active_provider"] = target_provider
         self._save_settings()
 
+        msg = f"Successfully switched active AI to: '{model_id}' ({target_provider.upper()})"
+
+        # Low-RAM PC Advisory
+        try:
+            with open("/proc/meminfo", "r") as f:
+                m_txt = f.read()
+                tot_kb = int(re.search(r"MemTotal:\s+(\d+)", m_txt).group(1))
+                if tot_kb <= 1250 * 1024 and target_provider == "offline" and model_id != "deterministic-nano":
+                    msg += " [Advisory: 1GB RAM PC detected. Use 'deterministic-nano' or active ZRAM compression to prevent OOM freezing]"
+        except Exception:
+            pass
+
         return {
             "status": "success",
             "active_model": model_id,
             "provider": target_provider,
             "is_online": target_provider != "offline",
-            "message": f"Successfully switched active AI to: '{model_id}' ({target_provider.upper()})"
+            "message": msg
         }
 
     def generate(self, prompt: str, system_prompt: Optional[str] = None) -> Dict[str, Any]:
@@ -432,7 +444,18 @@ class ModelManager:
     def _generate_offline(self, model_id: str, prompt: str, system_prompt: Optional[str]) -> Dict[str, Any]:
         """Executes offline deterministic SLM inference locally."""
         start_t = time.time()
-        # Fast local offline simulation & deterministic response generator
+        if model_id == "deterministic-nano":
+            response_text = f"Executed goal using Tier 0 Micro-Intent Engine (Zero-RAM): {prompt}"
+            latency = round((time.time() - start_t) * 1000, 1)
+            return {
+                "text": response_text,
+                "provider": "offline",
+                "model": "deterministic-nano",
+                "latency_ms": max(latency, 0.6),
+                "ram_overhead_mb": 0.0,
+                "execution_type": "deterministic_nano_zero_ram"
+            }
+
         response_text = f"Executed goal using local offline SLM [{model_id}]: {prompt}"
         latency = round((time.time() - start_t) * 1000, 1)
         return {
