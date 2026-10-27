@@ -180,6 +180,14 @@ def main():
         for s in brain.replica.list_skills():
             print(f"  • \033[1;35m{s['name']:<25}\033[0m \033[1;37m{s['desc']}\033[0m")
         print("    \033[1;33mUsage:\033[0m mint-agent --replica [recon|architect|design|build|backend|diff|test|entrepreneur|brand|launch|deploy]\n")
+
+        print("🎩 \033[1;34m[4] HAROLD OS AGENT-NATIVE WORKSTATION (9 Skills - iamlukethedev/Herald-OS):\033[0m")
+        for s in brain.harold.list_skills():
+            print(f"  • \033[1;34m{s['name']:<25}\033[0m \033[1;37m{s['desc']}\033[0m")
+        print("    \033[1;33mUsage:\033[0m mint-agent --harold [crash|filer|undo|tailor|calc|canvas|docs|sheets|slides|audit|observe|all]\n")
+
+        total_skills = len(skills) + len(brain.founder.list_skills()) + len(brain.replica.list_skills()) + len(brain.harold.list_skills())
+        print(f"\033[1;32m✓ Total Active Agent Skills: {total_skills} (6 Marvel Tactical + 11 Founder + 11 Replica + 9 Harold OS)\033[0m\n")
         return
 
     if args.fight_pattern:
