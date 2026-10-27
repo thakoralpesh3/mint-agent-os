@@ -495,6 +495,21 @@ class AgentBrain:
                 "result": self.memory.get_memory_stats()
             }
 
+        if any(w in p for w in ["optimize for 1gb", "optimize 1gb", "1gb ram", "setup 1gb", "1gb pc", "tune 1gb"]):
+            res = self.memory.optimize_for_1gb_pc()
+            return {
+                "thought": f"Optimized PC for 1GB RAM: {res.get('tier')}. ZRAM compressed swap configured.",
+                "result": res
+            }
+
+        if any(w in p for w in ["zram status", "check zram", "zram swap", "ram compression"]):
+            res = self.memory.get_zram_stats()
+            state = "ACTIVE" if res.get("active") else "INACTIVE"
+            return {
+                "thought": f"Kernel ZRAM Status: {state} ({res.get('disksize_mb')}MB allocated, {res.get('compression_ratio')}x ratio).",
+                "result": res
+            }
+
         # 5. Audio & Volume
         if "mute" in p:
             if "unmute" in p:
@@ -678,6 +693,11 @@ class AgentBrain:
 
             if self.interaction.modality == "notification":
                 self.interaction.send_desktop_notification("MintPilot", res["thought"])
+
+        # Enforce instant garbage collection on Tier 0 low-RAM systems to keep RSS under 30MB
+        if self.hardware_tier.get("is_nano_spec"):
+            import gc
+            gc.collect()
 
         return res
 
