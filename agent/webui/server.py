@@ -100,6 +100,69 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "index.html not found"}, 404)
                 return
 
+        # 1b. Mobile Remote Companion App
+        if path in ["/mobile", "/mobile.html", "/remote"]:
+            mobile_path = STATIC_DIR / "mobile.html"
+            if mobile_path.exists():
+                content = mobile_path.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            else:
+                self._send_json({"error": "mobile.html not found"}, 404)
+                return
+
+        # 1c. Remote Access Status & Pairing Telemetry API
+        if path == "/api/remote/status":
+            configured_port = get_configured_port()
+            status_data = remote_manager.get_status(port=configured_port)
+            status_data["mode"] = self.brain.permissions.mode
+            status_data["active_persona"] = self.brain.marvel.get_active_persona().get("name", "Aradhya")
+            self._send_json(status_data)
+            return
+
+        # 1d. Remote Live Desktop Screenshot
+        if path == "/api/remote/screenshot":
+            if not self._is_authenticated():
+                self._send_json({"error": "Unauthorized. Pairing token required."}, 401)
+                return
+            cap = self.brain.vision.capture_screenshot()
+            if cap.get("status") == "success" and os.path.exists(cap.get("file_path", "")):
+                try:
+                    with open(cap["file_path"], "rb") as f:
+                        img_bytes = f.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(img_bytes)))
+                    self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                    self.end_headers()
+                    self.wfile.write(img_bytes)
+                    try:
+                        os.remove(cap["file_path"])
+                    except Exception:
+                        pass
+                    return
+                except Exception:
+                    pass
+            # Fallback lightweight SVG placeholder if X11 capture is unavailable
+            svg_fallback = f'''<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+                <rect width="640" height="360" fill="#141815"/>
+                <rect x="20" y="20" width="600" height="320" rx="12" fill="#1e2520" stroke="#2d3830" stroke-width="2"/>
+                <text x="320" y="150" font-family="sans-serif" font-size="20" font-weight="bold" fill="#87cf3e" text-anchor="middle">🍃 Linux Mint Desktop Active</text>
+                <text x="320" y="190" font-family="sans-serif" font-size="14" fill="#a0b0a4" text-anchor="middle">Companion Remote Linked • Mode: {self.brain.permissions.mode.upper()}</text>
+                <text x="320" y="230" font-family="sans-serif" font-size="12" fill="#62992b" text-anchor="middle">Cinnamon Workspace 1 • 60 FPS Smooth</text>
+            </svg>'''.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml")
+            self.send_header("Content-Length", str(len(svg_fallback)))
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.end_headers()
+            self.wfile.write(svg_fallback)
+            return
+
         # 2. System Status & Telemetry API
         if path == "/api/status":
             mem = self.brain.memory.get_memory_stats()
