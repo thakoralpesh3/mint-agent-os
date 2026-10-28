@@ -21,6 +21,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from agent.brain.inference import AgentBrain
+from agent.remote.remote_manager import remote_manager
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 CONFIG_PATH = ROOT_DIR / "agent" / "config" / "settings.json"
@@ -31,6 +32,36 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
         pass
+
+    def _is_authenticated(self, body: dict = None) -> bool:
+        """Validates bearer auth token, query token, or body token for remote access."""
+        # 1. Authorization header: Bearer <token>
+        auth_header = self.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
+            if remote_manager.verify_token(token):
+                return True
+
+        # 2. Query param: ?token=<token>
+        parsed = urlparse(self.path)
+        if "token=" in parsed.query:
+            from urllib.parse import parse_qs
+            qs = parse_qs(parsed.query)
+            token = qs.get("token", [""])[0]
+            if remote_manager.verify_token(token):
+                return True
+
+        # 3. Body token
+        if body and isinstance(body, dict) and "token" in body:
+            if remote_manager.verify_token(body.get("token")):
+                return True
+
+        # 4. Localhost exemption for local PC desktop
+        client_ip = self.client_address[0] if hasattr(self, "client_address") else ""
+        if client_ip in ["127.0.0.1", "::1", "localhost"]:
+            return True
+
+        return False
 
     def _send_json(self, data: dict, status: int = 200):
         body = json.dumps(data).encode("utf-8")
