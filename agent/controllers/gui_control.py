@@ -117,6 +117,27 @@ class GUIController:
         except Exception as e:
             return {"error": str(e), "status": "failed"}
 
+    def move_relative(self, dx: int, dy: int) -> Dict[str, Any]:
+        """Moves mouse relative to current position (essential for mobile virtual trackpad)."""
+        if not self._has_xdotool:
+            return {"error": "xdotool not installed"}
+        try:
+            subprocess.run(["xdotool", "mousemove_relative", "--", str(int(dx)), str(int(dy))], check=True)
+            return {"status": "success", "delta": {"dx": dx, "dy": dy}}
+        except Exception as e:
+            return {"error": str(e), "status": "failed"}
+
+    def scroll(self, clicks: int = 1, direction: str = "down") -> Dict[str, Any]:
+        """Scrolls mouse wheel. direction can be 'up' (button 4) or 'down' (button 5)."""
+        if not self._has_xdotool:
+            return {"error": "xdotool not installed"}
+        try:
+            btn = 4 if direction.lower() == "up" else 5
+            subprocess.run(["xdotool", "click", "--repeat", str(max(1, clicks)), str(btn)], check=True)
+            return {"status": "success", "scrolled": direction, "clicks": clicks}
+        except Exception as e:
+            return {"error": str(e), "status": "failed"}
+
     def click(self, x: Optional[int] = None, y: Optional[int] = None, button: int = 1, clicks: int = 1) -> Dict[str, Any]:
         """
         Clicks at coordinates (x, y) or current location.
