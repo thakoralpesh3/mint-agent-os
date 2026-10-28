@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a201c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Aradhya Mobile Companion - Linux Mint Remote</title>
+  <style>
+    :root {
+      --bg: #141815;
+      --card-bg: #1e2520;
+      --card-border: #2d3830;
+      --mint: #87cf3e;
+      --mint-glow: rgba(135, 207, 62, 0.25);
+      --mint-dark: #62992b;
+      --cyan: #00e5ff;
+      --red: #ff5252;
+      --yellow: #ffd740;
+      --text: #e0e8e2;
+      --text-dim: #8b9e90;
+      --safe: #4caf50;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 74px; /* Space for bottom nav */
+    }
+
+    /* TOP HEADER BAR */
+    header {
+      background: rgba(30, 37, 32, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--mint-dark), var(--mint));
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #0d120f;
+      font-size: 18px;
+      box-shadow: 0 2px 8px var(--mint-glow);
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #fff;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--mint);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--mint);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 6px var(--mint);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-btn {
+      background: #252e27;
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-btn.active {
+      color: var(--mint);
+      border-color: var(--mint);
+      background: rgba(135, 207, 62, 0.1);
+    }
+
+    /* MAIN CONTAINER & TABS */
+    main {
+      flex: 1;
+      padding: 14px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CARDS & PANELS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* TAB 1: COPILOT CHAT */
+    .persona-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      scrollbar-width: none;
+    }
+    .persona-bar::-webkit-scrollbar { display: none; }
+
+    .persona-pill {
+      background: #232c25;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .persona-pill.active {
+      background: var(--mint);
+      color: #0d120f;
+      font-weight: 700;
+      border-color: var(--mint);
+    }
+
+    .chat-container {
+      background: #181d19;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      height: 340px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .msg-user {
+      background: #29382d;
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+      border-left: 2px solid var(--mint);
+    }
+
+    .msg-agent {
+      background: #212923;
+      color: var(--text);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border-left: 2px solid var(--cyan);
+    }
+
+    .msg-sender {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--mint);
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #181d19;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .chat-input:focus {
+      border-color: var(--mint);
+      box-shadow: 0 0 8px var(--mint-glow);
+    }
+
+    .btn-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .btn-circle:active { transform: scale(0.92); }
+
+    .btn-voice {
+      background: #252e27;
+      color: var(--cyan);
+      border: 1px solid var(--card-border);
+    }
+    .btn-voice.recording {
+      background: var(--red);
+      color: white;
+      animation: pulse 1s infinite;
+    }
+
+    .btn-send {
+      background: var(--mint);
+      color: #0d120f;
+    }
+
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .chip {
+      background: #202722;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+    .chip:active {
+      background: var(--mint);
+      color: #000;
+    }
+
+    /* TAB 2: QUICK PC CONTROLS */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .ctrl-tile {
+      background: #222b24;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .ctrl-tile:active {
+      background: #2d3930;
+      border-color: var(--mint);
+    }
+
+    .ctrl-icon {
+      font-size: 24px;
+    }
+    .ctrl-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .ctrl-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+    }
+    .slider-icon { font-size: 18px; width: 24px; text-align: center; }
+    .slider-bar {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #2d3830;
+      outline: none;
+    }
+    .slider-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 8px var(--mint-glow);
+      cursor: pointer;
+    }
+
+    .app-launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .app-tile {
+      background: #1f2721;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 4px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .app-tile:active {
+      border-color: var(--mint);
+      background: #27332a;
+    }
+    .app-tile span { display: block; font-size: 20px; margin-bottom: 4px; }
+
+    /* TAB 3: TRACKPAD & REMOTE KEYBOARD */
+    .trackpad-surface {
+      background: radial-gradient(circle at center, #232c25, #181f1a);
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 13px;
+      position: relative;
+      touch-action: none;
+      user-select: none;
+    }
+    .trackpad-surface.active {
+      border-color: var(--mint);
+      background: radial-gradient(circle at center, #27352a, #1a231c);
+    }
+
+    .trackpad-hint {
+      pointer-events: none;
+      text-align: center;
+      opacity: 0.6;
+    }
+
+    .click-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .click-pad {
+      background: #222c24;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 18px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+    .click-pad:active {
+      background: var(--mint);
+      color: #000;
+    }
+
+    .key-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .key-btn {
+      background: #1f2721;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .key-btn:active {
+      background: var(--mint);
+      color: #000;
+    }
+
+    /* TAB 4: SCREEN MIRROR */
+    .screen-preview-box {
+      background: #000;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .screen-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .screen-refresh-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(20, 24, 21, 0.85);
+      border: 1px solid var(--card-border);
+      color: var(--mint);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+
+    .window-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1d241f;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .window-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 65%;
+      color: #fff;
+    }
+    .window-actions { display: flex; gap: 6px; }
+
+    /* TAB 5: SECURITY & APPROVALS */
+    .defcon-card {
+      background: linear-gradient(135deg, #2a1f1f, #1e2520);
+      border: 1px solid #5a3030;
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .defcon-lvl {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--yellow);
+    }
+    .defcon-badge {
+      font-size: 12px;
+      color: #ff9800;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .approval-card {
+      background: #2a2c1f;
+      border: 1px solid var(--yellow);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 10px;
+      animation: pulse 3s infinite;
+    }
+    .approval-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--yellow);
+      margin-bottom: 6px;
+    }
+    .approval-cmd {
+      background: #141714;
+      padding: 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #fff;
+      margin: 8px 0;
+      word-break: break-all;
+    }
+    .approval-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-approve {
+      background: var(--safe);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-reject {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* BOTTOM NAV DOCK */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(24, 30, 25, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 19%;
+      padding: 4px 0;
+      border-radius: 8px;
+      transition: color 0.15s;
+    }
+
+    .nav-item .icon {
+      font-size: 19px;
+    }
+
+    .nav-item.active {
+      color: var(--mint);
+    }
+    .nav-item.active .icon {
+      transform: translateY(-1px);
+    }
+
+    /* PAIRING MODAL OVERLAY */
+    #pairing-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 11, 0.95);
+      backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .pairing-box {
+      background: #1c231e;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .pin-input {
+      font-size: 32px;
+      letter-spacing: 8px;
+      text-align: center;
+      background: #131814;
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px;
+      width: 80%;
+      margin: 16px auto;
+      color: var(--mint);
+      font-weight: 800;
+      outline: none;
+      font-family: monospace;
+    }
+    .pin-input:focus {
+      border-color: var(--mint);
+      box-shadow: 0 0 14px var(--mint-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header>
+    <div class="brand">
+      <div class="logo-badge">🌿</div>
+      <div>
+        <div class="brand-title">Aradhya Remote</div>
+        <div class="brand-subtitle">
+          <span class="status-dot"></span>
+          <span id="active-persona-name">J.A.R.V.I.S. (Active)</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="badge-btn" id="mode-badge" onclick="toggleMode()">TURBO</div>
+      <div class="badge-btn" onclick="showPairingModal()">🔑 PIN</div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main>
+    <!-- TAB 1: COPILOT CHAT & VOICE -->
+    <div class="tab-content active" id="tab-chat">
+      <!-- Marvel Persona Picker -->
+      <div class="persona-bar" id="persona-list">
+        <div class="persona-pill active" onclick="switchPersona('jarvis')">⚡ JARVIS</div>
+        <div class="persona-pill" onclick="switchPersona('aradhya')">🌸 Aradhya</div>
+        <div class="persona-pill" onclick="switchPersona('friday')">🛡️ FRIDAY</div>
+        <div class="persona-pill" onclick="switchPersona('edith')">🛰️ EDITH</div>
+        <div class="persona-pill" onclick="switchPersona('vision')">💎 VISION</div>
+        <div class="persona-pill" onclick="switchPersona('karen')">🕷️ KAREN</div>
+      </div>
+
+      <!-- Chat Log Stream -->
+      <div class="chat-container" id="chat-stream">
+        <div class="msg msg-agent">
+          <div class="msg-sender" id="welcome-sender">🌸 Aradhya Remote Copilot</div>
+          Connected to Linux Mint PC. You can speak commands, use touch trackpad, or tap quick controls.
+        </div>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="chat-input-row">
+        <button class="btn-circle btn-voice" id="voice-btn" onclick="toggleSpeech()" title="Push to Speak">🎙️</button>
+        <input type="text" class="chat-input" id="chat-input" placeholder="Ask Aradhya anything..." onkeydown="if(event.key==='Enter') sendChat()">
+        <button class="btn-circle btn-send" onclick="sendChat()" title="Send">➤</button>
+      </div>
+
+      <!-- Quick Chips -->
+      <div class="quick-chips">
+        <div class="chip" onclick="quickSend('Lock PC screen')">🔒 Lock Screen</div>
+        <div class="chip" onclick="quickSend('Set volume to 50%')">🔊 50% Volume</div>
+        <div class="chip" onclick="quickSend('Clean memory and drop cache')">🧹 Clean RAM</div>
+        <div class="chip" onclick="quickSend('Open Nemo file manager')">📁 Open Nemo</div>
+        <div class="chip" onclick="quickSend('Scan threats and check firewall')">🛡️ Threat Scan</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: QUICK PC CONTROLS -->
+    <div class="tab-content" id="tab-controls">
+      <!-- Volume & Brightness Sliders -->
+      <div class="card">
+        <div class="card-title">Audio & Display</div>
+        <div class="slider-row">
+          <span class="slider-icon">🔊</span>
+          <input type="range" class="slider-bar" id="volume-slider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+          <span id="volume-val" style="font-size:12px;width:34px;">50%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-icon">☀️</span>
+          <input type="range" class="slider-bar" id="bright-slider" min="10" max="100" value="80" oninput="setBrightness(this.value)">
+          <span id="bright-val" style="font-size:12px;width:34px;">80%</span>
+        </div>
+      </div>
+
+      <!-- Power & Action Tiles -->
+      <div class="controls-grid">
+        <div class="ctrl-tile" onclick="sendPCAction('lock')">
+          <div class="ctrl-icon">🔒</div>
+          <div class="ctrl-label">Lock PC</div>
+          <div class="ctrl-sub">Lock Cinnamon desktop</div>
+        </div>
+        <div class="ctrl-tile" onclick="sendPCAction('clean_ram')">
+          <div class="ctrl-icon">🧹</div>
+          <div class="ctrl-label">Free RAM</div>
+          <div class="ctrl-sub">Drop kernel caches</div>
+        </div>
+        <div class="ctrl-tile" onclick="sendPCAction('mute_toggle')">
+          <div class="ctrl-icon">🔇</div>
+          <div class="ctrl-label">Toggle Mute</div>
+          <div class="ctrl-sub">Mute/Unmute audio</div>
+        </div>
+        <div class="ctrl-tile" onclick="sendPCAction('show_desktop')">
+          <div class="ctrl-icon">🖥️</div>
+          <div class="ctrl-label">Show Desktop</div>
+          <div class="ctrl-sub">Minimize all windows</div>
+        </div>
+      </div>
+
+      <!-- Quick App Launchers -->
+      <div class="card">
+        <div class="card-title">Launch Linux Mint Apps</div>
+        <div class="app-launcher-grid">
+          <div class="app-tile" onclick="quickSend('open nemo')">
+            <span>📁</span>Files
+          </div>
+          <div class="app-tile" onclick="quickSend('open firefox')">
+            <span>🦊</span>Firefox
+          </div>
+          <div class="app-tile" onclick="quickSend('open terminal')">
+            <span>💻</span>Terminal
+          </div>
+          <div class="app-tile" onclick="quickSend('open libreoffice')">
+            <span>📄</span>Office
+          </div>
+          <div class="app-tile" onclick="quickSend('open calculator')">
+            <span>🧮</span>Calc
+          </div>
+          <div class="app-tile" onclick="quickSend('open text editor')">
+            <span>📝</span>Notes
+          </div>
+          <div class="app-tile" onclick="quickSend('open system monitor')">
+            <span>📊</span>Monitor
+          </div>
+          <div class="app-tile" onclick="quickSend('open settings')">
+            <span>⚙️</span>Config
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: TRACKPAD & KEYBOARD -->
+    <div class="tab-content" id="tab-trackpad">
+      <!-- Touchpad Area -->
+      <div class="trackpad-surface" id="touch-pad">
+        <div class="trackpad-hint" id="pad-hint">
+          <div style="font-size:32px;margin-bottom:6px;">👆</div>
+          <div>Virtual Touchpad</div>
+          <div style="font-size:11px;margin-top:4px;">Drag finger to move mouse<br>2-finger scroll • Tap to click</div>
+        </div>
+      </div>
+
+      <!-- Left / Right Click -->
+      <div class="click-bar">
+        <div class="click-pad" id="btn-lclick" onclick="sendClick(1)">LEFT CLICK</div>
+        <div class="click-pad" id="btn-rclick" onclick="sendClick(3)">RIGHT CLICK</div>
+      </div>
+
+      <!-- Virtual Keyboard Input Row -->
+      <div class="card" style="margin-top:12px;padding:10px;">
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="chat-input" id="remote-key-input" placeholder="Type text into PC window..." style="border-radius:10px;">
+          <button class="badge-btn active" onclick="sendTyping()" style="border-radius:10px;padding:0 14px;">Type</button>
+        </div>
+        <div class="key-bar">
+          <button class="key-btn" onclick="sendKey('Return')">↵ Enter</button>
+          <button class="key-btn" onclick="sendKey('BackSpace')">⌫ Back</button>
+          <button class="key-btn" onclick="sendKey('Tab')">⇥ Tab</button>
+          <button class="key-btn" onclick="sendKey('Escape')">Esc</button>
+          <button class="key-btn" onclick="sendKey('Super_L')">❖ Mint</button>
+          <button class="key-btn" onclick="sendCombo('ctrl+c')">Ctrl+C</button>
+          <button class="key-btn" onclick="sendCombo('ctrl+v')">Ctrl+V</button>
+          <button class="key-btn" onclick="sendCombo('alt+F4')">Alt+F4</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SCREEN MIRROR & WINDOWS -->
+    <div class="tab-content" id="tab-screen">
+      <div class="card">
+        <div class="card-title">
+          <span>Live Desktop Snapshot</span>
+          <button class="badge-btn" onclick="refreshScreen()">🔄 Refresh</button>
+        </div>
+        <div class="screen-preview-box">
+          <img id="live-screen-img" class="screen-img" src="" alt="Desktop Snapshot">
+        </div>
+      </div>
+
+      <!-- Active Windows -->
+      <div class="card">
+        <div class="card-title">Open Windows on PC</div>
+        <div id="windows-list">
+          <div style="font-size:12px;color:var(--text-dim);">Loading active windows...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: CYBER DEFENSE & APPROVALS -->
+    <div class="tab-content" id="tab-defense">
+      <!-- DEFCON Banner -->
+      <div class="defcon-card">
+        <div>
+          <div class="defcon-badge" id="defcon-text">DEFCON 5 - NORMAL SHIELD</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Firewall Active • Zero Intrusions</div>
+        </div>
+        <div class="defcon-lvl" id="defcon-val">5</div>
+      </div>
+
+      <!-- Safe Mode Remote Approvals Section -->
+      <div class="card">
+        <div class="card-title">
+          <span>Remote Safe Mode Approvals</span>
+          <span style="font-size:10px;color:var(--yellow);" id="pending-count">0 PENDING</span>
+        </div>
+        <div id="approvals-container">
+          <div style="font-size:12px;color:var(--text-dim);text-align:center;padding:12px;">
+            No pending action requests. System operating smoothly.
+          </div>
+        </div>
+      </div>
+
+      <!-- Defense Actions -->
+      <div class="controls-grid">
+        <div class="ctrl-tile" onclick="quickSend('Scan threats and counter hostile sockets')">
+          <div class="ctrl-icon">🛰️</div>
+          <div class="ctrl-label">Threat Radar</div>
+          <div class="ctrl-sub">Scan ports & intrusions</div>
+        </div>
+        <div class="ctrl-tile" onclick="sendEmergencyLockdown()" style="border-color:#5a2323;">
+          <div class="ctrl-icon">🚨</div>
+          <div class="ctrl-label" style="color:var(--red);">Emergency Lock</div>
+          <div class="ctrl-sub">Sever inbound traffic</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM NAVIGATION DOCK -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('chat')">
+      <span class="icon">💬</span>
+      <span>Chat</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('controls')">
+      <span class="icon">🎮</span>
+      <span>Controls</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('trackpad')">
+      <span class="icon">🖱️</span>
+      <span>Trackpad</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('screen')">
+      <span class="icon">📷</span>
+      <span>Screen</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('defense')">
+      <span class="icon">🛡️</span>
+      <span>Defense</span>
+    </button>
+  </nav>
+
+  <!-- PAIRING MODAL -->
+  <div id="pairing-modal">
+    <div class="pairing-box">
+      <div style="font-size:36px;margin-bottom:8px;">📱</div>
+      <h3 style="color:#fff;margin-bottom:6px;">Pair Mobile Device</h3>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px;">
+        Enter the 6-digit PIN displayed on your Linux Mint PC terminal or WebUI hub.
+      </p>
+      <input type="text" class="pin-input" id="modal-pin-input" maxlength="7" placeholder="000-000">
+      <div style="display:flex;gap:10px;">
+        <button class="badge-btn" onclick="closePairingModal()" style="flex:1;justify-content:center;padding:12px;">Cancel</button>
+        <button class="badge-btn active" onclick="submitPin()" style="flex:1;justify-content:center;padding:12px;">Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global State
+    let authToken = localStorage.getItem("aradhya_remote_token") || "";
+    let isRecording = false;
+    let recognition = null;
+
+    // Check URL parameters for auto-pairing from QR code
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get("token");
+      const urlPin = params.get("pin");
+
+      if (urlToken) {
+        authToken = urlToken;
+        localStorage.setItem("aradhya_remote_token", authToken);
+      } else if (urlPin) {
+        verifyPinDirect(urlPin);
+      }
+
+      setupTrackpad();
+      setupSpeech();
+      refreshStatus();
+      setInterval(pollTelemetry, 3500);
+    });
+
+    // Navigation Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+      
+      const tab = document.getElementById("tab-" + tabId);
+      if (tab) tab.classList.add("active");
+
+      const navBtn = Array.from(document.querySelectorAll(".nav-item")).find(b => b.onclick.toString().includes(tabId));
+      if (navBtn) navBtn.classList.add("active");
+
+      if (tabId === "screen") refreshScreen();
+      if (tabId === "defense") checkPendingApprovals();
+    }
+
+    // Modal
+    function showPairingModal() {
+      document.getElementById("pairing-modal").style.display = "flex";
+      document.getElementById("modal-pin-input").focus();
+    }
+    function closePairingModal() {
+      document.getElementById("pairing-modal").style.display = "none";
+    }
+
+    async function submitPin() {
+      const pin = document.getElementById("modal-pin-input").value.trim();
+      if (!pin) return;
+      await verifyPinDirect(pin);
+    }
+
+    async function verifyPinDirect(pin) {
+      try {
+        const res = await fetch("/api/remote/pair", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin: pin, ua: navigator.userAgent })
+        });
+        const data = await res.json();
+        if (data.authenticated) {
+          authToken = data.token;
+          localStorage.setItem("aradhya_remote_token", authToken);
+          closePairingModal();
+          addChatMsg("system", `✓ Authenticated successfully with PIN. Connected as ${data.device}.`);
+        } else {
+          alert(data.error || "Invalid PIN. Please check PC terminal.");
+        }
+      } catch (err) {
+        console.error("Pairing error:", err);
+      }
+    }
+
+    // API Headers Helper
+    function getHeaders() {
+      const h = { "Content-Type": "application/json" };
+      if (authToken) h["Authorization"] = "Bearer " + authToken;
+      return h;
+    }
+
+    // Chat Operations
+    async function sendChat() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+
+      addChatMsg("user", text);
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ prompt: text })
+        });
+        const data = await res.json();
+        const reply = data.thought || (data.result ? JSON.stringify(data.result) : "Action completed.");
+        addChatMsg("agent", reply);
+      } catch (err) {
+        addChatMsg("agent", "Error communicating with PC: " + err.message);
+      }
+    }
+
+    function quickSend(prompt) {
+      document.getElementById("chat-input").value = prompt;
+      sendChat();
+      switchTab("chat");
+    }
+
+    function addChatMsg(role, text) {
+      const box = document.getElementById("chat-stream");
+      const div = document.createElement("div");
+      div.className = "msg " + (role === "user" ? "msg-user" : "msg-agent");
+      
+      const sender = document.createElement("div");
+      sender.className = "msg-sender";
+      sender.innerText = role === "user" ? "You (Mobile)" : "🌸 Aradhya";
+      
+      const content = document.createElement("div");
+      content.innerText = text;
+
+      div.appendChild(sender);
+      div.appendChild(content);
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // Web Speech API for Push-to-Talk
+    function setupSpeech() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        document.getElementById("chat-input").value = transcript;
+        sendChat();
+      };
+      recognition.onend = () => {
+        isRecording = false;
+        document.getElementById("voice-btn").classList.remove("recording");
+      };
+    }
+
+    function toggleSpeech() {
+      if (!recognition) {
+        alert("Speech recognition not supported in this mobile browser.");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.start();
+        isRecording = true;
+        document.getElementById("voice-btn").classList.add("recording");
+        if (navigator.vibrate) navigator.vibrate(30);
+      }
+    }
+
+    // Marvel Persona Switcher
+    async function switchPersona(pid) {
+      document.querySelectorAll(".persona-pill").forEach(p => p.classList.remove("active"));
+      event.target.classList.add("active");
+      try {
+        await fetch("/api/marvel/persona", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ persona: pid })
+        });
+        document.getElementById("active-persona-name").innerText = pid.toUpperCase() + " (Active)";
+        addChatMsg("agent", `Switched active companion persona to ${pid.toUpperCase()}.`);
+      } catch (err) {
+        console.error("Persona switch error:", err);
+      }
+    }
+
+    // Quick Hardware Controls
+    async function setVolume(val) {
+      document.getElementById("volume-val").innerText = val + "%";
+      await fetch("/api/remote/control", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "volume", value: parseInt(val) })
+      });
+    }
+
+    async function setBrightness(val) {
+      document.getElementById("bright-val").innerText = val + "%";
+      await fetch("/api/remote/control", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "brightness", value: parseInt(val) })
+      });
+    }
+
+    async function sendPCAction(actionName) {
+      if (navigator.vibrate) navigator.vibrate(25);
+      await fetch("/api/remote/control", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: actionName })
+      });
+      addChatMsg("system", `Triggered action: ${actionName}`);
+    }
+
+    // VIRTUAL TRACKPAD IMPLEMENTATION
+    let lastX = 0, lastY = 0, isDragging = false;
+    function setupTrackpad() {
+      const pad = document.getElementById("touch-pad");
+
+      pad.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          lastX = e.touches[0].clientX;
+          lastY = e.touches[0].clientY;
+          pad.classList.add("active");
+        }
+      }, { passive: false });
+
+      pad.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+
+        if (e.touches.length === 1) {
+          const curX = e.touches[0].clientX;
+          const curY = e.touches[0].clientY;
+          const dx = Math.round((curX - lastX) * 1.8);
+          const dy = Math.round((curY - lastY) * 1.8);
+          lastX = curX;
+          lastY = curY;
+
+          if (dx !== 0 || dy !== 0) {
+            sendMotion(dx, dy);
+          }
+        } else if (e.touches.length === 2) {
+          // 2-finger scroll
+          const curY = e.touches[0].clientY;
+          const dy = curY - lastY;
+          lastY = curY;
+          if (Math.abs(dy) > 10) {
+            sendScroll(dy > 0 ? "up" : "down");
+          }
+        }
+      }, { passive: false });
+
+      pad.addEventListener("touchend", () => {
+        isDragging = false;
+        pad.classList.remove("active");
+      });
+    }
+
+    let motionThrottle = null;
+    let pendingDx = 0, pendingDy = 0;
+    function sendMotion(dx, dy) {
+      pendingDx += dx;
+      pendingDy += dy;
+      if (!motionThrottle) {
+        motionThrottle = setTimeout(() => {
+          fetch("/api/remote/trackpad", {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({ action: "move", dx: pendingDx, dy: pendingDy })
+          }).catch(() => {});
+          pendingDx = 0;
+          pendingDy = 0;
+          motionThrottle = null;
+        }, 16); // ~60fps smooth trackpad reporting
+      }
+    }
+
+    async function sendClick(btn) {
+      if (navigator.vibrate) navigator.vibrate(20);
+      await fetch("/api/remote/trackpad", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "click", button: btn })
+      });
+    }
+
+    async function sendScroll(direction) {
+      await fetch("/api/remote/trackpad", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "scroll", direction: direction, clicks: 2 })
+      });
+    }
+
+    async function sendTyping() {
+      const input = document.getElementById("remote-key-input");
+      const text = input.value;
+      if (!text) return;
+      input.value = "";
+      await fetch("/api/remote/keyboard", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "type", text: text })
+      });
+    }
+
+    async function sendKey(k) {
+      if (navigator.vibrate) navigator.vibrate(15);
+      await fetch("/api/remote/keyboard", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "key", key: k })
+      });
+    }
+
+    async function sendCombo(c) {
+      if (navigator.vibrate) navigator.vibrate(15);
+      await fetch("/api/remote/keyboard", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "hotkey", combo: c })
+      });
+    }
+
+    // Screen Mirroring & Window Management
+    async function refreshScreen() {
+      const img = document.getElementById("live-screen-img");
+      img.src = "/api/remote/screenshot?t=" + Date.now() + (authToken ? "&token=" + authToken : "");
+      loadWindows();
+    }
+
+    async function loadWindows() {
+      try {
+        const res = await fetch("/api/status", { headers: getHeaders() });
+        const data = await res.json();
+        const list = document.getElementById("windows-list");
+        list.innerHTML = "";
+        const windows = data.windows || [];
+        if (windows.length === 0) {
+          list.innerHTML = "<div style='font-size:12px;color:var(--text-dim);'>No desktop windows open.</div>";
+          return;
+        }
+        windows.forEach(w => {
+          if (!w.title) return;
+          const div = document.createElement("div");
+          div.className = "window-item";
+          div.innerHTML = `
+            <div class="window-title">${w.title}</div>
+            <div class="window-actions">
+              <button class="badge-btn" onclick="focusWin('${w.title.replace(/'/g, "\\'")}')">Focus</button>
+              <button class="badge-btn" style="color:var(--red);" onclick="closeWin('${w.title.replace(/'/g, "\\'")}')">✕</button>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+      } catch (err) {}
+    }
+
+    async function focusWin(title) {
+      await fetch("/api/remote/control", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "focus_window", title: title })
+      });
+    }
+
+    async function closeWin(title) {
+      await fetch("/api/remote/control", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action: "close_window", title: title })
+      });
+      loadWindows();
+    }
+
+    // Telemetry & Approvals
+    async function pollTelemetry() {
+      try {
+        const res = await fetch("/api/status", { headers: getHeaders() });
+        const data = await res.json();
+        
+        if (data.mode) {
+          document.getElementById("mode-badge").innerText = data.mode.toUpperCase();
+        }
+        if (data.security && data.security.defcon) {
+          document.getElementById("defcon-val").innerText = data.security.defcon.level || "5";
+          document.getElementById("defcon-text").innerText = "DEFCON " + (data.security.defcon.level || "5") + " - " + (data.security.defcon.label || "SECURE");
+        }
+        renderApprovals(data.pending_approvals || []);
+      } catch (err) {}
+    }
+
+    function renderApprovals(approvals) {
+      const container = document.getElementById("approvals-container");
+      document.getElementById("pending-count").innerText = approvals.length + " PENDING";
+
+      if (approvals.length === 0) {
+        container.innerHTML = `<div style="font-size:12px;color:var(--text-dim);text-align:center;padding:12px;">No pending action requests. System operating smoothly.</div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      approvals.forEach(a => {
+        const card = document.createElement("div");
+        card.className = "approval-card";
+        card.innerHTML = `
+          <div class="approval-title">⚠️ Safe Mode Permission Request</div>
+          <div style="font-size:12px;color:#fff;">${a.description || "Action requires authorization"}</div>
+          <div class="approval-cmd">${a.command || a.action_id}</div>
+          <div class="approval-btns">
+            <button class="btn-approve" onclick="resolveApproval('${a.action_id}', true)">✓ Approve</button>
+            <button class="btn-reject" onclick="resolveApproval('${a.action_id}', false)">✕ Reject</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function resolveApproval(actId, approved) {
+      if (navigator.vibrate) navigator.vibrate(30);
+      await fetch("/api/remote/approve", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ action_id: actId, approved: approved })
+      });
+      pollTelemetry();
+    }
+
+    async function sendEmergencyLockdown() {
+      if (!confirm("Confirm EMERGENCY LOCKDOWN? Inbound network will be severed.")) return;
+      await fetch("/api/lockdown", { method: "POST", headers: getHeaders() });
+      alert("🚨 Emergency lockdown activated.");
+      pollTelemetry();
+    }
+
+    async function toggleMode() {
+      const badge = document.getElementById("mode-badge");
+      const current = badge.innerText.toLowerCase();
+      const nextMode = current === "turbo" ? "safe" : "turbo";
+      await fetch("/api/mode", {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ mode: nextMode })
+      });
+      badge.innerText = nextMode.toUpperCase();
+    }
+
+    async function refreshStatus() {
+      pollTelemetry();
+    }
+  </script>
+</body>
+</html>
