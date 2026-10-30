@@ -20,7 +20,7 @@
     "turbo_toggle": "<Super><Alt>t"
   },
   "interaction": {
-    "modality": "hybrid",
+    "modality": "voice",
     "verbosity": "concise",
     "proactivity": "balanced",
     "voice": {
@@ -29,7 +29,7 @@
       "speed": 160,
       "pitch": 0,
       "volume": 100,
-      "auto_listen_wake_word": false
+      "auto_listen_wake_word": true
     },
     "notifications": {
       "enabled": true,
