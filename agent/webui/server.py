@@ -486,6 +486,121 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             })
             return
 
+        # 17. Remote Companion Pairing: POST /api/remote/pair
+        if path == "/api/remote/pair":
+            pin = body.get("pin", "")
+            ua = body.get("ua", self.headers.get("User-Agent", "mobile"))
+            client_ip = self.client_address[0] if hasattr(self, "client_address") else "unknown"
+            pair_res = remote_manager.verify_pin(pin, client_ip=client_ip, user_agent=ua)
+            self._send_json(pair_res, status=200 if pair_res.get("authenticated") else 401)
+            return
+
+        # 18. Remote Companion PC Hardware Control: POST /api/remote/control
+        if path == "/api/remote/control":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            action = body.get("action", "")
+            res = {"status": "success", "action": action}
+
+            if action == "volume":
+                val = int(body.get("value", 50))
+                res["result"] = self.brain.system.set_volume(val)
+            elif action == "brightness":
+                val = int(body.get("value", 80))
+                res["result"] = self.brain.system.set_brightness(val)
+            elif action == "mute_toggle":
+                res["result"] = self.brain.system.toggle_mute()
+            elif action == "lock":
+                res["result"] = self.brain.system.execute_power_action("lock")
+            elif action == "sleep":
+                res["result"] = self.brain.system.execute_power_action("sleep")
+            elif action == "clean_ram":
+                res["result"] = self.brain.memory.clean_memory()
+            elif action == "show_desktop":
+                res["result"] = self.brain.gui.minimize_all_show_desktop()
+            elif action == "focus_window":
+                title = body.get("title", "")
+                res["result"] = self.brain.gui.focus_window(title)
+            elif action == "close_window":
+                title = body.get("title", "")
+                res["result"] = self.brain.gui.close_window(title)
+            else:
+                res["status"] = "unknown_action"
+
+            self._send_json(res)
+            return
+
+        # 19. Remote Companion Virtual Trackpad: POST /api/remote/trackpad
+        if path == "/api/remote/trackpad":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            action = body.get("action", "move")
+            if action == "move":
+                dx = int(body.get("dx", 0))
+                dy = int(body.get("dy", 0))
+                res = self.brain.gui.move_relative(dx, dy)
+            elif action == "click":
+                btn = int(body.get("button", 1))
+                clicks = int(body.get("clicks", 1))
+                res = self.brain.gui.click(button=btn, clicks=clicks)
+            elif action == "scroll":
+                clicks = int(body.get("clicks", 1))
+                direction = body.get("direction", "down")
+                res = self.brain.gui.scroll(clicks=clicks, direction=direction)
+            else:
+                res = {"error": "Unsupported trackpad action", "status": "failed"}
+
+            self._send_json(res)
+            return
+
+        # 20. Remote Companion Virtual Keyboard: POST /api/remote/keyboard
+        if path == "/api/remote/keyboard":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            action = body.get("action", "type")
+            if action == "type":
+                text = body.get("text", "")
+                res = self.brain.gui.type_text(text)
+            elif action == "key":
+                key_name = body.get("key", "Return")
+                res = self.brain.gui.press_key(key_name)
+            elif action == "hotkey":
+                combo = body.get("combo", "ctrl+c")
+                res = self.brain.gui.hotkey(combo)
+            else:
+                res = {"error": "Unsupported keyboard action", "status": "failed"}
+
+            self._send_json(res)
+            return
+
+        # 21. Remote Safe Mode Approval: POST /api/remote/approve
+        if path == "/api/remote/approve":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            act_id = body.get("action_id") or body.get("id")
+            approved = body.get("approved", False)
+            success = self.brain.permissions.resolve_pending(act_id, approved)
+            self._send_json({"status": "resolved" if success else "not_found", "action_id": act_id, "approved": approved})
+            return
+
+        # 22. Remote Session Revocation: POST /api/remote/revoke
+        if path == "/api/remote/revoke":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            target_token = body.get("target_token")
+            if target_token:
+                revoked = remote_manager.revoke_session(target_token)
+                self._send_json({"status": "revoked" if revoked else "not_found"})
+            else:
+                res = remote_manager.revoke_all()
+                self._send_json(res)
+            return
+
         self._send_json({"error": "Endpoint not found"}, 404)
 
 

@@ -30,6 +30,7 @@ from agent.controllers.voice_engine import VoiceEngine
 from agent.controllers.browser_control import BrowserController
 from agent.controllers.program_control import ProgramController
 from agent.skills import founder_skills, replica_skills, harold_skills
+from agent.remote.remote_manager import remote_manager
 
 
 class AgentBrain:
@@ -40,6 +41,7 @@ class AgentBrain:
         self.permissions = PermissionManager(mode=mode)
         self.interaction = InteractionManager()
         self.marvel = MarvelAgentManager(self)
+        self.remote = remote_manager
         self.founder = founder_skills
         self.replica = replica_skills
         self.harold = harold_skills
@@ -767,6 +769,36 @@ class AgentBrain:
         if close_m:
             win = close_m.group(1).strip()
             return {"result": self.gui.close_window(win), "thought": f"Closed window '{win}'"}
+
+        # 14. Mobile Companion & Remote Access Routing
+        if any(w in p for w in ["remote access", "mobile access", "connect phone", "phone access", "remote companion", "mobile companion"]):
+            st = self.remote.get_status()
+            return {
+                "thought": f"Aradhya Remote Companion Active. Open http://{st['primary_ip']}:{st['port']}/mobile on your smartphone. Pairing PIN: {st['pin']}",
+                "result": st
+            }
+
+        if any(w in p for w in ["pairing pin", "remote pin", "mobile pin", "what is the pin", "show pin"]):
+            st = self.remote.get_status()
+            return {
+                "thought": f"Current 6-digit Mobile Pairing PIN is: {st['pin']}",
+                "result": {"pin": st['pin'], "raw_pin": st['raw_pin'], "ip": st['primary_ip']}
+            }
+
+        if any(w in p for w in ["remote qr", "show qr", "qr code", "pairing qr", "qr pairing"]):
+            st = self.remote.get_status()
+            ascii_qr = self.remote.generate_ascii_qr()
+            return {
+                "thought": f"Scan QR code with mobile camera to link smartphone to Linux Mint PC:\n{ascii_qr}\nPairing URL: {st['auto_pair_url']}\nPIN: {st['pin']}",
+                "result": st
+            }
+
+        if any(w in p for w in ["revoke remote", "revoke mobile", "disconnect phone", "reset remote pin"]):
+            res = self.remote.revoke_all()
+            return {
+                "thought": f"All paired mobile devices revoked. Generated new pairing PIN: {res['new_pin']}",
+                "result": res
+            }
 
         return None
 

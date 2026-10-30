@@ -2,5 +2,15 @@
   "master_token": "a66d689866f306c1256af40d6b15eb1e52fb78b4",
   "pairing_pin": "628247",
   "pin_created_at": 1793202810.5186696,
-  "sessions": {}
+  "sessions": {
+    "ed41075a1d5a455342bd8f555d21037d8d3d8c337d2b79f8": {
+      "token": "ed41075a1d5a455342bd8f555d21037d8d3d8c337d2b79f8",
+      "ip": "127.0.0.1",
+      "user_agent": "iPhone 16 Safari",
+      "created_at": 1793385735.745272,
+      "last_active": 1793385735.745272,
+      "expires_at": 1793472135.745272,
+      "device_name": "Apple iPhone"
+    }
+  }
 }

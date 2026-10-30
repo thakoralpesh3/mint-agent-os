@@ -116,6 +116,9 @@ def main():
     parser.add_argument("--harold", "--herald", type=str, nargs="?", const="all", help="Execute Harold OS Agent-Native Workstation suite (crash, filer, undo, tailor, calc, canvas, docs, sheets, slides, audit, observe, all)")
     parser.add_argument("--idea", type=str, help="Custom business idea or product description for Founder skills")
     parser.add_argument("--target-app", type=str, help="Target application URL or name for Replica or Harold skills")
+    parser.add_argument("--remote", "--mobile", action="store_true", help="Launch Mobile Remote Companion access hub with ASCII QR code and pairing PIN")
+    parser.add_argument("--remote-status", action="store_true", help="Display paired mobile companion devices, LAN IP, and pairing credentials")
+    parser.add_argument("--remote-revoke", action="store_true", help="Revoke all paired mobile devices and generate a new pairing PIN")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
@@ -883,6 +886,58 @@ def main():
         print(f"  • Compression Ratio:     \033[1;32m{z['compression_ratio']}x\033[0m")
         print(f"  • Net RAM Saved:         \033[1;32m+{z['memory_saved_mb']} MB\033[0m")
         print(f"  • Algorithm:             {z['algorithm']}")
+        return
+
+    if args.remote_status:
+        print_banner(brain)
+        st = brain.remote.get_status()
+        print("\033[1;36m📱 Aradhya Mobile Remote Access Status:\033[0m\n")
+        print(f"  • Primary LAN IP:    \033[1;32m{st['primary_ip']}\033[0m")
+        print(f"  • Web Port:          \033[1;33m{st['port']}\033[0m")
+        print(f"  • Mobile URL:        \033[1;34m{st['mobile_url']}\033[0m")
+        print(f"  • 6-Digit PIN:       \033[1;32m{st['pin']}\033[0m")
+        print(f"  • Active Sessions:   \033[1;35m{st['connected_devices']} paired device(s)\033[0m")
+        if st["sessions"]:
+            for s in st["sessions"]:
+                print(f"      - {s['device']} ({s['ip']}) - Connected {s['connected_ago_mins']}m ago")
+        else:
+            print("      - No mobile companion devices currently linked.")
+        return
+
+    if args.remote_revoke:
+        print_banner(brain)
+        res = brain.remote.revoke_all()
+        print("\033[1;31m🔒 All Remote Sessions Revoked!\033[0m")
+        print(f"  • Revoked Sessions:  {res['sessions_revoked']}")
+        print(f"  • New 6-Digit PIN:   \033[1;32m{res['new_pin']}\033[0m")
+        print(f"  • New Master Token:  {res['new_token'][:16]}...")
+        return
+
+    if args.remote or getattr(args, "mobile", False):
+        print_banner(brain)
+        st = brain.remote.get_status()
+        ascii_qr = brain.remote.generate_ascii_qr()
+        print("\033[1;36m╔═══════════════════════════════════════════════════════════════╗")
+        print("║          📱 ARADHYA MOBILE REMOTE COMPANION HUB               ║")
+        print("╚═══════════════════════════════════════════════════════════════╝\033[0m\n")
+        print("  \033[1;33m[1] Pair via QR Code:\033[0m Scan with mobile camera (iOS / Android):")
+        print(ascii_qr)
+        print("  \033[1;33m[2] Or Open in Mobile Browser:\033[0m")
+        print(f"      \033[1;34m{st['mobile_url']}\033[0m")
+        print(f"      Pairing PIN: \033[1;32m{st['pin']}\033[0m\n")
+        print("  \033[1;32mCapabilities Available on Mobile:\033[0m")
+        print("    • 💬 Remote Agent Chat & Voice (Web Speech API push-to-talk)")
+        print("    • 🎮 Quick PC Controls (Volume, Brightness, Mute, Lock, Launchers)")
+        print("    • 🖱️ Virtual Trackpad (Smooth touch gestures, left/right clicks)")
+        print("    • ⌨️ Remote Typing into active Linux Mint windows")
+        print("    • 📷 Live Screen Snapshot & Window Manager")
+        print("    • 🛡️ Cyber Defense Radar & Safe Mode Action Approvals\n")
+        print("\033[1;30m(Press Ctrl+C to exit remote hub)\033[0m\n")
+        try:
+            from agent.webui.server import run_webui_server
+            run_webui_server(port=st['port'])
+        except KeyboardInterrupt:
+            print("\nExiting remote companion hub.")
         return
 
     if args.tier:

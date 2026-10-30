@@ -143,6 +143,10 @@
         <div class="icon-img">🎩</div>
         <div class="icon-label">Harold OS</div>
       </div>
+      <div class="desktop-icon" data-app="remote-access" title="Mobile Remote Companion & QR Pairing Hub">
+        <div class="icon-img">📱</div>
+        <div class="icon-label">Remote Mobile</div>
+      </div>
       <div class="desktop-icon" onclick="AgentSimulator.toggleStarkHUD()" title="Press 'H' to launch Iron Man Visor HUD">
         <div class="icon-img">🕶️</div>
         <div class="icon-label">Visor HUD [H]</div>
@@ -1659,6 +1663,293 @@ mint-agent --harold all</pre>
       </div>
     </div>
 
+    <!-- ==================== WINDOW 11: MOBILE REMOTE ACCESS & QR PAIRING HUB ==================== -->
+    <div id="win-remote-access" class="window" data-icon="📱" style="top: 30px; left: 140px; width: 890px; height: 610px; display: none;">
+      <div class="window-titlebar">
+        <div class="window-title">
+          <span class="win-icon">📱</span>
+          <span>Aradhya Mobile Remote Companion & QR Hub (Antigravity-Style)</span>
+        </div>
+        <div class="win-controls">
+          <button class="win-btn win-minimize" onclick="WindowManager.minimizeWindow('win-remote-access')" title="Minimize">—</button>
+          <button class="win-btn win-maximize" onclick="WindowManager.maximizeWindow('win-remote-access')" title="Maximize">□</button>
+          <button class="win-btn win-close" onclick="WindowManager.closeWindow('win-remote-access')" title="Close">✕</button>
+        </div>
+      </div>
+
+      <div class="window-body" style="background:#111613; padding:0; overflow:hidden; display:flex; flex-direction:column; height:calc(100% - 38px);">
+        
+        <!-- Top Info Header Banner -->
+        <div style="background:linear-gradient(135deg, #1b261d 0%, #121814 100%); border-bottom:1px solid #283a2c; padding:10px 16px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:32px; height:32px; background:linear-gradient(135deg, #62992b, #87cf3e); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px;">📱</div>
+            <div>
+              <div style="font-weight:bold; font-size:0.92rem; color:#fff;">Mobile Smartphone Remote Access</div>
+              <div style="font-size:0.75rem; color:#87cf3e;">Antigravity Companion • Zero-Cloud • Micro-RAM (&lt;12MB) • Local Wi-Fi</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <span style="background:rgba(135,207,62,0.15); border:1px solid #87cf3e; color:#87cf3e; font-size:0.72rem; padding:4px 8px; border-radius:4px; font-weight:bold; display:flex; align-items:center; gap:5px;">
+              <span style="width:6px; height:6px; background:#87cf3e; border-radius:50%; display:inline-block; box-shadow:0 0 6px #87cf3e;"></span> LISTENING :8888
+            </span>
+            <button class="dl-btn-secondary" style="font-size:0.72rem; padding:4px 8px;" onclick="AgentSimulator.regenerateRemotePin()">🔄 New PIN</button>
+            <button class="dl-btn-secondary" style="font-size:0.72rem; padding:4px 8px; border-color:#e74c3c; color:#ff6b6b;" onclick="AgentSimulator.revokeAllRemoteSessions()">🔒 Revoke All</button>
+          </div>
+        </div>
+
+        <!-- Main Content Area: Left Hub + Right Interactive Phone Mockup -->
+        <div style="display:flex; flex:1; overflow:hidden;">
+          
+          <!-- LEFT HUB PANEL: Pairing, Credentials, Instructions & Sessions -->
+          <div style="flex:1.1; padding:14px; overflow-y:auto; border-right:1px solid #202b23; display:flex; flex-direction:column; gap:12px;">
+            
+            <!-- QR Code & PIN Card -->
+            <div style="background:#17201a; border:1px solid #283a2d; border-radius:10px; padding:12px; display:flex; gap:14px; align-items:center;">
+              <div id="remoteQrContainer" style="width:130px; height:130px; background:#141714; border:1px solid #2d3830; border-radius:8px; padding:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <!-- Generated SVG QR Code -->
+                <svg viewBox="0 0 29 29" width="118" height="118" shape-rendering="crispEdges">
+                  <rect width="29" height="29" fill="#141714"/>
+                  <!-- Position Markers -->
+                  <path d="M0,0h7v7h-7z M1,1h5v5h-5z M2,2h3v3h-3z" fill="#87cf3e"/>
+                  <path d="M22,0h7v7h-7z M23,1h5v5h-5z M24,2h3v3h-3z" fill="#87cf3e"/>
+                  <path d="M0,22h7v7h-7z M1,23h5v5h-5z M2,24h3v3h-3z" fill="#87cf3e"/>
+                  <!-- Data Dots -->
+                  <path d="M9,2h2v1h-2z M13,2h1v2h-1z M16,2h3v1h-3z M9,4h1v2h-1z M12,4h2v1h-2z M16,4h1v1h-1z M19,4h2v1h-2z M10,7h2v1h-2z M14,7h1v2h-1z M18,7h2v1h-2z M2,9h3v1h-3z M7,9h2v2h-2z M11,9h3v1h-3z M16,9h2v1h-2z M20,9h3v2h-3z M25,9h2v1h-2z M0,11h2v2h-2z M4,11h2v1h-2z M9,11h1v1h-1z M13,11h3v1h-3z M18,11h1v1h-1z M22,11h2v2h-2z M2,13h1v2h-1z M6,13h2v1h-2z M10,13h2v2h-2z M15,13h2v1h-2z M19,13h2v1h-2z M24,13h3v1h-3z M1,15h3v1h-3z M5,15h1v2h-1z M8,15h3v1h-3z M13,15h2v1h-2z M17,15h2v2h-2z M21,15h2v1h-2z M25,15h1v1h-1z M0,17h3v1h-3z M5,17h2v1h-2z M9,17h1v2h-1z M12,17h3v1h-3z M17,17h2v1h-2z M22,17h3v2h-3z M3,19h2v1h-2z M7,19h2v1h-2z M11,19h1v1h-1z M14,19h3v1h-3z M19,19h2v1h-2z M24,19h2v1h-2z M8,21h3v1h-3z M13,21h2v2h-2z M17,21h3v1h-3z M22,21h2v1h-2z M9,23h2v1h-2z M12,23h3v1h-3z M16,23h1v1h-1z M19,23h2v2h-2z M23,23h3v1h-3z M10,25h2v2h-2z M14,25h3v1h-3z M18,25h2v1h-2z M22,25h1v1h-1z M25,25h2v2h-2z M8,27h3v1h-3z M13,27h2v1h-2z M17,27h3v1h-3z M22,27h2v1h-2z" fill="#87cf3e"/>
+                </svg>
+              </div>
+
+              <div style="flex:1;">
+                <div style="font-size:0.75rem; color:#87cf3e; text-transform:uppercase; letter-spacing:0.8px; font-weight:bold;">One-Time Pairing PIN</div>
+                <div id="remotePinDisplay" style="font-size:1.8rem; font-weight:900; font-family:monospace; color:#fff; letter-spacing:4px; margin:4px 0;">628-247</div>
+                <div style="font-size:0.75rem; color:#888;">Expires in 24 hours. Rate-limited to max 5 attempts per IP.</div>
+                
+                <div style="display:flex; gap:6px; margin-top:8px;">
+                  <button class="dl-btn-secondary" style="font-size:0.72rem; padding:4px 8px;" onclick="AgentSimulator.copyRemotePin()">📋 Copy PIN</button>
+                  <button class="dl-btn-primary" style="font-size:0.72rem; padding:4px 8px; background:#62992b;" onclick="window.open('mobile.html', '_blank')">📱 Open Web App</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- LAN Direct Connection URL -->
+            <div style="background:#141b16; border:1px solid #233327; border-radius:8px; padding:10px;">
+              <div style="font-size:0.74rem; color:#aaa; margin-bottom:4px;">Local Wi-Fi Browser Access (Safari / Chrome):</div>
+              <div class="dl-code-box" style="font-size:0.75rem; padding:6px 10px;">
+                <span id="remoteLanUrlText">http://10.182.73.178:8888/mobile</span>
+                <button class="dl-copy-btn" onclick="AgentSimulator.copyRemoteUrl()">Copy</button>
+              </div>
+            </div>
+
+            <!-- Paired Devices Table -->
+            <div style="background:#17201a; border:1px solid #283a2d; border-radius:8px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong style="font-size:0.8rem; color:#90e0ef;">📱 PAIRED COMPANIONS (LIVE SESSIONS)</strong>
+                <span id="remoteSessionCountBadge" style="font-size:0.7rem; background:#1e2e22; color:#87cf3e; padding:2px 6px; border-radius:4px; font-weight:bold;">1 ACTIVE</span>
+              </div>
+              <div id="remoteSessionsList" style="display:flex; flex-direction:column; gap:6px; font-size:0.76rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#121814; border:1px solid #243427; border-radius:6px; padding:6px 10px;">
+                  <div>
+                    <span style="color:#fff; font-weight:bold;">Apple iPhone 16 Pro</span>
+                    <span style="color:#666; font-size:0.7rem; margin-left:6px;">10.182.73.45 • Safari</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:#87cf3e; font-size:0.7rem;">Active (1m ago)</span>
+                    <button class="dl-copy-btn" style="background:#3d1a1a; border-color:#e74c3c; color:#ff8080;" onclick="AgentSimulator.revokeSingleSession(this)">Kick</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feature Checklist -->
+            <div style="background:#141a16; border:1px solid #223025; border-radius:8px; padding:10px;">
+              <strong style="font-size:0.78rem; color:#87cf3e;">CAPABILITIES ACCESSIBLE FROM PHONE:</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; font-size:0.74rem; color:#ccc;">
+                <div>💬 <strong>Voice & Chat Copilot</strong> (Web Speech API)</div>
+                <div>🎮 <strong>PC Volume & Brightness</strong> sliders</div>
+                <div>🖱️ <strong>Touchpad & Keyboard</strong> (xdotool)</div>
+                <div>📷 <strong>Screen Snapshot</strong> mirror</div>
+                <div>🔒 <strong>Desktop Lock & Sleep</strong></div>
+                <div>🛡️ <strong>Safe Mode Approvals</strong> from pocket</div>
+              </div>
+            </div>
+
+            <!-- Terminal One-Liner Quick Guide -->
+            <div style="background:#0c100d; border:1px solid #1a251d; border-radius:6px; padding:8px; font-family:monospace; font-size:0.72rem; color:#87cf3e;">
+              $ mint-agent --remote &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Launch terminal QR hub<br>
+              $ mint-agent --remote-status &nbsp;# Check active phone sessions<br>
+              $ mint-agent --remote-revoke &nbsp;# Disconnect all devices
+            </div>
+
+          </div>
+
+          <!-- RIGHT SIMULATOR PANEL: Realistic Smartphone Companion Demo -->
+          <div style="flex:0.9; background:#0d120f; padding:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow-y:auto;">
+            
+            <div style="font-size:0.72rem; color:#888; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.8px;">
+              📱 Interactive Mobile Companion Simulator
+            </div>
+
+            <!-- Phone Frame -->
+            <div style="width:300px; height:500px; background:#141815; border:3px solid #334437; border-radius:32px; box-shadow:0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(135,207,62,0.15); display:flex; flex-direction:column; overflow:hidden; position:relative;">
+              
+              <!-- Dynamic Island Notch -->
+              <div style="width:90px; height:18px; background:#000; border-radius:10px; margin:6px auto 4px auto; display:flex; align-items:center; justify-content:center; gap:6px; z-index:10;">
+                <span style="width:5px; height:5px; background:#222; border-radius:50%;"></span>
+                <span style="width:8px; height:8px; background:#112211; border-radius:50%;"></span>
+              </div>
+
+              <!-- Phone Top Bar -->
+              <div style="padding:6px 12px; background:#1a211b; border-bottom:1px solid #273629; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+                <div style="display:flex; align-items:center; gap:5px;">
+                  <span style="font-size:12px;">🌿</span>
+                  <span style="font-weight:bold; color:#fff;">Aradhya Remote</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <span style="color:#87cf3e; font-size:10px;">● CONNECTED</span>
+                </div>
+              </div>
+
+              <!-- Phone Screen Content (Dynamic Tabs) -->
+              <div id="simPhoneContent" style="flex:1; overflow-y:auto; padding:10px; font-size:12px; color:#e0e8e2; display:flex; flex-direction:column;">
+                
+                <!-- SIM TAB 1: Chat (Default) -->
+                <div id="simTabChat" class="sim-phone-tab" style="display:flex; flex-direction:column; flex:1;">
+                  <div id="simChatStream" style="flex:1; max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
+                    <div style="background:#212923; padding:8px 10px; border-radius:10px; border-left:2px solid #87cf3e; font-size:11px;">
+                      <div style="color:#87cf3e; font-weight:bold; font-size:10px; margin-bottom:2px;">🌸 Aradhya Remote Copilot</div>
+                      Linked to Linux Mint PC. You can type commands, tap quick controls, or use virtual trackpad!
+                    </div>
+                  </div>
+                  <div style="display:flex; gap:4px; margin-top:auto;">
+                    <button style="width:32px; height:32px; border-radius:50%; background:#252e27; border:1px solid #2d3830; color:#00e5ff; font-size:14px; cursor:pointer;" onclick="AgentSimulator.simPhoneVoice()">🎙️</button>
+                    <input type="text" id="simPhoneChatInput" placeholder="Command PC..." style="flex:1; background:#181d19; border:1px solid #2d3830; border-radius:16px; padding:6px 10px; font-size:11px; color:#fff; outline:none;" onkeydown="if(event.key==='Enter') AgentSimulator.simPhoneSendChat()">
+                    <button style="width:32px; height:32px; border-radius:50%; background:#87cf3e; border:none; color:#000; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.simPhoneSendChat()">➤</button>
+                  </div>
+                  <div style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
+                    <span style="background:#1e2620; border:1px solid #28382c; border-radius:8px; padding:2px 6px; font-size:9px; cursor:pointer; color:#aaa;" onclick="AgentSimulator.simPhoneQuick('Set volume to 60%')">🔊 60% Vol</span>
+                    <span style="background:#1e2620; border:1px solid #28382c; border-radius:8px; padding:2px 6px; font-size:9px; cursor:pointer; color:#aaa;" onclick="AgentSimulator.simPhoneQuick('Clean memory and drop cache')">🧹 Free RAM</span>
+                    <span style="background:#1e2620; border:1px solid #28382c; border-radius:8px; padding:2px 6px; font-size:9px; cursor:pointer; color:#aaa;" onclick="AgentSimulator.simPhoneQuick('Lock PC screen')">🔒 Lock</span>
+                  </div>
+                </div>
+
+                <!-- SIM TAB 2: Controls -->
+                <div id="simTabControls" class="sim-phone-tab" style="display:none; flex-direction:column; gap:8px;">
+                  <div style="background:#1a221c; border:1px solid #27372a; border-radius:8px; padding:8px;">
+                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#87cf3e; font-weight:bold; margin-bottom:4px;">
+                      <span>VOLUME</span> <span id="simVolVal">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" style="width:100%; accent-color:#87cf3e;" oninput="document.getElementById('simVolVal').innerText=this.value+'%'; AgentSimulator.setVolume(this.value);">
+                  </div>
+                  <div style="background:#1a221c; border:1px solid #27372a; border-radius:8px; padding:8px;">
+                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#ffd740; font-weight:bold; margin-bottom:4px;">
+                      <span>BRIGHTNESS</span> <span id="simBrightVal">80%</span>
+                    </div>
+                    <input type="range" min="10" max="100" value="80" style="width:100%; accent-color:#ffd740;" oninput="document.getElementById('simBrightVal').innerText=this.value+'%'; AgentSimulator.setBrightness(this.value);">
+                  </div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                    <div style="background:#202922; border:1px solid #2b392e; border-radius:8px; padding:10px 6px; text-align:center; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('lock')">
+                      <div style="font-size:16px;">🔒</div>
+                      <div style="font-weight:bold; font-size:10px;">Lock PC</div>
+                    </div>
+                    <div style="background:#202922; border:1px solid #2b392e; border-radius:8px; padding:10px 6px; text-align:center; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('clean memory')">
+                      <div style="font-size:16px;">🧹</div>
+                      <div style="font-weight:bold; font-size:10px;">Free RAM</div>
+                    </div>
+                    <div style="background:#202922; border:1px solid #2b392e; border-radius:8px; padding:10px 6px; text-align:center; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('open nemo')">
+                      <div style="font-size:16px;">📁</div>
+                      <div style="font-weight:bold; font-size:10px;">Open Nemo</div>
+                    </div>
+                    <div style="background:#202922; border:1px solid #2b392e; border-radius:8px; padding:10px 6px; text-align:center; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('open firefox')">
+                      <div style="font-size:16px;">🦊</div>
+                      <div style="font-weight:bold; font-size:10px;">Firefox</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SIM TAB 3: Trackpad -->
+                <div id="simTabTrackpad" class="sim-phone-tab" style="display:none; flex-direction:column; gap:8px;">
+                  <div id="simTrackpadSurface" style="background:radial-gradient(circle at center, #242e27, #151c17); border:2px dashed #2e3e32; border-radius:12px; height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#888; font-size:10px; cursor:crosshair; user-select:none;" onmousemove="AgentSimulator.simTrackpadMove(event)" onmousedown="this.style.borderColor='#87cf3e'" onmouseup="this.style.borderColor='#2e3e32'">
+                    <div style="font-size:24px; margin-bottom:4px;">👆</div>
+                    <div style="color:#aaa;">Touch & Drag Pad</div>
+                    <div id="simTrackpadCoords" style="color:#87cf3e; font-family:monospace; margin-top:4px;">dx: 0, dy: 0</div>
+                  </div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                    <button style="background:#202a22; border:1px solid #2a3a2d; border-radius:6px; padding:12px 0; color:#fff; font-size:11px; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.simTrackpadClick(1)">LEFT CLICK</button>
+                    <button style="background:#202a22; border:1px solid #2a3a2d; border-radius:6px; padding:12px 0; color:#fff; font-size:11px; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.simTrackpadClick(3)">RIGHT CLICK</button>
+                  </div>
+                  <div style="display:flex; gap:4px;">
+                    <input type="text" id="simPhoneKeyInput" placeholder="Type into PC window..." style="flex:1; background:#181d19; border:1px solid #2d3830; border-radius:6px; padding:6px; font-size:10px; color:#fff; outline:none;">
+                    <button style="background:#87cf3e; color:#000; font-weight:bold; border:none; border-radius:6px; padding:0 8px; font-size:10px; cursor:pointer;" onclick="AgentSimulator.simPhoneTypeKey()">Type</button>
+                  </div>
+                </div>
+
+                <!-- SIM TAB 4: Screen -->
+                <div id="simTabScreen" class="sim-phone-tab" style="display:none; flex-direction:column; gap:8px;">
+                  <div style="background:#000; border:1px solid #283a2d; border-radius:8px; overflow:hidden; position:relative; height:160px; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 320 180" width="100%" height="100%">
+                      <rect width="320" height="180" fill="#141815"/>
+                      <circle cx="160" cy="90" r="40" fill="#18201a" stroke="#87cf3e" stroke-width="2"/>
+                      <text x="160" y="85" font-family="sans-serif" font-size="12" font-weight="bold" fill="#87cf3e" text-anchor="middle">Linux Mint Desktop</text>
+                      <text x="160" y="105" font-family="sans-serif" font-size="9" fill="#aaa" text-anchor="middle">Live 60fps Snapshot</text>
+                      <rect x="0" y="165" width="320" height="15" fill="#1f2821"/>
+                    </svg>
+                    <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.7); color:#87cf3e; font-size:9px; padding:2px 5px; border-radius:4px;">LIVE SNAPSHOT</span>
+                  </div>
+                  <div style="font-size:10px; color:#aaa; font-weight:bold; margin-top:4px;">ACTIVE PC WINDOWS:</div>
+                  <div style="background:#151c17; border:1px solid #223225; border-radius:6px; padding:6px; font-size:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>📁 /home/alpesh/mint-agent-os</span>
+                    <span style="color:#87cf3e; cursor:pointer;" onclick="WindowManager.openApp('nemo')">Focus</span>
+                  </div>
+                </div>
+
+                <!-- SIM TAB 5: Defense & Approvals -->
+                <div id="simTabDefense" class="sim-phone-tab" style="display:none; flex-direction:column; gap:8px;">
+                  <div style="background:#231a1a; border:1px solid #4a2727; border-radius:8px; padding:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      <div style="color:#ff6b6b; font-size:10px; font-weight:bold;">DEFCON 5 — SECURE</div>
+                      <div style="font-size:9px; color:#888;">Zero intrusions detected</div>
+                    </div>
+                    <span style="font-size:16px; font-weight:bold; color:#ffd740;">5</span>
+                  </div>
+                  <div id="simApprovalBox" style="background:#282619; border:1px solid #ffd740; border-radius:8px; padding:8px;">
+                    <div style="color:#ffd740; font-weight:bold; font-size:10px;">⚠️ Safe Mode Approval Required</div>
+                    <div style="color:#ddd; font-size:10px; margin:4px 0;">Agent requested: <code>iptables -A INPUT -p tcp --dport 8888 -j ACCEPT</code></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px;">
+                      <button style="background:#2ecc71; color:#000; font-weight:bold; border:none; border-radius:4px; padding:6px; font-size:10px; cursor:pointer;" onclick="AgentSimulator.simApprove(true)">✓ Approve</button>
+                      <button style="background:#e74c3c; color:#fff; font-weight:bold; border:none; border-radius:4px; padding:6px; font-size:10px; cursor:pointer;" onclick="AgentSimulator.simApprove(false)">✕ Reject</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Phone Bottom Dock Navigation Bar -->
+              <div style="background:#161d17; border-top:1px solid #263528; padding:6px 4px; display:flex; justify-content:space-around; align-items:center; font-size:9px; z-index:10;">
+                <button class="sim-nav-btn active" style="background:none; border:none; color:#87cf3e; font-size:9px; cursor:pointer; display:flex; flex-direction:column; align-items:center;" onclick="AgentSimulator.switchSimTab('chat', this)">
+                  <span style="font-size:14px;">💬</span>Chat
+                </button>
+                <button class="sim-nav-btn" style="background:none; border:none; color:#77887b; font-size:9px; cursor:pointer; display:flex; flex-direction:column; align-items:center;" onclick="AgentSimulator.switchSimTab('controls', this)">
+                  <span style="font-size:14px;">🎮</span>Controls
+                </button>
+                <button class="sim-nav-btn" style="background:none; border:none; color:#77887b; font-size:9px; cursor:pointer; display:flex; flex-direction:column; align-items:center;" onclick="AgentSimulator.switchSimTab('trackpad', this)">
+                  <span style="font-size:14px;">🖱️</span>Trackpad
+                </button>
+                <button class="sim-nav-btn" style="background:none; border:none; color:#77887b; font-size:9px; cursor:pointer; display:flex; flex-direction:column; align-items:center;" onclick="AgentSimulator.switchSimTab('screen', this)">
+                  <span style="font-size:14px;">📷</span>Screen
+                </button>
+                <button class="sim-nav-btn" style="background:none; border:none; color:#77887b; font-size:9px; cursor:pointer; display:flex; flex-direction:column; align-items:center;" onclick="AgentSimulator.switchSimTab('defense', this)">
+                  <span style="font-size:14px;">🛡️</span>Defense
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
     <!-- ==================== FLOATING HUD OVERLAY (SUPER+SPACE) ==================== -->
     <div id="hudOverlay">
       <div class="hud-input-row">
@@ -1915,6 +2206,10 @@ mint-agent --harold all</pre>
         <div class="app-item" data-cat="admin" onclick="WindowManager.openApp('harold-os'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🎩</span>
           <div><strong>Harold OS Agent-Native Workstation</strong><br><small style="color:#888;">iamlukethedev/Herald-OS 9 Skills: Crash Diagnostics, Filer, Docs, Sheets, Canvas</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="WindowManager.openApp('remote-access'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">📱</span>
+          <div><strong>Mobile Remote Access & QR Hub</strong><br><small style="color:#888;">Antigravity-Style Smartphone Companion, Virtual Trackpad & Approvals</small></div>
         </div>
         <div class="app-item" data-cat="admin" onclick="AgentSimulator.sendWebUIMessage('optimize for 1gb'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">⚡</span>

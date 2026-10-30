@@ -3654,8 +3654,182 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
 <span style="color:#2ecc71;">✓ Total Agent Memory: 31.4 MB. 1GB RAM budget 100% respected.</span>
 `;
       }
-      this.playStarkSFX('chime');
-    }, 450);
+  },
+
+  // ==================== WINDOW 11: REMOTE ACCESS COMPANION SIMULATION ====================
+  remotePin: "628-247",
+  remoteSessionsCount: 1,
+
+  regenerateRemotePin() {
+    const d1 = Math.floor(100 + Math.random() * 900);
+    const d2 = Math.floor(100 + Math.random() * 900);
+    this.remotePin = `${d1}-${d2}`;
+    const el = document.getElementById('remotePinDisplay');
+    if (el) el.innerText = this.remotePin;
+    this.playStarkSFX('lock');
+    this.addTerminalLine(`[REMOTE] Generated new pairing OTP PIN: ${this.remotePin}`);
+  },
+
+  revokeAllRemoteSessions() {
+    this.remoteSessionsCount = 0;
+    const list = document.getElementById('remoteSessionsList');
+    const badge = document.getElementById('remoteSessionCountBadge');
+    if (list) list.innerHTML = `<div style="color:#888; font-size:0.74rem; padding:8px 0;">No active mobile sessions. All devices disconnected.</div>`;
+    if (badge) { badge.innerText = "0 ACTIVE"; badge.style.background = "#3d1a1a"; badge.style.color = "#ff8080"; }
+    this.regenerateRemotePin();
+    this.playStarkSFX('alarm');
+    alert("🔒 All remote mobile sessions have been revoked. A new 6-digit PIN has been generated.");
+  },
+
+  revokeSingleSession(btn) {
+    const parent = btn.closest('div[style*="justify-content:space-between"]');
+    if (parent) parent.remove();
+    this.remoteSessionsCount = Math.max(0, this.remoteSessionsCount - 1);
+    const badge = document.getElementById('remoteSessionCountBadge');
+    if (badge) badge.innerText = `${this.remoteSessionsCount} ACTIVE`;
+    this.playStarkSFX('lock');
+  },
+
+  copyRemotePin() {
+    navigator.clipboard?.writeText(this.remotePin.replace('-', ''));
+    alert(`Copied PIN to clipboard: ${this.remotePin}`);
+  },
+
+  copyRemoteUrl() {
+    const url = document.getElementById('remoteLanUrlText')?.innerText || "http://10.182.73.178:8888/mobile";
+    navigator.clipboard?.writeText(url);
+    alert(`Copied LAN URL to clipboard: ${url}`);
+  },
+
+  switchSimTab(tabId, btn) {
+    document.querySelectorAll('.sim-phone-tab').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.sim-nav-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.color = '#77887b';
+    });
+
+    const target = document.getElementById('simTab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+    if (target) {
+      target.style.display = 'flex';
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.color = '#87cf3e';
+      }
+    }
+  },
+
+  simPhoneSendChat() {
+    const inp = document.getElementById('simPhoneChatInput');
+    const text = inp?.value?.trim();
+    if (!text) return;
+    inp.value = '';
+
+    const stream = document.getElementById('simChatStream');
+    if (stream) {
+      const uMsg = document.createElement('div');
+      uMsg.style.cssText = "background:#29382d; padding:6px 10px; border-radius:10px; color:#fff; align-self:flex-end; font-size:11px; max-width:85%; word-break:break-word;";
+      uMsg.innerText = text;
+      stream.appendChild(uMsg);
+
+      setTimeout(() => {
+        const aMsg = document.createElement('div');
+        aMsg.style.cssText = "background:#212923; padding:8px 10px; border-radius:10px; border-left:2px solid #87cf3e; font-size:11px; align-self:flex-start; max-width:85%;";
+        
+        let reply = "Executed on Linux Mint PC.";
+        const low = text.toLowerCase();
+        if (low.includes('volume') || low.includes('sound')) {
+          reply = "Volume set via pactl ALSA backend.";
+        } else if (low.includes('lock')) {
+          reply = "Screen locked with cinnamon-screensaver.";
+        } else if (low.includes('ram') || low.includes('clean')) {
+          reply = "Kernel caches dropped. Net 340MB RAM reclaimed.";
+        } else if (low.includes('nemo') || low.includes('file')) {
+          reply = "Launched Nemo File Manager on desktop.";
+          WindowManager.openApp('nemo');
+        } else if (low.includes('firefox') || low.includes('browser')) {
+          reply = "Launched Firefox Web Browser on desktop.";
+          WindowManager.openApp('browser');
+        } else {
+          reply = `Action completed: '${text}'. System latency: 0.8ms.`;
+        }
+
+        aMsg.innerHTML = `<div style="color:#87cf3e; font-weight:bold; font-size:10px; margin-bottom:2px;">🌸 Aradhya</div>${reply}`;
+        stream.appendChild(aMsg);
+        stream.scrollTop = stream.scrollHeight;
+        this.playStarkSFX('chime');
+      }, 350);
+
+      stream.scrollTop = stream.scrollHeight;
+    }
+  },
+
+  simPhoneQuick(prompt) {
+    const inp = document.getElementById('simPhoneChatInput');
+    if (inp) {
+      inp.value = prompt;
+      this.simPhoneSendChat();
+      this.switchSimTab('chat', document.querySelector('.sim-nav-btn'));
+    }
+  },
+
+  simPhoneVoice() {
+    this.playStarkSFX('lock');
+    const inp = document.getElementById('simPhoneChatInput');
+    if (inp) inp.placeholder = "Listening aloud (Web Speech API)...";
+    setTimeout(() => {
+      if (inp) {
+        inp.value = "Show system health and security radar";
+        inp.placeholder = "Command PC...";
+        this.simPhoneSendChat();
+      }
+    }, 1200);
+  },
+
+  simLastX: 0,
+  simLastY: 0,
+  simTrackpadMove(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const curX = Math.round(e.clientX - rect.left);
+    const curY = Math.round(e.clientY - rect.top);
+    const dx = curX - (this.simLastX || curX);
+    const dy = curY - (this.simLastY || curY);
+    this.simLastX = curX;
+    this.simLastY = curY;
+
+    const coordsEl = document.getElementById('simTrackpadCoords');
+    if (coordsEl) coordsEl.innerText = `dx: ${dx}, dy: ${dy} (xdotool move_relative)`;
+  },
+
+  simTrackpadClick(btn) {
+    const coordsEl = document.getElementById('simTrackpadCoords');
+    if (coordsEl) coordsEl.innerText = `xdotool click ${btn} (Button ${btn === 1 ? 'Left' : 'Right'})`;
+    this.playStarkSFX('lock');
+  },
+
+  simPhoneTypeKey() {
+    const inp = document.getElementById('simPhoneKeyInput');
+    const txt = inp?.value;
+    if (!txt) return;
+    inp.value = '';
+    const coordsEl = document.getElementById('simTrackpadCoords');
+    if (coordsEl) coordsEl.innerText = `xdotool type --delay 12 "${txt}"`;
+    this.playStarkSFX('chime');
+    this.addTerminalLine(`[REMOTE KEYBOARD] Typed: "${txt}"`);
+  },
+
+  simApprove(approved) {
+    const box = document.getElementById('simApprovalBox');
+    if (box) {
+      box.style.background = approved ? '#18291e' : '#2d1818';
+      box.style.borderColor = approved ? '#2ecc71' : '#e74c3c';
+      box.innerHTML = `
+        <div style="font-weight:bold; color:${approved ? '#2ecc71' : '#e74c3c'}; font-size:11px;">
+          ${approved ? '✓ Action Authorized from Smartphone' : '✕ Action Blocked from Smartphone'}
+        </div>
+        <div style="font-size:10px; color:#aaa; margin-top:4px;">Safe Mode resolved action ID #ACT-9081.</div>
+      `;
+    }
+    this.playStarkSFX(approved ? 'repulsor' : 'alarm');
   }
 };
 
