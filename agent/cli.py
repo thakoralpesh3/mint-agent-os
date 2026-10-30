@@ -956,23 +956,68 @@ def main():
 
     if args.prompt:
         full_prompt = " ".join(args.prompt)
-        run_single(brain, full_prompt, voice=args.voice, prompt_cli=True)
+        text_only = args.text_only or brain.interaction.is_text_only()
+        if args.voice:
+            text_only = False
+        run_single(brain, full_prompt, text_only=text_only, prompt_cli=True)
         return
 
-    # Interactive Mode
+    # Interactive Mode (Voice by Default, with instant Text mode toggle)
     print_banner(brain)
-    print("Commands: 'security', 'counter threats', 'deploy decoys', 'self check', 'rollback', 'lockdown', 'turbo mode', 'safe mode', 'exit'\n")
+    print("\033[1;36m💡 Interaction Modality & Controls:\033[0m")
+    print("  • \033[1;32mVoice Mode (Default)\033[0m: Spoken replies aloud + press \033[1;33m[Enter]\033[0m to speak into microphone.")
+    print("  • \033[1;36mText Mode\033[0m: Type \033[1;33m'text'\033[0m or \033[1;33m'text mode'\033[0m for silent text-only interaction.")
+    print("  • \033[1;32mVoice Mode\033[0m: Type \033[1;33m'voice'\033[0m or \033[1;33m'voice mode'\033[0m to switch back to voice.")
+    print("  • Commands: 'security', 'counter threats', 'lockdown', 'turbo', 'safe', 'exit'\n")
+
+    current_text_only = args.text_only if args.text_only else brain.interaction.is_text_only()
+    if args.voice:
+        current_text_only = False
 
     while True:
         try:
             mode_tag = "\033[1;31m[turbo]\033[0m" if brain.permissions.is_turbo() else "\033[1;33m[safe]\033[0m"
-            user_input = input(f"mint-agent {mode_tag} > ").strip()
+            is_voice = not current_text_only and brain.interaction.is_voice_enabled()
+            modality_tag = "\033[1;32m[🎙️ VOICE (Default)]\033[0m" if is_voice else "\033[1;36m[⌨️ TEXT]\033[0m"
+
+            prompt_label = f"aradhya {mode_tag} {modality_tag} > "
+            user_input = input(prompt_label).strip()
+
+            # Empty input: in voice mode, trigger microphone listening
             if not user_input:
-                continue
+                if is_voice:
+                    print("\033[1;32m🎙️ [Microphone Active]\033[0m Listening via Vosk for 5s (speak your command now)...")
+                    stt = brain.voice.listen_vosk(duration_sec=5)
+                    if stt.get("status") == "success" and stt.get("transcribed_text"):
+                        heard = stt["transcribed_text"]
+                        print(f"\033[1;34m[Voice Heard]\033[0m \"{heard}\"")
+                        user_input = heard
+                    else:
+                        err_msg = stt.get("error", "No speech detected.")
+                        print(f"\033[1;30m({err_msg} Press Enter to retry voice, or type a command. Type 'text' for silent mode.)\033[0m")
+                        continue
+                else:
+                    continue
+
             if user_input.lower() in ["exit", "quit", "q"]:
                 print("Goodbye!")
                 break
-            run_single(brain, user_input, voice=args.voice, prompt_cli=True)
+
+            # Fast REPL toggles
+            if user_input.lower() in ["text", "text mode", "--text", "switch to text", "silent", "text only"]:
+                current_text_only = True
+                brain.interaction.set_modality("text")
+                print("\033[1;36m✓ Switched to Silent Text Mode. (Spoken responses disabled. Type 'voice' to switch back)\033[0m\n")
+                continue
+
+            if user_input.lower() in ["voice", "voice mode", "--voice", "switch to voice", "speak", "voice only"]:
+                current_text_only = False
+                brain.interaction.set_modality("voice")
+                print("\033[1;32m✓ Switched to Voice-First Mode (Default). (Spoken responses & mic active. Press Enter to speak)\033[0m\n")
+                brain.voice.speak("Voice mode active. Spoken replies enabled.")
+                continue
+
+            run_single(brain, user_input, text_only=current_text_only, prompt_cli=True)
             print("")
         except (KeyboardInterrupt, EOFError):
             print("\nExiting...")
