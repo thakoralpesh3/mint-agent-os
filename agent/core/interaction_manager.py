@@ -124,6 +124,14 @@ class InteractionManager:
             "message": f"Interaction modality switched to '{self.modality}'"
         }
 
+    def is_voice_enabled(self) -> bool:
+        """Returns True if voice output/input is currently active."""
+        return self.modality in ["voice", "hybrid"] and self.voice_settings.get("enabled", True)
+
+    def is_text_only(self) -> bool:
+        """Returns True if the agent is operating in silent text-only mode."""
+        return self.modality == "text" or not self.voice_settings.get("enabled", True)
+
     # ==================== VERBOSITY & PERSONA ====================
 
     def set_verbosity(self, style: str) -> Dict[str, Any]:
