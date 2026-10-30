@@ -6,6 +6,7 @@ Enables hands-free microphone listening (Vosk STT) and natural spoken replies
 """
 
 import os
+import shlex
 import shutil
 import subprocess
 from typing import Dict, Any, Optional
