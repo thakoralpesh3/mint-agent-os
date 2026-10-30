@@ -88,3 +88,12 @@ class VoiceEngine:
             return {"error": "vosk or sounddevice python packages not installed", "status": "failed"}
         except Exception as e:
             return {"error": str(e), "status": "failed"}
+
+    def get_status(self) -> Dict[str, Any]:
+        """Returns readiness status for offline TTS and STT engines."""
+        return {
+            "tts_engine": self._tts_engine,
+            "tts_available": self._tts_engine is not None,
+            "vosk_model_installed": os.path.exists("/usr/share/mint-agent/models/vosk-model-small-en-us"),
+            "stt_engine": "vosk"
+        }
