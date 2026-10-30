@@ -545,18 +545,19 @@ class AgentBrain:
                 "result": status
             }
 
-        if any(w in p for w in ["enable voice", "turn on voice", "voice on", "speak replies", "talk to me", "voice output"]):
-            res = self.interaction.set_voice(True)
-            self.voice.speak("Spoken voice replies enabled. I am ready to interact aloud.")
+        # Voice-First (Default) vs Text-Based Modality Toggling
+        if any(w in p for w in ["voice mode", "switch to voice", "enable voice", "turn on voice", "voice on", "speak replies", "talk to me", "voice output", "run with voice", "voice based", "voice only", "use voice"]):
+            res = self.interaction.set_modality("voice")
+            self.voice.speak("Voice mode active. Aradhya is running in voice-first mode by default.")
             return {
-                "thought": "Voice interaction enabled. MintPilot will speak replies aloud using offline speech synthesis.",
+                "thought": "Voice mode activated (Default). Aradhya will listen for voice commands and speak replies aloud.",
                 "result": res
             }
 
-        if any(w in p for w in ["disable voice", "turn off voice", "voice off", "mute voice", "silent voice", "stop speaking"]):
-            res = self.interaction.set_voice(False)
+        if any(w in p for w in ["text mode", "switch to text", "disable voice", "turn off voice", "voice off", "mute voice", "silent voice", "stop speaking", "text based", "text only", "silent mode", "run with text", "use text"]):
+            res = self.interaction.set_modality("text")
             return {
-                "thought": "Voice interaction disabled. MintPilot will interact silently via text and visual UI.",
+                "thought": "Text-based mode activated. Aradhya will now interact silently through text and visual terminal output.",
                 "result": res
             }
 
