@@ -42,8 +42,9 @@ def print_banner(brain: AgentBrain):
 """)
 
 
-def run_single(brain: AgentBrain, prompt: str, voice: bool = False, prompt_cli: bool = False):
-    res = brain.process_command(prompt, prompt_cli=prompt_cli)
+def run_single(brain: AgentBrain, prompt: str, text_only: bool = False, prompt_cli: bool = False):
+    speak_flag = False if text_only else brain.interaction.is_voice_enabled()
+    res = brain.process_command(prompt, prompt_cli=prompt_cli, speak_reply=speak_flag)
     mode = res.get("execution_mode", "standard")
     latency = res.get("latency_ms", 0)
 
@@ -57,15 +58,13 @@ def run_single(brain: AgentBrain, prompt: str, voice: bool = False, prompt_cli: 
 
     print(f"\033[1;30m(Mode: {res.get('permission_mode', brain.permissions.mode).upper()} | Latency: {latency}ms)\033[0m")
 
-    if voice or brain.interaction.voice_settings.get("enabled"):
-        brain.voice.speak(res.get("thought", "Command completed"))
-
 
 def main():
     parser = argparse.ArgumentParser(description="Aradhya AI Agent OS - Autonomous Controller & Marvel Cyber Defense Network")
     parser.add_argument("prompt", nargs="*", help="Natural language command")
     parser.add_argument("-i", "--interactive", action="store_true", help="Launch interactive REPL session")
-    parser.add_argument("-v", "--voice", action="store_true", help="Enable spoken voice reply")
+    parser.add_argument("-v", "--voice", action="store_true", help="Force spoken voice reply (default is voice-first)")
+    parser.add_argument("-t", "--text", "--no-voice", "--text-only", dest="text_only", action="store_true", help="Run in silent text-only mode (disable voice output & mic)")
     parser.add_argument("--turbo", action="store_true", help="Execute in unrestricted Antigravity Turbo Mode (no permission prompts)")
     parser.add_argument("--safe", action="store_true", help="Execute in Safe Mode (requires confirmation for sensitive actions)")
     parser.add_argument("--persona", type=str, choices=["aradhya", "jarvis", "friday", "edith", "vision", "karen", "jocasta"], help="Switch Marvel AI Agent persona (Aradhya, Jarvis, Friday, Edith, Vision, Karen, Jocasta)")
