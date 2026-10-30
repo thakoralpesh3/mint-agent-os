@@ -805,7 +805,7 @@ class AgentBrain:
 
     # ==================== MAIN COGNITIVE DISPATCH ====================
 
-    def process_command(self, user_prompt: str, prompt_cli: bool = False) -> Dict[str, Any]:
+    def process_command(self, user_prompt: str, prompt_cli: bool = False, speak_reply: Optional[bool] = None) -> Dict[str, Any]:
         """Processes command through self-countering circuit breaker, fast router, and SLM planning."""
         start_time = time.time()
 
@@ -861,12 +861,14 @@ class AgentBrain:
         # Interaction Feedback: Offline Voice Synthesis & Desktop Notification
         if res and "thought" in res:
             p_low = user_prompt.lower()
-            if self.interaction.voice_settings.get("enabled"):
-                if not any(w in p_low for w in ["mute", "disable voice", "silent voice", "voice off"]):
+            should_speak = speak_reply if speak_reply is not None else self.interaction.is_voice_enabled()
+            if should_speak:
+                # Suppress if user is explicitly turning off voice or switching to text mode
+                if not any(w in p_low for w in ["mute", "disable voice", "silent voice", "voice off", "text mode", "switch to text", "silent mode"]):
                     self.voice.speak(res["thought"])
 
             if self.interaction.modality == "notification":
-                self.interaction.send_desktop_notification("MintPilot", res["thought"])
+                self.interaction.send_desktop_notification("Aradhya", res["thought"])
 
         # Enforce instant garbage collection on Tier 0 low-RAM systems to keep RSS under 30MB
         if self.hardware_tier.get("is_nano_spec"):
