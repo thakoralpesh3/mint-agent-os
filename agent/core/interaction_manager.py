@@ -32,16 +32,16 @@ class InteractionManager:
     def _load_config(self):
         """Loads interaction settings from settings.json with graceful defaults."""
         defaults = {
-            "modality": "hybrid",           # text, voice, hybrid, hud, notification
+            "modality": "voice",            # voice (default), text, hybrid, hud, notification
             "verbosity": "normal",           # concise, normal, detailed, security_auditor
             "proactivity": "balanced",       # reactive, balanced, proactive
             "voice": {
-                "enabled": False,
+                "enabled": True,
                 "engine": "spd-say",         # piper, spd-say, espeak-ng, espeak
                 "speed": 165,
                 "pitch": 0,
                 "volume": 100,
-                "auto_listen_wake_word": False
+                "auto_listen_wake_word": True
             },
             "notifications": {
                 "enabled": True,
