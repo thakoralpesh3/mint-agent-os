@@ -24,18 +24,21 @@ class VoiceEngine:
                 return tool
         return None
 
-    def speak(self, text: str, wait: bool = False) -> Dict[str, Any]:
-        """Speaks text using the best available offline Linux speech synthesizer."""
+    def speak(self, text: str, wait: bool = False, pitch: Optional[int] = None, speed: Optional[int] = None, lang: Optional[str] = None) -> Dict[str, Any]:
+        """Speaks text using the best available offline Linux speech synthesizer with optional pitch, speed, and accent."""
         if not self._tts_engine:
             return {"error": "No offline TTS engine found (tried piper, spd-say, espeak-ng, espeak)", "status": "failed"}
 
         text_clean = text.replace('"', '').replace("'", "")
+        rate_val = str(speed if speed is not None else (5 if self._tts_engine == "spd-say" else 165))
+        pitch_val = str(pitch if pitch is not None else 0)
+        voice_lang = lang or "en-us"
+
         try:
             if self._tts_engine == "spd-say":
-                # spd-say is standard on Ubuntu/Linux Mint
-                cmd = ["spd-say", "-r", "5", "-p", "0", text_clean]
+                cmd = ["spd-say", "-r", rate_val, "-p", pitch_val, text_clean]
             elif self._tts_engine in ["espeak-ng", "espeak"]:
-                cmd = [self._tts_engine, "-v", "en-us", "-s", "165", text_clean]
+                cmd = [self._tts_engine, "-v", voice_lang, "-s", rate_val, "-p", pitch_val, text_clean]
             elif self._tts_engine == "piper":
                 cmd = ["bash", "-c", f"echo {shlex.quote(text_clean)} | piper --model /usr/share/mint-agent/models/piper-en.onnx --output-raw | aplay -r 22050 -f S16_LE -t raw -"]
             else:

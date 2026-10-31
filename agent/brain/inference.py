@@ -31,6 +31,7 @@ from agent.controllers.browser_control import BrowserController
 from agent.controllers.program_control import ProgramController
 from agent.skills import founder_skills, replica_skills, harold_skills
 from agent.remote.remote_manager import remote_manager
+from agent.brain.goal_engine import AntigravityGoalEngine
 
 
 class AgentBrain:
@@ -45,6 +46,7 @@ class AgentBrain:
         self.founder = founder_skills
         self.replica = replica_skills
         self.harold = harold_skills
+        self.goal_engine = AntigravityGoalEngine(self)
         self.memory = MemoryGuard()
         self.security = SecurityGuardian(self.permissions)
         self.models = ModelManager()
@@ -109,6 +111,26 @@ class AgentBrain:
             invoked_persona = marvel_prefix_match.group(1)
             self.marvel.set_persona(invoked_persona)
             p = marvel_prefix_match.group(2).strip()
+
+        # Step A1: Antigravity Autonomous Goal Execution Loop (/goal, solve goal, run goal)
+        goal_match = re.match(r"^(?:goal|solve goal|run goal|antigravity goal|accomplish|execute goal)\s+(.+)$", p)
+        if goal_match or (p.startswith("goal ") and len(p) > 5):
+            target_goal = goal_match.group(1).strip() if goal_match else p[5:].strip()
+            goal_res = self.goal_engine.execute_goal(target_goal, prompt_cli=prompt_cli)
+            return {
+                "thought": goal_res["thought"],
+                "result": goal_res,
+                "execution_mode": "antigravity_autonomous_goal",
+            }
+
+        # Step A2: Jarvis / Aradhya Morning Briefing Routine
+        if any(w in p for w in ["morning briefing", "good morning", "daily brief", "daily briefing", "morning report", "wake briefing"]):
+            brief_res = self.generate_morning_briefing()
+            return {
+                "thought": brief_res["speech"],
+                "result": brief_res,
+                "execution_mode": "morning_briefing",
+            }
 
         # Step B: Marvel Persona Identification & Switching
         if any(w in p for w in ["who are you", "what is your name", "what are you", "identify yourself"]):
@@ -901,4 +923,63 @@ class AgentBrain:
             "message": f"Processed: '{prompt}'. Mode: {self.permissions.mode.upper()} | Tier: {self.hardware_tier['tier_name']}"
         }
 
+    def generate_morning_briefing(self) -> Dict[str, Any]:
+        """Synthesizes an intelligent Stark morning briefing across hardware, battery, and cybersecurity."""
+        persona = self.marvel.get_active_persona()
+        mem = self.memory.get_memory_stats()
+        posture = self.security.get_full_security_posture()
+        defcon = posture.get("defcon", {})
+        immune = posture.get("immune_summary", {})
+        now_str = time.strftime("%A, %B %d, %I:%M %p")
+
+        # Battery check if available
+        battery_pct = 100
+        power_str = "connected to AC power"
+        try:
+            bat = subprocess.run(["cat", "/sys/class/power_supply/BAT0/capacity"], capture_output=True, text=True)
+            if bat.returncode == 0 and bat.stdout.strip():
+                battery_pct = int(bat.stdout.strip())
+                power_str = f"battery at {battery_pct}%"
+        except Exception:
+            pass
+
+        ram_free_mb = mem.get("available_mb", 2048)
+        ram_used_pct = mem.get("usage_percent", 45)
+        zram_active = mem.get("zram", {}).get("active", False)
+        threats_blocked = immune.get("recorded_fingerprints_count", 0)
+
+        speech = (
+            f"Good morning, boss. It is {now_str}. "
+            f"All Linux Mint systems are running smoothly with {power_str}. "
+            f"RAM is at {ram_used_pct}% usage with {ram_free_mb} MB available and ZRAM {'active' if zram_active else 'standby'}. "
+            f"Cyber defense is on {defcon.get('status', 'DEFCON 2: ELEVATED')} with {threats_blocked} hostile attack vectors permanently neutralized in immune memory. "
+            f"All Marvel sentries are standing by under sovereign command."
+        )
+
+        if self.interaction.is_voice_enabled():
+            self.voice.speak(speech)
+
+        return {
+            "agent": persona["name"],
+            "timestamp": now_str,
+            "speech": speech,
+            "hardware": {
+                "ram_usage_pct": ram_used_pct,
+                "ram_free_mb": ram_free_mb,
+                "power": power_str,
+                "zram_compressed": zram_active
+            },
+            "security": {
+                "defcon": defcon.get("status", "NORMAL"),
+                "firewall": posture.get("firewall_active", True),
+                "threats_countered": threats_blocked,
+                "antibodies": immune.get("total_antibodies", 14)
+            }
+        }
+
+    def execute_goal(self, goal_prompt: str, prompt_cli: bool = False) -> Dict[str, Any]:
+        """Direct entry point for Antigravity autonomous multi-step goal execution."""
+        return self.goal_engine.execute_goal(goal_prompt, prompt_cli=prompt_cli)
+
     infer = process_command
+

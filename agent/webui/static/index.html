@@ -151,6 +151,14 @@
         <div class="icon-img">🕶️</div>
         <div class="icon-label">Visor HUD [H]</div>
       </div>
+      <div class="desktop-icon" onclick="AgentSimulator.openGoalModal()" title="Antigravity Autonomous Goal Engine (/goal)">
+        <div class="icon-img">🚀</div>
+        <div class="icon-label">Goal Engine</div>
+      </div>
+      <div class="desktop-icon" onclick="AgentSimulator.runMorningBriefing()" title="Jarvis Daily Morning Briefing">
+        <div class="icon-img">☀️</div>
+        <div class="icon-label">Morning Brief</div>
+      </div>
     </div>
 
     <!-- ==================== WINDOW 0: WELCOME TO LINUX MINT ==================== -->
@@ -2228,6 +2236,18 @@ mint-agent --harold all</pre>
         <div class="app-item" data-cat="admin" onclick="AgentSimulator.openUpgradeModal(); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🔄</span>
           <div><strong>Update Manager (mintupdate)</strong><br><small style="color:#888;">In-place OS & AI Agent Updates from GitHub</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.openGoalModal(); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🚀</span>
+          <div><strong>Antigravity Goal Engine (/goal)</strong><br><small style="color:#888;">Multi-step autonomous milestone execution like Google Antigravity</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.runMorningBriefing(); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">☀️</span>
+          <div><strong>Jarvis Morning Briefing</strong><br><small style="color:#888;">Daily boot health check, power, memory & DEFCON defense report</small></div>
+        </div>
+        <div class="app-item" data-cat="marvel" onclick="AgentSimulator.executeHousePartyCoordinated(); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">⚡</span>
+          <div><strong>House Party Protocol (Voice Conference)</strong><br><small style="color:#888;">Multi-agent spoken conference with authentic Jarvis, Friday, Edith & Vision accents</small></div>
         </div>
       </div>
     </div>

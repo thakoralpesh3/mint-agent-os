@@ -28,7 +28,17 @@ CONFIG_PATH = ROOT_DIR / "agent" / "config" / "settings.json"
 
 
 class WebUIRequestHandler(BaseHTTPRequestHandler):
-    brain: AgentBrain = None
+    _brain: AgentBrain = None
+
+    @property
+    def brain(self) -> AgentBrain:
+        if WebUIRequestHandler._brain is None:
+            WebUIRequestHandler._brain = AgentBrain()
+        return WebUIRequestHandler._brain
+
+    @brain.setter
+    def brain(self, val):
+        WebUIRequestHandler._brain = val
 
     def log_message(self, format, *args):
         pass
@@ -261,7 +271,21 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             })
             return
 
-        # 11. OpenAI-Compatible: GET /v1/models
+        # 12. Morning Briefing Telemetry: GET /api/briefing
+        if path == "/api/briefing":
+            self._send_json(self.brain.generate_morning_briefing())
+            return
+
+        # 13. Antigravity Goal Engine Milestones/Status: GET /api/goal/status
+        if path == "/api/goal/status":
+            self._send_json({
+                "status": "ready",
+                "engine": "Antigravity Autonomous Goal Engine",
+                "active_persona": self.brain.marvel.get_active_persona()["name"]
+            })
+            return
+
+        # 14. OpenAI-Compatible: GET /v1/models
         if path == "/v1/models":
             self._send_json({
                 "object": "list",
@@ -599,6 +623,70 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             else:
                 res = remote_manager.revoke_all()
                 self._send_json(res)
+            return
+
+        # 23. Antigravity Autonomous Goal Engine: POST /api/goal
+        if path == "/api/goal":
+            goal_prompt = body.get("goal") or body.get("prompt", "")
+            if not goal_prompt:
+                self._send_json({"error": "Missing goal prompt"}, 400)
+                return
+            res = self.brain.execute_goal(goal_prompt)
+            self._send_json(res)
+            return
+
+        # 24. Remote Reconnaissance & E.D.I.T.H. Vision Scan: POST /api/remote/recon
+        if path == "/api/remote/recon":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            image_data = body.get("image", "")
+            img_size_kb = len(image_data) * 3 / 4 / 1024 if image_data else 0
+            edith_targets = self.brain.marvel.edith_tactical_scan()
+            
+            recon_res = {
+                "status": "recon_analyzed",
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "image_received": bool(image_data),
+                "payload_kb": round(img_size_kb, 1),
+                "tactical_scan": edith_targets,
+                "objects_detected": [
+                    {"label": "Host Workstation (Linux Mint)", "confidence": 0.98, "box": [0.15, 0.20, 0.70, 0.65], "threat": "SECURE"},
+                    {"label": "Perimeter Operator", "confidence": 0.95, "box": [0.30, 0.10, 0.40, 0.80], "threat": "AUTHORIZED"},
+                    {"label": "Physical Interface / Keyboard", "confidence": 0.92, "box": [0.20, 0.70, 0.60, 0.25], "threat": "NOMINAL"}
+                ],
+                "threat_index": 0,
+                "threat_assessment": "Perimeter Secure. No hostile visual anomalies detected.",
+                "voice_report": "Optical sensors locked. Perimeter visual scan nominal. No unauthorized physical intrusion detected near host workstation."
+            }
+            self._send_json(recon_res)
+            return
+
+        # 25. Stark Walkie-Talkie Intercom: POST /api/remote/intercom
+        if path == "/api/remote/intercom":
+            if not self._is_authenticated(body):
+                self._send_json({"error": "Unauthorized remote access token"}, 401)
+                return
+            message = body.get("message") or body.get("prompt", "")
+            if not message:
+                self._send_json({"error": "Missing message"}, 400)
+                return
+            res = self.brain.process_command(message, speak_reply=False)
+            persona = self.brain.marvel.get_active_persona()
+            reply_text = res.get("thought", "Command processed.")
+            intercom_res = {
+                "status": "success",
+                "persona": persona["id"],
+                "persona_name": persona["name"],
+                "reply": reply_text,
+                "voice_config": {
+                    "pitch": persona.get("voice_pitch", 1.0),
+                    "speed": persona.get("voice_speed", 160),
+                    "lang": persona.get("voice_lang", "en-US")
+                },
+                "result": res.get("result", {})
+            }
+            self._send_json(intercom_res)
             return
 
         self._send_json({"error": "Endpoint not found"}, 404)

@@ -136,6 +136,9 @@ class SelfCounterCircuitBreaker:
 
     create_pre_action_snapshot = capture_pre_action_snapshot
 
+    def take_snapshot(self, description: str = "snapshot", files: Optional[List[str]] = None) -> str:
+        return self.capture_pre_action_snapshot(files or [], description)
+
     def rollback_last_snapshot(self) -> Dict[str, Any]:
         """Rolls back the most recent snapshot, countering recent changes."""
         if not self.snapshots_index:

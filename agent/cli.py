@@ -118,10 +118,50 @@ def main():
     parser.add_argument("--remote", "--mobile", action="store_true", help="Launch Mobile Remote Companion access hub with ASCII QR code and pairing PIN")
     parser.add_argument("--remote-status", action="store_true", help="Display paired mobile companion devices, LAN IP, and pairing credentials")
     parser.add_argument("--remote-revoke", action="store_true", help="Revoke all paired mobile devices and generate a new pairing PIN")
+    parser.add_argument("--goal", type=str, metavar="OBJECTIVE", help="Execute an autonomous end-to-end Antigravity multi-step goal with milestone planning & self-healing")
+    parser.add_argument("--briefing", action="store_true", help="Speak the intelligent J.A.R.V.I.S. morning briefing across hardware, battery, and cybersecurity")
+    parser.add_argument("--wake-word", "--listen-wake", action="store_true", help="Launch continuous hands-free wake-word listener ('Hey Aradhya', 'Jarvis', 'Friday')")
     args = parser.parse_args()
 
     mode_override = "turbo" if args.turbo else ("safe" if args.safe else None)
     brain = AgentBrain(mode=mode_override)
+
+    if args.goal:
+        print_banner(brain)
+        print("\033[1;36m🎯 ANTIGRAVITY AUTONOMOUS GOAL ENGINE ACTIVATED\033[0m")
+        print(f"  Target Objective: \033[1;33m\"{args.goal}\"\033[0m\n")
+        print("  \033[1;34m[Planning]\033[0m Decomposing objective into atomic milestones with self-healing checkpoints...\n")
+
+        def _print_progress(evt):
+            if evt.get("event") == "milestone_finished":
+                status_color = "\033[1;32m✓ COMPLETED\033[0m" if evt["status"] == "COMPLETED" else "\033[1;31m✗ FAILED\033[0m"
+                print(f"  [{evt['step']}] [{evt['agent']}] {evt['title']} -> {status_color}")
+
+        res = brain.goal_engine.execute_goal(args.goal, prompt_cli=True, on_progress=_print_progress)
+        print("\n\033[1;32m══════════════════ GOAL EXECUTION RECEIPT ══════════════════\033[0m")
+        print(f"  Status:       \033[1;32m{res['status']}\033[0m")
+        print(f"  Milestones:   {res['milestones_completed']}/{res['total_milestones']} achieved")
+        print(f"  Duration:     {res['duration_ms']} ms")
+        print(f"  Verdict:      \033[1;36m{res['thought']}\033[0m\n")
+        return
+
+    if args.briefing:
+        print_banner(brain)
+        print("\033[1;36m☕ STARK INDUSTRIES MORNING TELEMETRY BRIEFING\033[0m\n")
+        b = brain.generate_morning_briefing()
+        print(f"\033[1;32m[{b['agent'].upper()}]\033[0m \"{b['speech']}\"\n")
+        hw = b["hardware"]
+        sec = b["security"]
+        print(f"  • Hardware:  RAM {hw['ram_usage_pct']}% ({hw['ram_free_mb']}MB free) | Power: {hw['power']} | ZRAM: {hw['zram_compressed']}")
+        print(f"  • Security:  {sec['defcon']} | Firewall: {sec['firewall']} | Antibodies: {sec['antibodies']} | Countered: {sec['threats_countered']}\n")
+        return
+
+    if getattr(args, "wake_word", False):
+        print_banner(brain)
+        from agent.controllers.wake_word import WakeWordListener
+        listener = WakeWordListener(brain)
+        listener.listen_loop()
+        return
 
     if args.list_personas:
         print_banner(brain)

@@ -629,14 +629,14 @@
       font-size: 10px;
       font-weight: 600;
       cursor: pointer;
-      width: 19%;
+      flex: 1;
       padding: 4px 0;
       border-radius: 8px;
       transition: color 0.15s;
     }
 
     .nav-item .icon {
-      font-size: 19px;
+      font-size: 18px;
     }
 
     .nav-item.active {
@@ -645,6 +645,194 @@
     .nav-item.active .icon {
       transform: translateY(-1px);
     }
+
+    /* TAB 6: STARK INTERCOM & AUDIO HUD */
+    .intercom-hud {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 16px 12px;
+      gap: 12px;
+    }
+
+    .arc-visualizer-wrap {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      margin: 4px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #arc-canvas {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.45));
+    }
+
+    .intercom-state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--cyan);
+    }
+
+    .ptt-orb {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #2e4435 0%, #152219 70%, #0d1610 100%);
+      border: 2px solid var(--mint);
+      box-shadow: 0 0 20px var(--mint-glow), inset 0 0 15px rgba(135, 207, 62, 0.3);
+      color: #fff;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+      margin: 10px auto;
+    }
+
+    .ptt-orb:active, .ptt-orb.transmitting {
+      transform: scale(0.95);
+      border-color: var(--cyan);
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.5);
+      background: radial-gradient(circle, #1a3844 0%, #0c202a 70%, #051118 100%);
+    }
+
+    .soundboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .sfx-btn {
+      background: #19221c;
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .sfx-btn:active {
+      background: #25332a;
+      border-color: var(--mint);
+      color: #fff;
+      transform: scale(0.96);
+    }
+
+    /* RECON HUD STYLING */
+    .recon-hud-card {
+      position: relative;
+      background: #171f1a;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .recon-canvas-box {
+      position: relative;
+      width: 100%;
+      min-height: 180px;
+      background: #0d1310;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed var(--card-border);
+    }
+
+    #recon-target-canvas {
+      width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .recon-overlay-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* ANTIGRAVITY GOAL STYLES */
+    .goal-card {
+      background: linear-gradient(135deg, #1b231d, #141a16);
+      border: 1px solid rgba(135, 207, 62, 0.35);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .goal-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #111612;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .goal-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--mint), var(--cyan));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .milestone-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .milestone-badge {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .badge-pending { background: #333; color: #888; }
+    .badge-running { background: rgba(0, 229, 255, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+    .badge-completed { background: rgba(135, 207, 62, 0.2); color: var(--mint); border: 1px solid var(--mint); }
 
     /* PAIRING MODAL OVERLAY */
     #pairing-modal {
@@ -746,13 +934,41 @@
         <div class="chip" onclick="quickSend('Lock PC screen')">🔒 Lock Screen</div>
         <div class="chip" onclick="quickSend('Set volume to 50%')">🔊 50% Volume</div>
         <div class="chip" onclick="quickSend('Clean memory and drop cache')">🧹 Clean RAM</div>
-        <div class="chip" onclick="quickSend('Open Nemo file manager')">📁 Open Nemo</div>
+        <div class="chip" onclick="triggerAntigravityGoal('secure my pc')" style="border-color:rgba(0,229,255,0.4);color:var(--cyan);">🚀 Goal: Secure PC</div>
+        <div class="chip" onclick="triggerAntigravityGoal('optimize for 1gb')" style="border-color:rgba(135,207,62,0.4);color:var(--mint);">⚡ Goal: 1GB Low-RAM</div>
+        <div class="chip" onclick="runMorningBriefingMobile()" style="border-color:rgba(255,215,64,0.4);color:var(--yellow);">☀️ Morning Brief</div>
         <div class="chip" onclick="quickSend('Scan threats and check firewall')">🛡️ Threat Scan</div>
       </div>
     </div>
 
     <!-- TAB 2: QUICK PC CONTROLS -->
     <div class="tab-content" id="tab-controls">
+      <!-- Antigravity Autonomous Goal Engine Card -->
+      <div class="goal-card" id="goal-card">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--mint);display:flex;align-items:center;gap:6px;">🚀 Antigravity Autonomous Goal Engine</span>
+          <span class="badge-btn active" id="goal-state-pill" style="font-size:9px;">READY</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">
+          Autonomous multi-step milestone decomposition across Marvel agents with self-healing recovery loop.
+        </div>
+        <div class="quick-chips" style="margin-bottom:10px;">
+          <div class="chip" onclick="triggerAntigravityGoal('secure my pc')">🛡️ Secure PC</div>
+          <div class="chip" onclick="triggerAntigravityGoal('optimize for 1gb')">⚡ 1GB RAM Tuning</div>
+          <div class="chip" onclick="triggerAntigravityGoal('house party')">🤖 House Party</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <input type="text" id="custom-goal-input" class="chat-input" placeholder="Custom goal: e.g. purge caches and lock firewall..." style="flex:1;" onkeydown="if(event.key==='Enter') runCustomGoal()">
+          <button class="badge-btn active" onclick="runCustomGoal()" style="padding:0 12px;">Solve</button>
+        </div>
+        <div id="goal-progress-box" style="display:none;">
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-fill" id="goal-progress-fill"></div>
+          </div>
+          <div id="goal-milestones-list"></div>
+        </div>
+      </div>
+
       <!-- Volume & Brightness Sliders -->
       <div class="card">
         <div class="card-title">Audio & Display</div>
@@ -879,6 +1095,34 @@
           <div style="font-size:12px;color:var(--text-dim);">Loading active windows...</div>
         </div>
       </div>
+
+      <!-- E.D.I.T.H. Visual Recon & Camera Lens -->
+      <div class="recon-hud-card">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--cyan);display:flex;align-items:center;gap:6px;">🛰️ E.D.I.T.H. Visual Recon</span>
+          <label class="badge-btn active" style="cursor:pointer;margin:0;">
+            📷 Snap / Upload
+            <input type="file" id="camera-recon-input" accept="image/*" capture="environment" style="display:none;" onchange="handleCameraRecon(event)">
+          </label>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">
+          Transmit smartphone camera feed to E.D.I.T.H. orbital recognition grid to detect workstations, peripherals, and physical intruders.
+        </div>
+        <div class="recon-canvas-box" id="recon-container">
+          <canvas id="recon-target-canvas"></canvas>
+          <div class="recon-overlay-grid"></div>
+          <div id="recon-placeholder" style="color:var(--text-dim);font-size:12px;padding:20px;text-align:center;">
+            Tap "Snap / Upload" to analyze environment with E.D.I.T.H.
+          </div>
+        </div>
+        <div id="recon-telemetry" style="display:none;margin-top:10px;font-size:11px;background:#101612;border:1px solid var(--card-border);border-radius:8px;padding:8px;">
+          <div style="display:flex;justify-content:space-between;font-weight:700;color:var(--cyan);margin-bottom:4px;">
+            <span id="recon-threat-title">PERIMETER STATUS: SECURE</span>
+            <span id="recon-threat-index">THREAT INDEX: 0/100</span>
+          </div>
+          <div id="recon-threat-desc" style="color:var(--text);font-size:11px;"></div>
+        </div>
+      </div>
     </div>
 
     <!-- TAB 5: CYBER DEFENSE & APPROVALS -->
@@ -919,6 +1163,66 @@
         </div>
       </div>
     </div>
+
+    <!-- TAB 6: STARK WALKIE-TALKIE INTERCOM & ARC REACTOR -->
+    <div class="tab-content" id="tab-intercom">
+      <div class="card intercom-hud">
+        <div class="intercom-state-badge" id="intercom-badge">
+          <span class="status-dot"></span>
+          <span id="intercom-status-text">INTERCOM ONLINE • STANDBY</span>
+        </div>
+
+        <!-- Animated 3D Arc Reactor Canvas -->
+        <div class="arc-visualizer-wrap">
+          <canvas id="arc-canvas" width="340" height="340"></canvas>
+        </div>
+
+        <div style="font-size:15px;font-weight:800;color:#fff;" id="intercom-agent-name">J.A.R.V.I.S. COMMS LINK</div>
+        <div style="font-size:11px;color:var(--text-dim);" id="intercom-agent-desc">Encrypted Duplex Intercom • Direct Neural Bridge</div>
+
+        <!-- Push to Talk Orb -->
+        <div class="ptt-orb" id="ptt-orb" onmousedown="startPTT()" onmouseup="stopPTT()" ontouchstart="startPTT(event)" ontouchend="stopPTT(event)">
+          🎙️
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:-6px;">Hold Orb to Transmit • Release to Send</div>
+
+        <div style="display:flex;gap:8px;margin-top:6px;width:100%;">
+          <button class="badge-btn" id="hands-free-btn" onclick="toggleHandsFreeIntercom()" style="flex:1;justify-content:center;padding:10px;">
+            🎙️ Hands-Free Mode: OFF
+          </button>
+          <button class="badge-btn" onclick="runMorningBriefingMobile()" style="flex:1;justify-content:center;padding:10px;color:var(--yellow);">
+            ☀️ Morning Brief
+          </button>
+        </div>
+
+        <!-- Pure-Code Synthesized Sound FX Board -->
+        <div style="width:100%;margin-top:8px;">
+          <div style="font-size:11px;color:var(--text-dim);text-align:left;margin-bottom:4px;font-weight:700;">STARK SYNTHESIZED SFX (WEB AUDIO API):</div>
+          <div class="soundboard-grid">
+            <button class="sfx-btn" onclick="StarkAudio.playRepulsor()">
+              <span>⚡</span>Repulsor
+            </button>
+            <button class="sfx-btn" onclick="StarkAudio.playLock()">
+              <span>🎯</span>Lock
+            </button>
+            <button class="sfx-btn" onclick="StarkAudio.playAlarm()">
+              <span>🚨</span>Klaxon
+            </button>
+            <button class="sfx-btn" onclick="StarkAudio.playNeutralized()">
+              <span>🛡️</span>Sever
+            </button>
+          </div>
+        </div>
+
+        <!-- Intercom Message Transcript Log -->
+        <div style="width:100%;margin-top:10px;text-align:left;">
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:4px;font-weight:700;">RECENT COMMS:</div>
+          <div id="intercom-transcript" style="max-height:120px;overflow-y:auto;background:#101512;border:1px solid var(--card-border);border-radius:8px;padding:8px;font-size:11px;color:var(--text);">
+            <div style="color:var(--mint);">[JARVIS]: Channel established. Sovereign voice-first protocols active, Boss.</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- BOTTOM NAVIGATION DOCK -->
@@ -926,6 +1230,10 @@
     <button class="nav-item active" onclick="switchTab('chat')">
       <span class="icon">💬</span>
       <span>Chat</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('intercom')">
+      <span class="icon">📞</span>
+      <span>Intercom</span>
     </button>
     <button class="nav-item" onclick="switchTab('controls')">
       <span class="icon">🎮</span>
@@ -937,7 +1245,7 @@
     </button>
     <button class="nav-item" onclick="switchTab('screen')">
       <span class="icon">📷</span>
-      <span>Screen</span>
+      <span>Recon</span>
     </button>
     <button class="nav-item" onclick="switchTab('defense')">
       <span class="icon">🛡️</span>
@@ -994,11 +1302,15 @@
       const tab = document.getElementById("tab-" + tabId);
       if (tab) tab.classList.add("active");
 
-      const navBtn = Array.from(document.querySelectorAll(".nav-item")).find(b => b.onclick.toString().includes(tabId));
+      const navBtn = Array.from(document.querySelectorAll(".nav-item")).find(b => b.onclick && b.onclick.toString().includes(tabId));
       if (navBtn) navBtn.classList.add("active");
 
       if (tabId === "screen") refreshScreen();
       if (tabId === "defense") checkPendingApprovals();
+      if (tabId === "intercom") {
+        StarkAudio.playChime();
+        if (!arcReactorRunning) initArcReactor();
+      }
     }
 
     // Modal
@@ -1458,6 +1770,514 @@
 
     async function refreshStatus() {
       pollTelemetry();
+    }
+
+    // ==================== STARK AUDIO SYNTHESIZER (PURE WEB AUDIO API) ====================
+    const StarkAudio = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume();
+        }
+      },
+      playChime() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc1.type = "sine"; osc1.frequency.setValueAtTime(880, now); osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.18);
+        osc2.type = "triangle"; osc2.frequency.setValueAtTime(1320, now); osc2.frequency.exponentialRampToValueAtTime(2640, now + 0.22);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc1.connect(gain); osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 0.35); osc2.stop(now + 0.35);
+      },
+      playRepulsor() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(1600, now + 0.45);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.35, now + 0.40);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.65);
+      },
+      playLock() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [0, 0.08].forEach(delay => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(2200, now + delay);
+          gain.gain.setValueAtTime(0.15, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.06);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(now + delay); osc.stop(now + delay + 0.06);
+        });
+      },
+      playAlarm() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(750, now);
+        osc.frequency.linearRampToValueAtTime(950, now + 0.15);
+        osc.frequency.linearRampToValueAtTime(750, now + 0.3);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.35);
+      },
+      playNeutralized() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const freqs = [1050, 784, 523, 261];
+        freqs.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = "sine";
+          const t = now + i * 0.08;
+          osc.frequency.setValueAtTime(f, t);
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(t); osc.stop(t + 0.25);
+        });
+      }
+    };
+
+    // ==================== 3D ARC REACTOR VISUALIZER ENGINE ====================
+    let arcReactorRunning = false;
+    let arcAngle = 0;
+    let arcPulse = 1.0;
+    let arcEnergyTarget = 1.0;
+    let currentArcEnergy = 1.0;
+
+    function initArcReactor() {
+      const canvas = document.getElementById("arc-canvas");
+      if (!canvas || arcReactorRunning) return;
+      arcReactorRunning = true;
+      const ctx = canvas.getContext("2d");
+
+      function renderFrame() {
+        if (!arcReactorRunning) return;
+        currentArcEnergy += (arcEnergyTarget - currentArcEnergy) * 0.12;
+        arcAngle += 0.02 * currentArcEnergy;
+        arcPulse = 1.0 + Math.sin(Date.now() * 0.004) * 0.08 * currentArcEnergy;
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Outer glow
+        const glowRad = 150 * arcPulse;
+        const grad = ctx.createRadialGradient(cx, cy, 30, cx, cy, glowRad);
+        grad.addColorStop(0, "rgba(0, 229, 255, 0.45)");
+        grad.addColorStop(0.5, "rgba(135, 207, 62, 0.25)");
+        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, glowRad, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Outer Ring
+        ctx.strokeStyle = "rgba(0, 229, 255, 0.6)";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 130 * arcPulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 10 Segmented Arc Coils
+        const coilCount = 10;
+        for (let i = 0; i < coilCount; i++) {
+          const a = arcAngle + (i * Math.PI * 2 / coilCount);
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(a);
+          ctx.fillStyle = (i % 2 === 0) ? "#87cf3e" : "#00e5ff";
+          ctx.shadowColor = (i % 2 === 0) ? "#87cf3e" : "#00e5ff";
+          ctx.shadowBlur = 12 * currentArcEnergy;
+          ctx.fillRect(-8, -135 * arcPulse, 16, 14);
+          ctx.restore();
+        }
+
+        // Inner Counter-Rotating Ring
+        ctx.strokeStyle = "rgba(135, 207, 62, 0.7)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 95 * arcPulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Palladium Core Glowing Triangle
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(-arcAngle * 0.8);
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 4;
+        ctx.shadowColor = "#00e5ff";
+        ctx.shadowBlur = 24 * currentArcEnergy;
+        ctx.beginPath();
+        const triR = 55 * arcPulse;
+        for (let t = 0; t < 3; t++) {
+          const ta = (t * Math.PI * 2 / 3) - Math.PI / 2;
+          const tx = Math.cos(ta) * triR;
+          const ty = Math.sin(ta) * triR;
+          if (t === 0) ctx.moveTo(tx, ty);
+          else ctx.lineTo(tx, ty);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        // Core Center Orb
+        const centerGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, 32 * arcPulse);
+        centerGrad.addColorStop(0, "#ffffff");
+        centerGrad.addColorStop(0.4, "#00e5ff");
+        centerGrad.addColorStop(0.8, "#87cf3e");
+        centerGrad.addColorStop(1, "rgba(0, 229, 255, 0)");
+        ctx.fillStyle = centerGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 32 * arcPulse, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        requestAnimationFrame(renderFrame);
+      }
+      renderFrame();
+    }
+
+    // ==================== STARK INTERCOM & WALKIE-TALKIE ====================
+    let isPTTActive = false;
+    let isHandsFreeActive = false;
+    let intercomRecognition = null;
+
+    function startPTT(e) {
+      if (e) e.preventDefault();
+      if (isPTTActive) return;
+      isPTTActive = true;
+      document.getElementById("ptt-orb").classList.add("transmitting");
+      document.getElementById("intercom-status-text").innerText = "TRANSMITTING TO LINUX MINT...";
+      document.getElementById("intercom-badge").style.borderColor = "var(--cyan)";
+      arcEnergyTarget = 2.4;
+      StarkAudio.playChime();
+      if (navigator.vibrate) navigator.vibrate(40);
+
+      // Web Speech Recognition for Intercom
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRec) {
+        intercomRecognition = new SpeechRec();
+        intercomRecognition.lang = "en-US";
+        intercomRecognition.interimResults = false;
+        intercomRecognition.maxAlternatives = 1;
+        intercomRecognition.onresult = (ev) => {
+          const text = ev.results[0][0].transcript;
+          if (text) {
+            transmitIntercomMessage(text);
+          }
+        };
+        intercomRecognition.onerror = () => {
+          stopPTT();
+        };
+        try { intercomRecognition.start(); } catch(err) {}
+      }
+    }
+
+    function stopPTT(e) {
+      if (e) e.preventDefault();
+      if (!isPTTActive) return;
+      isPTTActive = false;
+      document.getElementById("ptt-orb").classList.remove("transmitting");
+      document.getElementById("intercom-status-text").innerText = "INTERCOM ONLINE • STANDBY";
+      document.getElementById("intercom-badge").style.borderColor = "rgba(0, 229, 255, 0.35)";
+      arcEnergyTarget = 1.0;
+      if (navigator.vibrate) navigator.vibrate(20);
+
+      if (intercomRecognition) {
+        try { intercomRecognition.stop(); } catch(err) {}
+      }
+    }
+
+    async function transmitIntercomMessage(messageText) {
+      addIntercomLog(`[YOU]: ${messageText}`);
+      document.getElementById("intercom-status-text").innerText = "PROCESSING COMMS...";
+      arcEnergyTarget = 2.0;
+
+      try {
+        const res = await fetch("/api/remote/intercom", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ message: messageText })
+        });
+        const data = await res.json();
+        const reply = data.reply || "Command executed.";
+        const personaName = data.persona_name || "JARVIS";
+        addIntercomLog(`[${personaName}]: ${reply}`);
+        document.getElementById("intercom-status-text").innerText = `${personaName.toUpperCase()} SPEAKING...`;
+        arcEnergyTarget = 2.6;
+        StarkAudio.playChime();
+
+        // Persona-tuned speech synthesis
+        speakPersonaVoice(reply, data.voice_config || {});
+      } catch (err) {
+        addIntercomLog(`[SYSTEM]: Transmission failed (${err.message}).`);
+        document.getElementById("intercom-status-text").innerText = "INTERCOM ONLINE • STANDBY";
+        arcEnergyTarget = 1.0;
+      }
+    }
+
+    function addIntercomLog(msg) {
+      const log = document.getElementById("intercom-transcript");
+      if (!log) return;
+      const row = document.createElement("div");
+      row.style.marginBottom = "4px";
+      row.innerText = msg;
+      if (msg.startsWith("[YOU]")) row.style.color = "var(--cyan)";
+      else if (msg.startsWith("[SYSTEM]")) row.style.color = "var(--red)";
+      else row.style.color = "var(--mint)";
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function speakPersonaVoice(text, voiceConfig) {
+      if (!("speechSynthesis" in window)) {
+        setTimeout(() => {
+          document.getElementById("intercom-status-text").innerText = "INTERCOM ONLINE • STANDBY";
+          arcEnergyTarget = 1.0;
+        }, 1500);
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[*_#`\[\]]/g, "");
+        const utt = new SpeechSynthesisUtterance(clean);
+        utt.pitch = voiceConfig.pitch || 1.0;
+        utt.rate = (voiceConfig.speed ? voiceConfig.speed / 160 : 1.0);
+        utt.lang = voiceConfig.lang || "en-US";
+        utt.onend = () => {
+          document.getElementById("intercom-status-text").innerText = "INTERCOM ONLINE • STANDBY";
+          arcEnergyTarget = 1.0;
+        };
+        window.speechSynthesis.speak(utt);
+      } catch(err) {
+        document.getElementById("intercom-status-text").innerText = "INTERCOM ONLINE • STANDBY";
+        arcEnergyTarget = 1.0;
+      }
+    }
+
+    function toggleHandsFreeIntercom() {
+      isHandsFreeActive = !isHandsFreeActive;
+      const btn = document.getElementById("hands-free-btn");
+      if (isHandsFreeActive) {
+        btn.innerText = "🎙️ Hands-Free Mode: ON";
+        btn.classList.add("active");
+        btn.style.color = "var(--mint)";
+        StarkAudio.playChime();
+        startContinuousIntercomListener();
+      } else {
+        btn.innerText = "🎙️ Hands-Free Mode: OFF";
+        btn.classList.remove("active");
+        btn.style.color = "var(--text-dim)";
+        if (intercomRecognition) {
+          try { intercomRecognition.stop(); } catch(e) {}
+        }
+      }
+    }
+
+    function startContinuousIntercomListener() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec || !isHandsFreeActive) return;
+      const rec = new SpeechRec();
+      rec.continuous = true;
+      rec.interimResults = false;
+      rec.lang = "en-US";
+      rec.onresult = (ev) => {
+        const last = ev.results[ev.results.length - 1];
+        if (last && last[0] && last[0].transcript) {
+          transmitIntercomMessage(last[0].transcript.trim());
+        }
+      };
+      rec.onend = () => {
+        if (isHandsFreeActive) {
+          setTimeout(startContinuousIntercomListener, 400);
+        }
+      };
+      rec.onerror = () => {
+        if (isHandsFreeActive) {
+          setTimeout(startContinuousIntercomListener, 1000);
+        }
+      };
+      try { rec.start(); } catch(e) {}
+    }
+
+    async function runMorningBriefingMobile() {
+      StarkAudio.playChime();
+      addChatMsg("user", "Morning briefing");
+      try {
+        const res = await fetch("/api/briefing", { headers: getHeaders() });
+        const data = await res.json();
+        const speech = data.speech || "Good morning boss, all systems nominal.";
+        addChatMsg("agent", `☀️ **Stark Morning Briefing**:\n\n${speech}`);
+        addIntercomLog(`[${data.agent || 'JARVIS'}]: ${speech}`);
+        speakAloud(speech);
+        if (data.agent) {
+          document.getElementById("active-persona-name").innerText = `${data.agent} (Active)`;
+        }
+      } catch (err) {
+        addChatMsg("agent", "Failed to retrieve morning briefing.");
+      }
+    }
+
+    // ==================== E.D.I.T.H. VISUAL RECON & CAMERA ====================
+    function handleCameraRecon(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target.result;
+        StarkAudio.playLock();
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        // Render onto canvas
+        const canvas = document.getElementById("recon-target-canvas");
+        const placeholder = document.getElementById("recon-placeholder");
+        const telem = document.getElementById("recon-telemetry");
+        if (placeholder) placeholder.style.display = "none";
+        if (telem) telem.style.display = "block";
+
+        const img = new Image();
+        img.onload = async () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+
+          // Transmit to /api/remote/recon
+          try {
+            const res = await fetch("/api/remote/recon", {
+              method: "POST",
+              headers: getHeaders(),
+              body: JSON.stringify({ image: dataUrl, focus: "perimeter" })
+            });
+            const reconData = await res.json();
+
+            // Draw AR HUD overlays
+            ctx.strokeStyle = "#00e5ff";
+            ctx.lineWidth = Math.max(3, canvas.width * 0.006);
+            ctx.fillStyle = "rgba(0, 229, 255, 0.15)";
+            ctx.font = `bold ${Math.max(14, canvas.width * 0.03)}px monospace`;
+
+            const objs = reconData.objects_detected || [];
+            objs.forEach(obj => {
+              const [bx, by, bw, bh] = obj.box;
+              const x = bx * canvas.width;
+              const y = by * canvas.height;
+              const w = bw * canvas.width;
+              const h = bh * canvas.height;
+
+              ctx.strokeRect(x, y, w, h);
+              ctx.fillRect(x, y, w, h);
+
+              // AR label banner
+              ctx.fillStyle = "rgba(10, 20, 15, 0.85)";
+              ctx.fillRect(x, y - 24, w, 24);
+              ctx.fillStyle = "#87cf3e";
+              ctx.fillText(`[${obj.label} • ${Math.round(obj.confidence*100)}%]`, x + 4, y - 6);
+            });
+
+            // Update Telemetry Panel
+            document.getElementById("recon-threat-title").innerText = `PERIMETER STATUS: ${(reconData.threat_assessment || "SECURE").toUpperCase()}`;
+            document.getElementById("recon-threat-index").innerText = `THREAT INDEX: ${reconData.threat_index || 0}/100`;
+            document.getElementById("recon-threat-desc").innerText = reconData.voice_report || "Visual recon nominal.";
+
+            StarkAudio.playChime();
+            speakAloud(reconData.voice_report);
+          } catch(err) {
+            console.error("Recon failed:", err);
+          }
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ==================== ANTIGRAVITY AUTONOMOUS GOAL ENGINE ====================
+    async function triggerAntigravityGoal(goalPrompt) {
+      const box = document.getElementById("goal-progress-box");
+      const list = document.getElementById("goal-milestones-list");
+      const fill = document.getElementById("goal-progress-fill");
+      const pill = document.getElementById("goal-state-pill");
+
+      box.style.display = "block";
+      list.innerHTML = `<div style="font-size:11px;color:var(--cyan);padding:8px;text-align:center;">Decomposing objective: "${goalPrompt}"...</div>`;
+      fill.style.width = "15%";
+      pill.innerText = "SOLVING...";
+      pill.style.borderColor = "var(--cyan)";
+      pill.style.color = "var(--cyan)";
+
+      StarkAudio.playRepulsor();
+      if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+
+      try {
+        const res = await fetch("/api/goal", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ goal: goalPrompt })
+        });
+        const data = await res.json();
+        const milestones = data.execution_plan || [];
+
+        list.innerHTML = "";
+        milestones.forEach((m, idx) => {
+          const row = document.createElement("div");
+          row.className = "milestone-row";
+          row.innerHTML = `
+            <span><b>Step ${m.step}:</b> ${m.title} <span style="color:var(--text-dim);">(${m.agent})</span></span>
+            <span class="milestone-badge badge-${m.status.toLowerCase()}">${m.status}</span>
+          `;
+          list.appendChild(row);
+        });
+
+        fill.style.width = "100%";
+        pill.innerText = data.status === "COMPLETED_SUCCESSFULLY" ? "COMPLETED" : "RESOLVED";
+        pill.style.borderColor = "var(--mint)";
+        pill.style.color = "var(--mint)";
+
+        StarkAudio.playNeutralized();
+        speakAloud(data.thought || "Antigravity goal resolved.");
+        addChatMsg("agent", `🚀 **Antigravity Goal Accomplished**:\n${data.thought}\n- Total Milestones: ${data.total_milestones}\n- Duration: ${data.duration_ms}ms`);
+      } catch (err) {
+        list.innerHTML = `<div style="color:var(--red);font-size:11px;">Goal execution error: ${err.message}</div>`;
+        pill.innerText = "ERROR";
+      }
+    }
+
+    function runCustomGoal() {
+      const input = document.getElementById("custom-goal-input");
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = "";
+      triggerAntigravityGoal(val);
     }
   </script>
 </body>
