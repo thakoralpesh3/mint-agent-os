@@ -266,7 +266,7 @@
               <div id="simSmoothBadge" onclick="AgentSimulator.openSmoothnessModal()" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">🍃 Smooth: 100% (A+)</div>
               <button style="background:#2d6a4f; color:#d8f3dc; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; cursor:pointer;" onclick="AgentSimulator.openUpgradeModal()">🔄 Upgrade Mint OS</button>
               <button style="background:#0077b6; color:#fff; border:none; padding:2px 10px; border-radius:10px; font-size:0.75rem; font-weight:bold; cursor:pointer;" onclick="WindowManager.openApp('download')">💾 Download ISO / USB</button>
-              <div id="simVoiceBadge" onclick="AgentSimulator.toggleVoice()" style="cursor:pointer; background:#291e38; border:1px solid #9b59b6; color:#d6a4e8; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;" title="Click to toggle Offline Voice Speech">🎙️ Voice: OFF</div>
+              <div id="simVoiceBadge" onclick="AgentSimulator.toggleVoice()" style="cursor:pointer; background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;" title="Click to toggle Spoken Voice Feedback">🎙️ Voice: ON (Default)</div>
               <div id="simStyleBadge" onclick="AgentSimulator.cycleStyle()" style="cursor:pointer; background:#1b2a38; border:1px solid #3498db; color:#70d6ff; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;" title="Click to cycle Persona Style">💬 Style: Normal</div>
               <div id="simProactiveBadge" onclick="AgentSimulator.cycleProactivity()" style="cursor:pointer; background:#282b1b; border:1px solid #f1c40f; color:#f9e79f; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;" title="Click to cycle Proactivity">🔔 Proactive: Balanced</div>
               <button style="background:#5e227f; color:#f3e8ff; border:none; padding:2px 8px; border-radius:10px; font-size:0.75rem; cursor:pointer;" onclick="WindowManager.openApp('interaction')">🗣️ Interaction Options</button>
@@ -284,6 +284,8 @@
             </div>
           </div>
           <div style="padding: 6px 12px; display: flex; gap: 6px; overflow-x: auto; background: #161a17;">
+            <button class="btn-sm" style="background:#1b382b; border:1px solid #2ecc71; color:#2ecc71; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.setModality('voice'); AgentSimulator.sendWebUIMessage('voice mode');">🎙️ Voice Mode (Default)</button>
+            <button class="btn-sm" style="background:#1b263b; border:1px solid #00b4d8; color:#90e0ef; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:bold; cursor:pointer;" onclick="AgentSimulator.setModality('text'); AgentSimulator.sendWebUIMessage('text mode');">⌨️ Text Mode (Silent)</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#70d6ff; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('immune status')">🧬 Immune System</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#00b4d8; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('harden future')">🛡️ Harden Future</button>
             <button class="btn-sm" style="background:#222; border:1px solid #333; color:#e74c3c; padding:3px 8px; border-radius:10px; font-size:0.72rem; cursor:pointer;" onclick="AgentSimulator.sendWebUIMessage('defcon')">🚨 DEFCON Posture</button>
@@ -676,9 +678,9 @@
               <h3 style="margin:0 0 4px 0; font-size:1.05rem; color:#fff;">User Interaction & Personality Governance</h3>
               <p style="margin:0; font-size:0.8rem; color:#d8b4e2;">Customize how MintPilot communicates with you: speech voice, reply depth, spotlight HUD, and background proactivity.</p>
               <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-                <span id="cardModalityBadge" class="dl-badge" style="border-color:#9b59b6; color:#d6a4e8;">Modality: Hybrid</span>
+                <span id="cardModalityBadge" class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">Modality: Voice (Default)</span>
                 <span id="cardStyleBadge" class="dl-badge" style="border-color:#3498db; color:#70d6ff;">Style: Normal</span>
-                <span id="cardVoiceBadge" class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">Voice: Disabled</span>
+                <span id="cardVoiceBadge" class="dl-badge" style="border-color:#2ecc71; color:#2ecc71;">Voice: Enabled (Default)</span>
                 <span id="cardProactiveBadge" class="dl-badge" style="border-color:#f1c40f; color:#f9e79f;">Proactivity: Balanced</span>
               </div>
             </div>
@@ -693,15 +695,15 @@
             <!-- Pillar 1: Interaction Modality -->
             <div class="interact-card">
               <h4>📡 1. Interaction Channel & Modality</h4>
-              <p class="desc-text">Choose how you send and receive agent messages:</p>
+              <p class="desc-text">Choose how you send and receive agent messages (Voice-First by default):</p>
               <div class="option-pills" id="modalityPills">
-                <button class="option-pill" onclick="AgentSimulator.setModality('text', this)">💬 Text WebUI</button>
-                <button class="option-pill" onclick="AgentSimulator.setModality('voice', this)">🎙️ Offline Voice</button>
-                <button class="option-pill active" onclick="AgentSimulator.setModality('hybrid', this)">⚡ Hybrid (Both)</button>
+                <button class="option-pill active" onclick="AgentSimulator.setModality('voice', this)">🎙️ Voice (Default)</button>
+                <button class="option-pill" onclick="AgentSimulator.setModality('text', this)">💬 Text (Silent)</button>
+                <button class="option-pill" onclick="AgentSimulator.setModality('hybrid', this)">⚡ Hybrid (Both)</button>
                 <button class="option-pill" onclick="AgentSimulator.setModality('hud', this)">🚀 Spotlight HUD</button>
                 <button class="option-pill" onclick="AgentSimulator.setModality('notification', this)">🔔 Desktop Toast</button>
               </div>
-              <p class="desc-text" id="modalityExplain"><strong>Hybrid Mode:</strong> Visual dashboard with optional offline voice replies when spoken to.</p>
+              <p class="desc-text" id="modalityExplain"><strong>Voice-First (Default):</strong> Hands-free voice commands via microphone listening and natural spoken voice replies. Switch to Text anytime for silent operation.</p>
             </div>
 
             <!-- Pillar 2: Persona & Verbosity -->
@@ -2194,6 +2196,14 @@ mint-agent --harold all</pre>
         <div class="app-item" data-cat="admin" onclick="WindowManager.openApp('interaction'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🗣️</span>
           <div><strong>User Interaction Options</strong><br><small style="color:#888;">Voice Synthesis, HUD Hotkeys & Proactivity</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.setModality('voice'); AgentSimulator.sendWebUIMessage('voice mode'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">🎙️</span>
+          <div><strong>Voice Command Mode (Default)</strong><br><small style="color:#888;">Voice-first hands-free spoken operation & microphone</small></div>
+        </div>
+        <div class="app-item" data-cat="admin" onclick="AgentSimulator.setModality('text'); AgentSimulator.sendWebUIMessage('text mode'); document.getElementById('startMenu').style.display='none';">
+          <span class="app-icon">⌨️</span>
+          <div><strong>Text-Based Mode (Silent)</strong><br><small style="color:#888;">Silent terminal & text interaction without audio speech</small></div>
         </div>
         <div class="app-item" data-cat="marvel" onclick="WindowManager.openApp('marvel'); document.getElementById('startMenu').style.display='none';">
           <span class="app-icon">🌸</span>

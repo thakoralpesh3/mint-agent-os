@@ -8,10 +8,10 @@ const AgentSimulator = {
   ramTotalMb: 3815,
   securityScore: 92,
   firewallActive: true,
-  voiceEnabled: false,
+  voiceEnabled: true,
   verbosity: 'normal',
   proactivity: 'balanced',
-  modality: 'hybrid',
+  modality: 'voice',
   activePersona: 'aradhya',
   isListening: false,
   arcPulseEnergy: 1.0,
@@ -248,6 +248,19 @@ Change Interaction Options On-The-Fly:
   mint-agent --verbosity <concise|normal|detailed|security_auditor>
   mint-agent --proactivity <reactive|balanced|proactive>
   mint-agent --voice-reply on/off`);
+      return;
+    }
+
+    if (c === 'text' || c === 'text mode' || c === 'mint-agent --text' || c === 'mint-agent --no-voice' || c === 'mint-agent -t') {
+      this.setModality('text');
+      this.printTermLine("✓ Switched to Silent Text Mode. (Spoken responses disabled. Type 'voice' or 'mint-agent --voice' to switch back)");
+      return;
+    }
+
+    if (c === 'voice' || c === 'voice mode' || c === 'mint-agent --voice' || c === 'mint-agent -v') {
+      this.setModality('voice');
+      this.printTermLine("✓ Switched to Voice-First Mode (Default). (Spoken responses & mic active. Type 'text' for silent mode)");
+      this.speak("Voice mode active. Spoken replies enabled.");
       return;
     }
 
@@ -1101,23 +1114,27 @@ Compatibility: Fully compatible with Linux Mint 2GB-4GB RAM requirements.`);
       };
     }
 
-    if (p.includes('enable voice') || p.includes('turn on voice') || p.includes('voice on') || p.includes('speak replies') || p.includes('talk to me')) {
+    if (p.includes('voice mode') || p.includes('switch to voice') || p.includes('voice only') || p.includes('voice based') || p.includes('enable voice') || p.includes('turn on voice') || p.includes('voice on') || p.includes('speak replies') || p.includes('talk to me') || p.includes('run with voice')) {
+      this.modality = 'voice';
       this.voiceEnabled = true;
       this.updateInteractionBadges();
-      this.speak("Spoken voice replies enabled. I am now speaking to you offline.");
+      const text = "Voice-first mode activated. Aradhya will listen for voice commands and speak replies aloud by default.";
+      this.speak(text);
       return {
-        thought: "Voice interaction enabled. MintPilot will now speak replies aloud using offline speech synthesis.",
-        result: { voice_enabled: true, engine: "spd-say", speed: 165 },
+        thought: text,
+        result: { modality: "voice", voice_enabled: true, engine: "spd-say", speed: 165, default: true },
         latency_ms: 1.4
       };
     }
 
-    if (p.includes('disable voice') || p.includes('turn off voice') || p.includes('mute voice') || p.includes('voice off')) {
+    if (p.includes('text mode') || p.includes('switch to text') || p.includes('text only') || p.includes('text based') || p.includes('disable voice') || p.includes('turn off voice') || p.includes('mute voice') || p.includes('voice off') || p.includes('silent mode') || p.includes('run with text')) {
+      this.modality = 'text';
       this.voiceEnabled = false;
       this.updateInteractionBadges();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       return {
-        thought: "Voice interaction disabled. MintPilot will interact silently via visual UI and text.",
-        result: { voice_enabled: false },
+        thought: "Text-based mode activated. Aradhya will now interact silently through text and visual terminal output.",
+        result: { modality: "text", voice_enabled: false },
         latency_ms: 1.1
       };
     }

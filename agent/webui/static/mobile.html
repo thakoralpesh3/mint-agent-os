@@ -706,6 +706,7 @@
       </div>
     </div>
     <div class="header-actions">
+      <div class="badge-btn active" id="modality-badge" onclick="toggleModality()" title="Toggle Voice / Text Mode">🎙️ VOICE (Default)</div>
       <div class="badge-btn" id="mode-badge" onclick="toggleMode()">TURBO</div>
       <div class="badge-btn" onclick="showPairingModal()">🔑 PIN</div>
     </div>
@@ -1043,11 +1044,57 @@
       return h;
     }
 
+    // Modality Management (Voice-First by Default, with Option to Switch to Text)
+    let currentModality = "voice";
+
+    function toggleModality() {
+      const badge = document.getElementById("modality-badge");
+      if (currentModality === "voice") {
+        currentModality = "text";
+        badge.innerText = "⌨️ TEXT";
+        badge.classList.remove("active");
+        badge.style.color = "var(--cyan)";
+        badge.style.borderColor = "var(--cyan)";
+        badge.style.background = "rgba(0, 229, 255, 0.1)";
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        addChatMsg("system", "Switched to Text-Based Mode (Silent replies).");
+        document.getElementById("chat-input").focus();
+      } else {
+        currentModality = "voice";
+        badge.innerText = "🎙️ VOICE (Default)";
+        badge.classList.add("active");
+        badge.style.color = "var(--mint)";
+        badge.style.borderColor = "var(--mint)";
+        badge.style.background = "rgba(135, 207, 62, 0.1)";
+        addChatMsg("system", "Switched to Voice-First Mode (Default). Responses will speak aloud and push-to-talk is active.");
+        speakAloud("Voice mode activated. I am listening.");
+      }
+    }
+
+    function speakAloud(text) {
+      if (currentModality !== "voice") return;
+      if (!("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[*_#`\[\]]/g, "");
+        const utt = new SpeechSynthesisUtterance(clean);
+        utt.rate = 1.05;
+        window.speechSynthesis.speak(utt);
+      } catch (err) {
+        console.warn("Speech synthesis error:", err);
+      }
+    }
+
     // Chat Operations
     async function sendChat() {
       const input = document.getElementById("chat-input");
       const text = input.value.trim();
-      if (!text) return;
+      if (!text) {
+        if (currentModality === "voice") {
+          toggleSpeech();
+        }
+        return;
+      }
       input.value = "";
 
       addChatMsg("user", text);
@@ -1061,6 +1108,9 @@
         const data = await res.json();
         const reply = data.thought || (data.result ? JSON.stringify(data.result) : "Action completed.");
         addChatMsg("agent", reply);
+        if (currentModality === "voice") {
+          speakAloud(reply);
+        }
       } catch (err) {
         addChatMsg("agent", "Error communicating with PC: " + err.message);
       }
@@ -1075,11 +1125,11 @@
     function addChatMsg(role, text) {
       const box = document.getElementById("chat-stream");
       const div = document.createElement("div");
-      div.className = "msg " + (role === "user" ? "msg-user" : "msg-agent");
+      div.className = "msg " + (role === "user" ? "msg-user" : (role === "system" ? "msg-agent" : "msg-agent"));
       
       const sender = document.createElement("div");
       sender.className = "msg-sender";
-      sender.innerText = role === "user" ? "You (Mobile)" : "🌸 Aradhya";
+      sender.innerText = role === "user" ? "You (Mobile)" : (role === "system" ? "⚙️ Modality Hub" : "🌸 Aradhya");
       
       const content = document.createElement("div");
       content.innerText = text;
