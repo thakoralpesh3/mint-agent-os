@@ -1259,27 +1259,170 @@
       <div style="font-size:36px;margin-bottom:8px;">📱</div>
       <h3 style="color:#fff;margin-bottom:6px;">Pair Mobile Device</h3>
       <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px;">
-        Enter the 6-digit PIN displayed on your Linux Mint PC terminal or WebUI hub.
+        Connect to your Linux Mint PC running Aradhya Agent OS.
       </p>
-      <input type="text" class="pin-input" id="modal-pin-input" maxlength="7" placeholder="000-000">
+      <div style="text-align:left;margin-bottom:10px;">
+        <label style="font-size:11px;color:var(--text-dim);margin-bottom:4px;display:block;">Linux Mint PC Host URL:</label>
+        <input type="text" id="modal-pc-host" placeholder="http://10.55.246.178:8888 or tunnel URL" style="width:100%;padding:10px;background:#181d19;border:1px solid var(--card-border);border-radius:8px;color:#fff;font-size:13px;font-family:monospace;box-sizing:border-box;">
+      </div>
+      <div style="text-align:left;margin-bottom:14px;">
+        <label style="font-size:11px;color:var(--text-dim);margin-bottom:4px;display:block;">6-Digit Pairing PIN:</label>
+        <input type="text" class="pin-input" id="modal-pin-input" maxlength="7" placeholder="000-000">
+      </div>
       <div style="display:flex;gap:10px;">
         <button class="badge-btn" onclick="closePairingModal()" style="flex:1;justify-content:center;padding:12px;">Cancel</button>
         <button class="badge-btn active" onclick="submitPin()" style="flex:1;justify-content:center;padding:12px;">Connect</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="badge-btn" onclick="toggleDemoMode()" id="btn-toggle-demo" style="width:100%;justify-content:center;padding:8px;font-size:11px;">🎭 Switch to Standalone Demo Mode</button>
       </div>
     </div>
   </div>
 
   <script>
     // Global State
+    let pcHost = localStorage.getItem("aradhya_pc_host") || (window.location.origin.includes("github.io") ? "" : window.location.origin);
+    let isDemoMode = localStorage.getItem("aradhya_demo_mode") === "true" || (window.location.origin.includes("github.io") && !pcHost);
     let authToken = localStorage.getItem("aradhya_remote_token") || "";
     let isRecording = false;
     let recognition = null;
+
+    function getApiUrl(endpoint) {
+      if (!endpoint.startsWith("/")) endpoint = "/" + endpoint;
+      if (pcHost) return pcHost.replace(/\/+$/, "") + endpoint;
+      return endpoint;
+    }
+
+    function toggleDemoMode() {
+      isDemoMode = !isDemoMode;
+      localStorage.setItem("aradhya_demo_mode", isDemoMode);
+      updateConnectionBadge();
+      const btn = document.getElementById("btn-toggle-demo");
+      if (btn) btn.innerText = isDemoMode ? "🟢 Demo Mode (Active) - Switch to Live PC" : "🎭 Switch to Standalone Demo Mode";
+      addChatMsg("system", isDemoMode ? "Switched to Standalone Demo Mode (Simulating agent locally)." : `Switched to Live PC Mode (Host: ${pcHost || 'localhost'}).`);
+    }
+
+    function updateConnectionBadge() {
+      const sub = document.querySelector(".brand-subtitle");
+      if (!sub) return;
+      if (isDemoMode) {
+        sub.innerHTML = '<span class="status-dot" style="background:var(--yellow);box-shadow:0 0 6px var(--yellow);"></span> <span id="active-persona-name">DEMO MODE (Standalone)</span>';
+      } else {
+        sub.innerHTML = '<span class="status-dot"></span> <span id="active-persona-name">' + (window.currentPersona || 'JARVIS') + ' (Live PC)</span>';
+      }
+    }
+
+    // Centralized Smart API Fetcher with Fallback Demo Simulation for GitHub Pages
+    async function apiFetch(endpoint, options = {}) {
+      if (isDemoMode) {
+        return await simulateDemoResponse(endpoint, options);
+      }
+      const url = getApiUrl(endpoint);
+      try {
+        const res = await fetch(url, options);
+        if (!res.ok) {
+          if (res.status === 404 && window.location.origin.includes("github.io")) {
+            console.warn("GitHub Pages 404 on " + endpoint + ", falling back to demo simulation.");
+            return await simulateDemoResponse(endpoint, options);
+          }
+          throw new Error("HTTP " + res.status);
+        }
+        return res;
+      } catch (err) {
+        if (window.location.origin.includes("github.io") || !pcHost) {
+          console.warn("API request failed (" + err.message + "), falling back to demo simulation.");
+          return await simulateDemoResponse(endpoint, options);
+        }
+        throw err;
+      }
+    }
+
+    // Demo Simulator Response Factory
+    async function simulateDemoResponse(endpoint, options = {}) {
+      await new Promise(r => setTimeout(r, 120)); // Subtle tactile latency
+      let data = {};
+      const body = options.body ? JSON.parse(options.body) : {};
+
+      if (endpoint === "/api/remote/pair") {
+        data = { authenticated: true, token: "demo-token-" + Date.now(), device: "Demo Browser Mobile" };
+      } else if (endpoint === "/api/chat") {
+        const p = (body.prompt || "").toLowerCase();
+        let reply = "All system diagnostics reporting nominal. Standing by for commands.";
+        if (p.includes("status")) reply = "CPU: 14%, RAM: 840MB/16GB, Battery: 98% (Charging), DEFCON 5 SECURE.";
+        else if (p.includes("antigravity") || p.includes("task") || p.includes("goal")) reply = "Antigravity multi-agent autonomous planner online and ready.";
+        else if (p.includes("hello") || p.includes("hi")) reply = "Greetings boss. Aradhya Agent OS is ready on your command.";
+        else reply = `Understood. Analyzing objective '${body.prompt}'. Executing through local agent sandbox.`;
+        data = { thought: reply, result: { success: true } };
+      } else if (endpoint === "/api/status") {
+        data = {
+          mode: "turbo",
+          security: { defcon: { level: 5, label: "SECURE" } },
+          pending_approvals: [],
+          windows: [
+            { title: "Aradhya Agent OS - Terminal", active: true },
+            { title: "Linux Mint Desktop", active: false }
+          ]
+        };
+      } else if (endpoint === "/api/remote/intercom") {
+        data = {
+          persona_name: window.currentPersona || "JARVIS",
+          reply: `Comms channel secure. Transmitted: "${body.message || 'Check'}". Everything is green.`,
+          voice_config: { rate: 1.0, pitch: 1.0 }
+        };
+      } else if (endpoint === "/api/briefing") {
+        data = {
+          agent: window.currentPersona || "JARVIS",
+          speech: "Good day boss. All systems are operating at peak efficiency. Threat level DEFCON 5. All telemetry is nominal."
+        };
+      } else if (endpoint === "/api/goal") {
+        const g = body.goal || "Automate system task";
+        data = {
+          status: "COMPLETED_SUCCESSFULLY",
+          thought: `Decomposed '${g}' into 3 autonomous milestones. All agents completed tasks cleanly.`,
+          total_milestones: 3,
+          duration_ms: 1420,
+          execution_plan: [
+            { step: 1, title: `Analyze requirement: ${g}`, agent: "ResearchAgent", status: "COMPLETED" },
+            { step: 2, title: "Synthesize script and apply system changes", agent: "BuilderAgent", status: "COMPLETED" },
+            { step: 3, title: "Run end-to-end verification and health check", agent: "VerifierAgent", status: "COMPLETED" }
+          ]
+        };
+      } else if (endpoint === "/api/remote/recon") {
+        data = {
+          summary: "Perimeter recon scan complete. 2 focal signatures locked.",
+          objects_detected: [
+            { label: "OPERATOR", conf: 0.96, box: [0.25, 0.2, 0.5, 0.6] },
+            { label: "WORKSTATION", conf: 0.89, box: [0.05, 0.6, 0.9, 0.35] }
+          ]
+        };
+      } else {
+        data = { status: "success", action: body.action || "completed", simulated: true };
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        json: async () => data,
+        text: async () => JSON.stringify(data)
+      };
+    }
 
     // Check URL parameters for auto-pairing from QR code
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const urlToken = params.get("token");
       const urlPin = params.get("pin");
+      const urlHost = params.get("host");
+
+      if (urlHost) {
+        pcHost = urlHost;
+        localStorage.setItem("aradhya_pc_host", pcHost);
+        isDemoMode = false;
+        localStorage.setItem("aradhya_demo_mode", "false");
+      }
+
+      const hostInput = document.getElementById("modal-pc-host");
+      if (hostInput) hostInput.value = pcHost || "";
 
       if (urlToken) {
         authToken = urlToken;
@@ -1288,6 +1431,7 @@
         verifyPinDirect(urlPin);
       }
 
+      updateConnectionBadge();
       setupTrackpad();
       setupSpeech();
       refreshStatus();
@@ -1315,6 +1459,8 @@
 
     // Modal
     function showPairingModal() {
+      const hostInput = document.getElementById("modal-pc-host");
+      if (hostInput) hostInput.value = pcHost || "";
       document.getElementById("pairing-modal").style.display = "flex";
       document.getElementById("modal-pin-input").focus();
     }
@@ -1323,14 +1469,25 @@
     }
 
     async function submitPin() {
+      const hostInput = document.getElementById("modal-pc-host");
+      if (hostInput && hostInput.value.trim()) {
+        pcHost = hostInput.value.trim();
+        localStorage.setItem("aradhya_pc_host", pcHost);
+        isDemoMode = false;
+        localStorage.setItem("aradhya_demo_mode", "false");
+      }
       const pin = document.getElementById("modal-pin-input").value.trim();
-      if (!pin) return;
+      if (!pin) {
+        closePairingModal();
+        updateConnectionBadge();
+        return;
+      }
       await verifyPinDirect(pin);
     }
 
     async function verifyPinDirect(pin) {
       try {
-        const res = await fetch("/api/remote/pair", {
+        const res = await apiFetch("/api/remote/pair", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ pin: pin, ua: navigator.userAgent })
@@ -1340,12 +1497,14 @@
           authToken = data.token;
           localStorage.setItem("aradhya_remote_token", authToken);
           closePairingModal();
+          updateConnectionBadge();
           addChatMsg("system", `✓ Authenticated successfully with PIN. Connected as ${data.device}.`);
         } else {
           alert(data.error || "Invalid PIN. Please check PC terminal.");
         }
       } catch (err) {
         console.error("Pairing error:", err);
+        alert("Connection failed: " + err.message + ". Ensure PC is running 'aradhya' and IP is correct.");
       }
     }
 
@@ -1412,7 +1571,7 @@
       addChatMsg("user", text);
 
       try {
-        const res = await fetch("/api/chat", {
+        const res = await apiFetch("/api/chat", {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({ prompt: text })
@@ -1489,15 +1648,16 @@
 
     // Marvel Persona Switcher
     async function switchPersona(pid) {
+      window.currentPersona = pid.toUpperCase();
       document.querySelectorAll(".persona-pill").forEach(p => p.classList.remove("active"));
-      event.target.classList.add("active");
+      if (event && event.target) event.target.classList.add("active");
       try {
-        await fetch("/api/marvel/persona", {
+        await apiFetch("/api/marvel/persona", {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({ persona: pid })
         });
-        document.getElementById("active-persona-name").innerText = pid.toUpperCase() + " (Active)";
+        document.getElementById("active-persona-name").innerText = pid.toUpperCase() + (isDemoMode ? " (Demo)" : " (Live PC)");
         addChatMsg("agent", `Switched active companion persona to ${pid.toUpperCase()}.`);
       } catch (err) {
         console.error("Persona switch error:", err);
@@ -1507,7 +1667,7 @@
     // Quick Hardware Controls
     async function setVolume(val) {
       document.getElementById("volume-val").innerText = val + "%";
-      await fetch("/api/remote/control", {
+      await apiFetch("/api/remote/control", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "volume", value: parseInt(val) })
@@ -1516,7 +1676,7 @@
 
     async function setBrightness(val) {
       document.getElementById("bright-val").innerText = val + "%";
-      await fetch("/api/remote/control", {
+      await apiFetch("/api/remote/control", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "brightness", value: parseInt(val) })
@@ -1525,7 +1685,7 @@
 
     async function sendPCAction(actionName) {
       if (navigator.vibrate) navigator.vibrate(25);
-      await fetch("/api/remote/control", {
+      await apiFetch("/api/remote/control", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: actionName })
@@ -1586,7 +1746,7 @@
       pendingDy += dy;
       if (!motionThrottle) {
         motionThrottle = setTimeout(() => {
-          fetch("/api/remote/trackpad", {
+          apiFetch("/api/remote/trackpad", {
             method: "POST",
             headers: getHeaders(),
             body: JSON.stringify({ action: "move", dx: pendingDx, dy: pendingDy })
@@ -1600,7 +1760,7 @@
 
     async function sendClick(btn) {
       if (navigator.vibrate) navigator.vibrate(20);
-      await fetch("/api/remote/trackpad", {
+      await apiFetch("/api/remote/trackpad", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "click", button: btn })
@@ -1608,7 +1768,7 @@
     }
 
     async function sendScroll(direction) {
-      await fetch("/api/remote/trackpad", {
+      await apiFetch("/api/remote/trackpad", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "scroll", direction: direction, clicks: 2 })
@@ -1620,7 +1780,7 @@
       const text = input.value;
       if (!text) return;
       input.value = "";
-      await fetch("/api/remote/keyboard", {
+      await apiFetch("/api/remote/keyboard", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "type", text: text })
@@ -1629,7 +1789,7 @@
 
     async function sendKey(k) {
       if (navigator.vibrate) navigator.vibrate(15);
-      await fetch("/api/remote/keyboard", {
+      await apiFetch("/api/remote/keyboard", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "key", key: k })
@@ -1638,7 +1798,7 @@
 
     async function sendCombo(c) {
       if (navigator.vibrate) navigator.vibrate(15);
-      await fetch("/api/remote/keyboard", {
+      await apiFetch("/api/remote/keyboard", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "hotkey", combo: c })
@@ -1648,13 +1808,17 @@
     // Screen Mirroring & Window Management
     async function refreshScreen() {
       const img = document.getElementById("live-screen-img");
-      img.src = "/api/remote/screenshot?t=" + Date.now() + (authToken ? "&token=" + authToken : "");
+      if (isDemoMode) {
+        img.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'><rect width='640' height='360' fill='%23141815'/><text x='320' y='170' font-family='monospace' font-size='20' fill='%2387cf3e' text-anchor='middle'>🌿 ARADHYA AGENT OS</text><text x='320' y='200' font-family='monospace' font-size='13' fill='%238b9e90' text-anchor='middle'>Standalone Demo Screen • Live PC Mirror Ready</text></svg>";
+      } else {
+        img.src = getApiUrl("/api/remote/screenshot?t=" + Date.now() + (authToken ? "&token=" + authToken : ""));
+      }
       loadWindows();
     }
 
     async function loadWindows() {
       try {
-        const res = await fetch("/api/status", { headers: getHeaders() });
+        const res = await apiFetch("/api/status", { headers: getHeaders() });
         const data = await res.json();
         const list = document.getElementById("windows-list");
         list.innerHTML = "";
@@ -1680,7 +1844,7 @@
     }
 
     async function focusWin(title) {
-      await fetch("/api/remote/control", {
+      await apiFetch("/api/remote/control", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "focus_window", title: title })
@@ -1688,7 +1852,7 @@
     }
 
     async function closeWin(title) {
-      await fetch("/api/remote/control", {
+      await apiFetch("/api/remote/control", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action: "close_window", title: title })
@@ -1699,7 +1863,7 @@
     // Telemetry & Approvals
     async function pollTelemetry() {
       try {
-        const res = await fetch("/api/status", { headers: getHeaders() });
+        const res = await apiFetch("/api/status", { headers: getHeaders() });
         const data = await res.json();
         
         if (data.mode) {
@@ -1741,7 +1905,7 @@
 
     async function resolveApproval(actId, approved) {
       if (navigator.vibrate) navigator.vibrate(30);
-      await fetch("/api/remote/approve", {
+      await apiFetch("/api/remote/approve", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ action_id: actId, approved: approved })
@@ -1751,7 +1915,7 @@
 
     async function sendEmergencyLockdown() {
       if (!confirm("Confirm EMERGENCY LOCKDOWN? Inbound network will be severed.")) return;
-      await fetch("/api/lockdown", { method: "POST", headers: getHeaders() });
+      await apiFetch("/api/lockdown", { method: "POST", headers: getHeaders() });
       alert("🚨 Emergency lockdown activated.");
       pollTelemetry();
     }
@@ -1760,7 +1924,7 @@
       const badge = document.getElementById("mode-badge");
       const current = badge.innerText.toLowerCase();
       const nextMode = current === "turbo" ? "safe" : "turbo";
-      await fetch("/api/mode", {
+      await apiFetch("/api/mode", {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ mode: nextMode })
@@ -2023,7 +2187,7 @@
       arcEnergyTarget = 2.0;
 
       try {
-        const res = await fetch("/api/remote/intercom", {
+        const res = await apiFetch("/api/remote/intercom", {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({ message: messageText })
@@ -2133,7 +2297,7 @@
       StarkAudio.playChime();
       addChatMsg("user", "Morning briefing");
       try {
-        const res = await fetch("/api/briefing", { headers: getHeaders() });
+        const res = await apiFetch("/api/briefing", { headers: getHeaders() });
         const data = await res.json();
         const speech = data.speech || "Good morning boss, all systems nominal.";
         addChatMsg("agent", `☀️ **Stark Morning Briefing**:\n\n${speech}`);
@@ -2174,7 +2338,7 @@
 
           // Transmit to /api/remote/recon
           try {
-            const res = await fetch("/api/remote/recon", {
+            const res = await apiFetch("/api/remote/recon", {
               method: "POST",
               headers: getHeaders(),
               body: JSON.stringify({ image: dataUrl, focus: "perimeter" })
@@ -2202,7 +2366,7 @@
               ctx.fillStyle = "rgba(10, 20, 15, 0.85)";
               ctx.fillRect(x, y - 24, w, 24);
               ctx.fillStyle = "#87cf3e";
-              ctx.fillText(`[${obj.label} • ${Math.round(obj.confidence*100)}%]`, x + 4, y - 6);
+              ctx.fillText(`[${obj.label} • ${Math.round((obj.conf || obj.confidence || 0.95)*100)}%]`, x + 4, y - 6);
             });
 
             // Update Telemetry Panel
@@ -2211,7 +2375,7 @@
             document.getElementById("recon-threat-desc").innerText = reconData.voice_report || "Visual recon nominal.";
 
             StarkAudio.playChime();
-            speakAloud(reconData.voice_report);
+            speakAloud(reconData.voice_report || reconData.summary);
           } catch(err) {
             console.error("Recon failed:", err);
           }
@@ -2239,7 +2403,7 @@
       if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
 
       try {
-        const res = await fetch("/api/goal", {
+        const res = await apiFetch("/api/goal", {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({ goal: goalPrompt })

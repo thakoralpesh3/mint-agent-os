@@ -30,13 +30,24 @@ class WakeWordListener:
         self.brain = brain
         self.running = False
 
+    def _get_model_path(self) -> Optional[str]:
+        candidates = [
+            "/usr/share/mint-agent/models/vosk-model-small-en-us",
+            os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us-0.15"),
+            os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us"),
+            os.path.expanduser("~/.local/share/vosk/vosk-model-small-en-us")
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                return c
+        return None
+
     def is_available(self) -> bool:
         """Checks if audio input hardware and libraries are available."""
         try:
             import sounddevice as sd
             import vosk
-            model_dir = "/usr/share/mint-agent/models/vosk-model-small-en-us"
-            return os.path.exists(model_dir)
+            return self._get_model_path() is not None
         except ImportError:
             return False
 
@@ -46,9 +57,9 @@ class WakeWordListener:
             import sounddevice as sd
             import vosk
 
-            model_dir = "/usr/share/mint-agent/models/vosk-model-small-en-us"
-            if not os.path.exists(model_dir):
-                print(f"\033[1;33m⚠️ Vosk model not found at {model_dir}. Run 'aradhya' to install offline models.\033[0m")
+            model_dir = self._get_model_path()
+            if not model_dir:
+                print("\033[1;33m⚠️ Vosk model not found. Run 'aradhya' to install offline models.\033[0m")
                 return {"error": "model_not_found"}
 
             q = queue.Queue()

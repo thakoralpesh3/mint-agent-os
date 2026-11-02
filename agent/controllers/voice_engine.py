@@ -63,16 +63,28 @@ class VoiceEngine:
             import json
             import queue
 
-            model_dir = "/usr/share/mint-agent/models/vosk-model-small-en-us"
-            if not os.path.exists(model_dir):
-                return {"error": f"Vosk model directory not found at {model_dir}", "status": "failed"}
+            model = None
+            candidates = [
+                "/usr/share/mint-agent/models/vosk-model-small-en-us",
+                os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us-0.15"),
+                os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us"),
+                os.path.expanduser("~/.local/share/vosk/vosk-model-small-en-us")
+            ]
+            for c in candidates:
+                if os.path.exists(c):
+                    model = vosk.Model(c)
+                    break
+            if not model:
+                try:
+                    model = vosk.Model(lang="en-us")
+                except Exception:
+                    return {"error": "Vosk model not found and auto-download failed", "status": "failed"}
 
             q = queue.Queue()
 
             def callback(indata, frames, time_info, status):
                 q.put(bytes(indata))
 
-            model = vosk.Model(model_dir)
             rec = vosk.KaldiRecognizer(model, 16000)
 
             with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16', channels=1, callback=callback):
@@ -97,6 +109,10 @@ class VoiceEngine:
         return {
             "tts_engine": self._tts_engine,
             "tts_available": self._tts_engine is not None,
-            "vosk_model_installed": os.path.exists("/usr/share/mint-agent/models/vosk-model-small-en-us"),
+            "vosk_model_installed": any(os.path.exists(p) for p in [
+                "/usr/share/mint-agent/models/vosk-model-small-en-us",
+                os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us-0.15"),
+                os.path.expanduser("~/.cache/vosk/vosk-model-small-en-us")
+            ]),
             "stt_engine": "vosk"
         }
