@@ -703,15 +703,27 @@ def get_configured_port() -> int:
     return 8888
 
 
-def run_webui_server(port: int = None, host: str = "0.0.0.0"):
+def get_configured_host() -> str:
+    if CONFIG_PATH.exists():
+        try:
+            with open(CONFIG_PATH, "r") as f:
+                d = json.load(f)
+                return d.get("webui", {}).get("host", "127.0.0.1")
+        except Exception:
+            pass
+    return "127.0.0.1"
+
+
+def run_webui_server(port: int = None, host: str = None):
     WebUIRequestHandler.brain = AgentBrain()
     target_port = port or get_configured_port()
+    target_host = host or get_configured_host()
 
     # Automatic port fallback if port is in use
     httpd = None
     for attempt_port in range(target_port, target_port + 10):
         try:
-            server_address = (host, attempt_port)
+            server_address = (target_host, attempt_port)
             httpd = HTTPServer(server_address, WebUIRequestHandler)
             target_port = attempt_port
             break
