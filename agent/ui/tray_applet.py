@@ -62,6 +62,16 @@ class MintTrayApplet:
         webui_item.connect("activate", self._open_webui)
         menu.append(webui_item)
 
+        # Item 2b: Linux Mint Software Manager
+        soft_item = Gtk.MenuItem(label="🛍️ Software Manager (mintinstall)")
+        soft_item.connect("activate", lambda w: self.brain.updater.open_software_manager())
+        menu.append(soft_item)
+
+        # Item 2c: Linux Mint Update Manager
+        up_item = Gtk.MenuItem(label="🔄 Update Manager (mintupdate)")
+        up_item.connect("activate", lambda w: self.brain.updater.open_update_manager())
+        menu.append(up_item)
+
         menu.append(Gtk.SeparatorMenuItem())
 
         # Item 3: Mode Toggle

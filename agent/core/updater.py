@@ -186,6 +186,8 @@ class OSUpdater:
             reloaded_service = False
             if shutil.which("systemctl"):
                 try:
+                    subprocess.run(["systemctl", "--user", "daemon-reload"], capture_output=True)
+                    subprocess.run(["systemctl", "--user", "try-restart", "aradhya-agent.service"], capture_output=True)
                     subprocess.run(["systemctl", "daemon-reload"], capture_output=True)
                     subprocess.run(["systemctl", "try-restart", "mint-agent.service"], capture_output=True)
                     reloaded_service = True
@@ -195,7 +197,7 @@ class OSUpdater:
             v_info = self.get_version_info()
             return {
                 "status": "success",
-                "message": "Successfully upgraded MintPilot Agent OS to latest upstream release!",
+                "message": "Successfully upgraded Aradhya Agent OS to latest upstream release!",
                 "current_commit": v_info.get("commit"),
                 "service_reloaded": reloaded_service,
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
@@ -203,9 +205,141 @@ class OSUpdater:
         except Exception as e:
             return {"status": "failed", "error": str(e)}
 
+    # ==================== LINUX MINT SOFTWARE & UPDATE MANAGERS ====================
+
+    def open_software_manager(self, package: Optional[str] = None) -> Dict[str, Any]:
+        """Launches the official Linux Mint Software Manager (mintinstall)."""
+        if not shutil.which("mintinstall"):
+            return {"status": "failed", "error": "mintinstall (Linux Mint Software Manager) not found."}
+        try:
+            cmd = ["mintinstall"]
+            if package:
+                cmd.append(package)
+            subprocess.Popen(cmd, env=dict(os.environ, DISPLAY=os.environ.get("DISPLAY", ":0")))
+            return {
+                "status": "success",
+                "message": f"Launched Linux Mint Software Manager" + (f" for '{package}'" if package else "")
+            }
+        except Exception as e:
+            return {"status": "failed", "error": str(e)}
+
+    def open_update_manager(self) -> Dict[str, Any]:
+        """Launches the official Linux Mint Update Manager (mintupdate)."""
+        if not shutil.which("mintupdate"):
+            return {"status": "failed", "error": "mintupdate (Linux Mint Update Manager) not found."}
+        try:
+            subprocess.Popen(["mintupdate"], env=dict(os.environ, DISPLAY=os.environ.get("DISPLAY", ":0")))
+            return {"status": "success", "message": "Launched Linux Mint Update Manager GUI"}
+        except Exception as e:
+            return {"status": "failed", "error": str(e)}
+
+    def get_software_updates_summary(self) -> Dict[str, Any]:
+        """
+        Checks updates across all layers:
+        1. Aradhya Agent OS (GitHub commits)
+        2. Linux Mint System & APT packages (mintupdate-cli / apt)
+        3. Flatpak packages (mintinstall backend)
+        4. Open WebUI / AI models
+        """
+        summary = {
+            "agent_os": self.check_for_updates(),
+            "mint_updates": {"available": False, "count": 0, "packages": []},
+            "flatpak_updates": {"available": False, "count": 0, "packages": []},
+            "openwebui": {
+                "version": "1.0.0-embedded",
+                "type": "native-embedded",
+                "url": "http://127.0.0.1:8888",
+                "status": "running",
+                "update_method": "agent_os"
+            }
+        }
+
+        # Check mintupdate-cli / apt
+        if shutil.which("mintupdate-cli"):
+            try:
+                proc = subprocess.run(
+                    ["mintupdate-cli", "list"],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )
+                if proc.returncode == 0 and proc.stdout.strip():
+                    lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+                    summary["mint_updates"] = {
+                        "available": len(lines) > 0,
+                        "count": len(lines),
+                        "packages": lines[:10]
+                    }
+            except Exception:
+                pass
+
+        # Check flatpaks
+        if shutil.which("flatpak"):
+            try:
+                proc = subprocess.run(
+                    ["flatpak", "remote-ls", "--updates"],
+                    capture_output=True,
+                    text=True,
+                    timeout=8
+                )
+                if proc.returncode == 0 and proc.stdout.strip():
+                    f_lines = [l.strip() for l in proc.stdout.splitlines() if l.strip()]
+                    summary["flatpak_updates"] = {
+                        "available": len(f_lines) > 0,
+                        "count": len(f_lines),
+                        "packages": f_lines[:10]
+                    }
+            except Exception:
+                pass
+
+        return summary
+
+    def update_all_items(self, include_system: bool = False) -> Dict[str, Any]:
+        """
+        Performs comprehensive updates:
+        - Updates Agent OS & embedded Open WebUI
+        - Optionally updates Linux Mint APT packages via mintupdate-cli / pkexec
+        """
+        results = {
+            "agent_os": self.perform_update(),
+            "system": None,
+            "flatpak": None
+        }
+
+        if include_system:
+            if shutil.which("pkexec") and shutil.which("mintupdate-cli"):
+                try:
+                    p = subprocess.run(
+                        ["pkexec", "mintupdate-cli", "upgrade", "-y"],
+                        capture_output=True,
+                        text=True,
+                        timeout=180
+                    )
+                    results["system"] = {
+                        "status": "success" if p.returncode == 0 else "failed",
+                        "output": p.stdout[-300:] if p.stdout else p.stderr[-300:]
+                    }
+                except Exception as ex:
+                    results["system"] = {"status": "failed", "error": str(ex)}
+
+            if shutil.which("flatpak"):
+                try:
+                    fp = subprocess.run(
+                        ["flatpak", "update", "-y"],
+                        capture_output=True,
+                        text=True,
+                        timeout=180
+                    )
+                    results["flatpak"] = {
+                        "status": "success" if fp.returncode == 0 else "failed"
+                    }
+                except Exception as ex:
+                    results["flatpak"] = {"status": "failed", "error": str(ex)}
+
+        return results
+
 
 if __name__ == "__main__":
     updater = OSUpdater()
     print("Version Info:", json.dumps(updater.get_version_info(), indent=2))
-    print("Checking for updates...")
-    print(json.dumps(updater.check_for_updates(), indent=2))
+    print("Updates Summary:", json.dumps(updater.get_software_updates_summary(), indent=2))

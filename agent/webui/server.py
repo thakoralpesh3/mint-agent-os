@@ -222,9 +222,9 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(models_data)
             return
 
-        # 6. Check OS Update API: GET /api/check_update
+        # 6. Check OS & Software Updates API: GET /api/check_update
         if path == "/api/check_update":
-            update_data = self.brain.updater.check_for_updates()
+            update_data = self.brain.updater.get_software_updates_summary()
             self._send_json(update_data)
             return
 
@@ -407,9 +407,23 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
             self._send_json(res)
             return
 
-        # 11. Perform In-Place OS Update: POST /api/update_os
+        # 11. Perform In-Place OS & Items Update: POST /api/update_os
         if path == "/api/update_os":
-            res = self.brain.updater.perform_update()
+            include_system = bool(body.get("include_system", False))
+            res = self.brain.updater.update_all_items(include_system=include_system)
+            self._send_json(res)
+            return
+
+        # 11b. Launch Linux Mint Software Manager (mintinstall): POST /api/launch_software_manager
+        if path == "/api/launch_software_manager":
+            pkg = body.get("package")
+            res = self.brain.updater.open_software_manager(package=pkg)
+            self._send_json(res)
+            return
+
+        # 11c. Launch Linux Mint Update Manager (mintupdate): POST /api/launch_update_manager
+        if path == "/api/launch_update_manager":
+            res = self.brain.updater.open_update_manager()
             self._send_json(res)
             return
 

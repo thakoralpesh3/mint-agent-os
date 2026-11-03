@@ -485,18 +485,45 @@ class AgentBrain:
                     "result": res
                 }
 
-        # 3. In-Place OS Updates
-        if any(w in p for w in ["check update", "check for updates", "check os update"]):
-            res = self.updater.check_for_updates()
+        # 3. In-Place OS & Software Updates (Linux Mint Software Manager & Update Manager)
+        if any(w in p for w in ["open software manager", "launch software manager", "open mintinstall", "software manager"]):
+            pkg = None
+            if "for " in p:
+                pkg = p.split("for ")[-1].strip()
+            res = self.updater.open_software_manager(package=pkg)
             return {
-                "thought": res.get("message", "Checked upstream for updates"),
+                "thought": res.get("message", "Launched Linux Mint Software Manager"),
                 "result": res
             }
 
-        if any(w in p for w in ["update os", "upgrade os", "upgrade agent", "update agent"]):
+        if any(w in p for w in ["open update manager", "launch update manager", "open mintupdate", "update manager"]):
+            res = self.updater.open_update_manager()
+            return {
+                "thought": res.get("message", "Launched Linux Mint Update Manager"),
+                "result": res
+            }
+
+        if any(w in p for w in ["check update", "check for updates", "check os update", "check software update", "check all updates"]):
+            res = self.updater.get_software_updates_summary()
+            agent_msg = res.get("agent_os", {}).get("message", "Agent OS up to date")
+            mint_cnt = res.get("mint_updates", {}).get("count", 0)
+            thought = f"{agent_msg} | Linux Mint Updates: {mint_cnt} package(s) available | Open WebUI: 1.0.0-embedded (Active)"
+            return {
+                "thought": thought,
+                "result": res
+            }
+
+        if any(w in p for w in ["update all", "upgrade all", "update system", "upgrade system", "update os and packages", "update everything"]):
+            res = self.updater.update_all_items(include_system=True)
+            return {
+                "thought": "Executed comprehensive updates across Agent OS, embedded Open WebUI, and Linux Mint packages.",
+                "result": res
+            }
+
+        if any(w in p for w in ["update os", "upgrade os", "upgrade agent", "update agent", "update openwebui", "upgrade openwebui", "update webui"]):
             res = self.updater.perform_update()
             return {
-                "thought": res.get("message", "OS upgrade performed"),
+                "thought": res.get("message", "OS and Open WebUI upgrade performed"),
                 "result": res
             }
 

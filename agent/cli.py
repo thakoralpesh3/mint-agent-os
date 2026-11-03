@@ -97,8 +97,11 @@ def main():
     parser.add_argument("--list-models", action="store_true", help="List all available offline SLMs and online Cloud LLMs")
     parser.add_argument("--set-model", type=str, help="Switch active AI model (e.g. 'qwen2.5-1.5b', 'gemini-2.5-flash', 'gpt-4o')")
     parser.add_argument("--set-key", nargs=2, metavar=("PROVIDER", "KEY"), help="Store API key for online provider (e.g. gemini, openai, claude)")
-    parser.add_argument("--check-update", action="store_true", help="Check upstream GitHub repository for MintPilot Agent OS updates")
-    parser.add_argument("--update-os", action="store_true", help="Perform in-place upgrade of MintPilot Agent OS from GitHub")
+    parser.add_argument("--check-update", action="store_true", help="Check upstream GitHub and Linux Mint for OS, software, and Open WebUI updates")
+    parser.add_argument("--update-os", action="store_true", help="Perform in-place upgrade of Aradhya Agent OS & Open WebUI from GitHub")
+    parser.add_argument("--update-all", action="store_true", help="Update Agent OS, Open WebUI, and Linux Mint system packages")
+    parser.add_argument("--software-manager", nargs="?", const="", metavar="PACKAGE", help="Launch official Linux Mint Software Manager (mintinstall)")
+    parser.add_argument("--update-manager", action="store_true", help="Launch official Linux Mint Update Manager (mintupdate)")
     parser.add_argument("--smooth", action="store_true", help="Apply Linux Mint kernel swappiness and cache tuning for 60fps butter-smooth performance")
     parser.add_argument("--benchmark-smoothness", action="store_true", help="Audit PC hardware against Linux Mint official standards and check agent footprint")
     parser.add_argument("--immune-status", action="store_true", help="Display Digital Immune Memory, attack fingerprints, active antibodies, and resilience score")
@@ -759,24 +762,63 @@ def main():
 
     if args.check_update:
         print_banner(brain)
-        print("🔍 Checking GitHub repository for MintPilot Agent OS updates...")
-        res = brain.updater.check_for_updates()
-        if res.get("update_available"):
-            print(f"🚀 \033[1;33m{res['message']}\033[0m")
-            print(f"Local Commit: {res.get('local_commit')} -> Remote: {res.get('remote_commit')}")
-            print("Run 'mint-agent --update-os' to apply.")
+        print("🔍 Checking updates across Agent OS, Linux Mint system, Flatpaks, and Open WebUI...")
+        res = brain.updater.get_software_updates_summary()
+        agent_up = res.get("agent_os", {})
+        if agent_up.get("update_available"):
+            print(f"🚀 \033[1;33m{agent_up['message']}\033[0m")
+            print(f"Local Commit: {agent_up.get('local_commit')} -> Remote: {agent_up.get('remote_commit')}")
+            print("Run 'aradhya --update-os' to apply.")
         else:
-            print(f"✓ \033[1;32m{res.get('message', 'Up to date')}\033[0m (Commit: {res.get('local_commit')})")
+            print(f"✓ \033[1;32m{agent_up.get('message', 'Agent OS up to date')}\033[0m (Commit: {agent_up.get('local_commit')})")
+
+        mint_up = res.get("mint_updates", {})
+        print(f"📦 Linux Mint APT Updates: \033[1m{mint_up.get('count', 0)} package(s)\033[0m available.")
+        if mint_up.get("packages"):
+            for p in mint_up["packages"][:5]:
+                print(f"   • {p}")
+
+        fp_up = res.get("flatpak_updates", {})
+        print(f"📦 Flatpak (Software Manager) Updates: \033[1m{fp_up.get('count', 0)} item(s)\033[0m available.")
+
+        ow = res.get("openwebui", {})
+        print(f"🌐 Embedded Open WebUI: \033[1;32m{ow.get('version')}\033[0m ({ow.get('status')}) -> Managed with Agent OS")
         return
 
     if args.update_os:
         print_banner(brain)
-        print("🔄 Performing in-place upgrade of MintPilot Agent OS from GitHub...")
+        print("🔄 Performing in-place upgrade of Aradhya Agent OS & Open WebUI from GitHub...")
         res = brain.updater.perform_update()
         if res.get("status") == "success":
             print(f"🎉 \033[1;32m{res['message']}\033[0m (Commit: {res.get('current_commit')})")
         else:
             print(f"❌ \033[1;31mUpgrade failed: {res.get('error')}\033[0m")
+        return
+
+    if args.update_all:
+        print_banner(brain)
+        print("🔄 Updating Aradhya Agent OS, embedded Open WebUI, and Linux Mint packages...")
+        res = brain.updater.update_all_items(include_system=True)
+        agent_res = res.get("agent_os", {})
+        if agent_res.get("status") == "success":
+            print(f"✓ \033[1;32mAgent OS & Open WebUI upgraded.\033[0m")
+        sys_res = res.get("system")
+        if sys_res:
+            print(f"✓ Linux Mint System packages update: {sys_res.get('status')}")
+        fp_res = res.get("flatpak")
+        if fp_res:
+            print(f"✓ Flatpak software update: {fp_res.get('status')}")
+        return
+
+    if args.software_manager is not None:
+        target_pkg = args.software_manager if args.software_manager else None
+        res = brain.updater.open_software_manager(package=target_pkg)
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
+        return
+
+    if args.update_manager:
+        res = brain.updater.open_update_manager()
+        print(f"\033[1;32m✓ {res['message']}\033[0m")
         return
 
     if args.counter_threats:
